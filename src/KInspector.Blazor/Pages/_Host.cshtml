@@ -1,0 +1,22 @@
+﻿@page "/"
+@using KInspector.Blazor
+@using Microsoft.AspNetCore.Components.Web
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    <link href="~/css/app.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="img/favicon.ico"/>
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body class="h-screen">
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    
+    <script src="_framework/blazor.server.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</body>
+</html>
