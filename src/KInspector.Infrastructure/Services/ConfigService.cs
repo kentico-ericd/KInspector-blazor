@@ -9,7 +9,7 @@ namespace KInspector.Infrastructure.Services
     {
         private readonly string _saveFileLocation = $"{Directory.GetCurrentDirectory()}\\KInspector.config";
 
-        public bool DeleteInstance(Guid guid)
+        public bool DeleteInstance(Guid? guid)
         {
             var config = GetConfig();
             var totalRemoved = config.Instances.RemoveAll(i => i.Guid.Equals(guid));

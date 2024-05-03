@@ -11,6 +11,11 @@
     <base href="~/" />
     <link href="~/css/app.min.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="img/favicon.ico"/>
+    <script>
+        window.initializeFlowbite = () => {
+            initFlowbite();
+        }
+    </script>
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body class="dark h-screen hover:scrollbar-thumb-sky-500 active:scrollbar-thumb-sky-400 scrollbar scrollbar-thumb-slate-700 scrollbar-track-slate-300">

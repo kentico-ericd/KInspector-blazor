@@ -4,7 +4,7 @@ namespace KInspector.Core.Services.Interfaces
 {
     public interface IConfigService : IService
     {
-        bool DeleteInstance(Guid guid);
+        bool DeleteInstance(Guid? guid);
 
         Instance? GetInstance(Guid guid);
 
