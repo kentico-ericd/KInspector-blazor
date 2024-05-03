@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using KInspector.Core.Modules;
+﻿using KInspector.Core.Modules;
 
 namespace KInspector.Core.Repositories.Interfaces
 {
@@ -8,6 +6,6 @@ namespace KInspector.Core.Repositories.Interfaces
     {
         IEnumerable<IAction> GetActions();
 
-        IAction GetAction(string codename);
+        IAction? GetAction(string codename);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KInspector.Core.Extensions
+﻿namespace KInspector.Core.Extensions
 {
     public static class StringExtensions
     {

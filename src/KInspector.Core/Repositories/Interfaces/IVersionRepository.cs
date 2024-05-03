@@ -1,6 +1,4 @@
-﻿using System;
-
-using KInspector.Core.Models;
+﻿using KInspector.Core.Models;
 
 namespace KInspector.Core.Repositories.Interfaces
 {

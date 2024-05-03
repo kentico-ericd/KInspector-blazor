@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-
 using KInspector.Core.Models;
 using KInspector.Core.Services.Interfaces;
 
@@ -16,14 +10,16 @@ namespace KInspector.Core.Helpers
     {
         private const string DEFAULT_CULTURE_NAME = "en-US";
 
-        private readonly IInstanceService instanceService;              
+        private readonly IConfigService configService;
+        private readonly IInstanceService instanceService;
 
         public string DefaultCultureName => DEFAULT_CULTURE_NAME;
 
         public string CurrentCultureName => Thread.CurrentThread.CurrentCulture.Name;
 
-        public ModuleMetadataService(IInstanceService instanceService)
+        public ModuleMetadataService(IConfigService configService, IInstanceService instanceService)
         {
+            this.configService = configService;
             this.instanceService = instanceService;
         }
 
@@ -55,11 +51,12 @@ namespace KInspector.Core.Helpers
 
             var ModuleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
 
-            var instanceDetails = instanceService.GetInstanceDetails(instanceService.CurrentInstance);
+            var currentInstance = configService.GetCurrentInstance();
+            var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
 
             var commonData = new
             {
-                instanceUrl = instanceService.CurrentInstance.AdminUrl,
+                instanceUrl = currentInstance.AdminUrl,
                 administrationVersion = instanceDetails.AdministrationVersion,
                 databaseVersion = instanceDetails.DatabaseVersion
             };

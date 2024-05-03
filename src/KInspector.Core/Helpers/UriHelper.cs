@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KInspector.Core.Helpers
+﻿namespace KInspector.Core.Helpers
 {
     public static class UriHelper
     {

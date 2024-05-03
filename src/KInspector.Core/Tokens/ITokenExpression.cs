@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace KInspector.Core.Tokens
+﻿namespace KInspector.Core.Tokens
 {
     internal interface ITokenExpression
     {
-        string Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary);
+        string? Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary);
     }
 }

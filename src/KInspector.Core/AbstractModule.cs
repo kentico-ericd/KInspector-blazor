@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using KInspector.Core.Models;
+﻿using KInspector.Core.Models;
 using KInspector.Core.Modules;
 using KInspector.Core.Services.Interfaces;
 
@@ -11,7 +8,7 @@ namespace KInspector.Core
     {
         protected readonly IModuleMetadataService moduleMetadataService;
 
-        private ModuleMetadata<T> metadata;
+        private ModuleMetadata<T>? metadata;
 
         protected AbstractModule(IModuleMetadataService moduleMetadataService)
         {

@@ -1,7 +1,6 @@
 ﻿using KInspector.Core.Constants;
 using KInspector.Core.Services.Interfaces;
 
-using System.Collections.Generic;
 using System.Xml;
 
 namespace KInspector.Core.Helpers

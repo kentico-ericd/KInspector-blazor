@@ -12,7 +12,7 @@ namespace KInspector.Infrastructure.Repositories
             this.actions = actions;
         }
 
-        public IAction GetAction(string codename)
+        public IAction? GetAction(string codename)
         {
             var allReports = LoadActions();
             return allReports.FirstOrDefault(x => x.Codename.ToLower() == codename.ToLower());

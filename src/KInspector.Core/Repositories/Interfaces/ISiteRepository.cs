@@ -1,5 +1,4 @@
 ﻿using KInspector.Core.Models;
-using System.Collections.Generic;
 
 namespace KInspector.Core.Repositories.Interfaces
 {

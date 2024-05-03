@@ -11,8 +11,8 @@ builder.Host
     .UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>((containerBuilder) =>
     {
-        containerBuilder.RegisterModule(new CoreModule());
-        containerBuilder.RegisterModule(new InfrastructureModule());
+        containerBuilder.RegisterModule<CoreModule>();
+        containerBuilder.RegisterModule<InfrastructureModule>();
     });
 
 builder.Services.AddRazorPages().AddJsonOptions(o =>

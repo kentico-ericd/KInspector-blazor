@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 using KInspector.Core.Models;
 using KInspector.Core.Modules;
 using KInspector.Core.Repositories.Interfaces;
@@ -11,22 +8,22 @@ namespace KInspector.Infrastructure.Services
     public class ModuleService : IModuleService
     {
         private readonly IDatabaseService databaseService;
-        private readonly IInstanceService instanceService;
+        private readonly IConfigService configService;
         private readonly IReportRepository reportRepository;
         private readonly IActionRepository actionRepository;
 
-        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IInstanceService instanceService, IDatabaseService databaseService)
+        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IConfigService configService, IDatabaseService databaseService)
         {
             this.reportRepository = reportRepository;
             this.actionRepository = actionRepository;
-            this.instanceService = instanceService;
+            this.configService = configService;
             this.databaseService = databaseService;
         }
 
         public ActionResults ExecuteAction(string codename, Guid instanceGuid, string optionsJson)
         {
             var action = actionRepository.GetAction(codename);
-            var instance = instanceService.SetCurrentInstance(instanceGuid);
+            var instance = configService.SetCurrentInstance(instanceGuid);
             databaseService.Configure(instance.DatabaseSettings);
 
             return action.Execute(optionsJson);
@@ -36,7 +33,7 @@ namespace KInspector.Infrastructure.Services
 
         public IEnumerable<IAction> GetActions(Guid instanceGuid)
         {
-            instanceService.SetCurrentInstance(instanceGuid);
+            configService.SetCurrentInstance(instanceGuid);
             return actionRepository.GetActions();
         }
 
@@ -45,7 +42,7 @@ namespace KInspector.Infrastructure.Services
         public ReportResults GetReportResults(string reportCodename, Guid instanceGuid)
         {
             var report = reportRepository.GetReport(reportCodename);
-            var instance = instanceService.SetCurrentInstance(instanceGuid);
+            var instance = configService.SetCurrentInstance(instanceGuid);
 
             databaseService.Configure(instance.DatabaseSettings);
 
@@ -54,7 +51,7 @@ namespace KInspector.Infrastructure.Services
 
         public IEnumerable<IReport> GetReports(Guid instanceGuid)
         {
-            instanceService.SetCurrentInstance(instanceGuid);
+            configService.SetCurrentInstance(instanceGuid);
             return reportRepository.GetReports();
         }
     }

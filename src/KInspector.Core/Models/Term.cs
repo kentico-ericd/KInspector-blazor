@@ -6,7 +6,7 @@ namespace KInspector.Core.Models
     {
         private string Markdown { get; set; }
 
-        private object TokenValues { get; set; }
+        private object? TokenValues { get; set; }
 
         private Term(string value)
         {

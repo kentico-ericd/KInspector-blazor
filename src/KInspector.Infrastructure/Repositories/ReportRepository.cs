@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using KInspector.Core.Modules;
+﻿using KInspector.Core.Modules;
 using KInspector.Core.Repositories.Interfaces;
 
 namespace KInspector.Infrastructure.Repositories
@@ -15,7 +12,7 @@ namespace KInspector.Infrastructure.Repositories
             this.reports = reports;
         }
 
-        public IReport GetReport(string codename)
+        public IReport? GetReport(string codename)
         {
             var allReports = LoadReports();
             return allReports.FirstOrDefault(x => x.Codename.ToLower() == codename.ToLower());

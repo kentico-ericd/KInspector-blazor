@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using KInspector.Core.Extensions;
+﻿using KInspector.Core.Extensions;
 
 namespace KInspector.Core.Tokens
 {
@@ -14,15 +10,15 @@ namespace KInspector.Core.Tokens
     {
         private static readonly char[] expressionBoundary = new[] { '<', '>' };
 
-        public string Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary)
+        public string? Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary)
         {
             var trimmedTokenExpression = tokenExpression.Trim(expressionBoundary);
             var expression = GetExpression(trimmedTokenExpression);
-            if (tokenDictionary.TryGetValue(expression.token, out object token))
+            if (tokenDictionary.TryGetValue(expression.token, out object? token))
             {
                 foreach (var (value, operation, result) in expression.cases)
                 {
-                    var resolved = TryResolveToken(token, value, operation, result, out string resolvedToken);
+                    var resolved = TryResolveToken(token, value, operation, result, out string? resolvedToken);
 
                     if (resolved) return resolvedToken;
                 }
@@ -43,8 +39,8 @@ namespace KInspector.Core.Tokens
 
         private (
             string token,
-            IEnumerable<(string value, char operation, string result)> cases, 
-            string defaultValue
+            IEnumerable<(string? value, char operation, string? result)> cases, 
+            string? defaultValue
             ) GetExpression(string tokenExpression)
         {
             if (string.IsNullOrEmpty(tokenExpression))
@@ -54,8 +50,8 @@ namespace KInspector.Core.Tokens
             if (segments[0].Contains(Constants.Colon))
                 throw new FormatException($"Simple token expression token '{segments[0]}' must not contain a {Constants.Colon}.");
 
-            var cases = new List<(string, char, string)>();
-            string defaultValue = null;
+            var cases = new List<(string?, char, string?)>();
+            string? defaultValue = null;
 
             switch (segments.Length)
             {
@@ -81,7 +77,7 @@ namespace KInspector.Core.Tokens
             return (segments[0], cases, defaultValue);
         }
 
-        private static (string, char, string) GetCase(string expressionCase)
+        private static (string?, char, string) GetCase(string expressionCase)
         {
             var operation = Constants.Equals;
             var pair = expressionCase.SplitAtFirst(Constants.Colon);
@@ -107,10 +103,10 @@ namespace KInspector.Core.Tokens
 
         public bool TryResolveToken(
             object token, 
-            string expressionCaseValue, 
+            string? expressionCaseValue, 
             char operation, 
-            string expressionCaseResult, 
-            out string resolvedValue
+            string? expressionCaseResult, 
+            out string? resolvedValue
             )
         {
             var resolved = false;
@@ -147,12 +143,12 @@ namespace KInspector.Core.Tokens
             return resolved;
         }
 
-        private bool TryResolveIntToken(int token, string expressionCaseValue, char operation)
+        private bool TryResolveIntToken(int token, string? expressionCaseValue, char operation)
         {
             return TryResolveDoubleToken(token, expressionCaseValue, operation);
         }
 
-        private static bool TryResolveDoubleToken(double token, string expressionCaseValue, char operation)
+        private static bool TryResolveDoubleToken(double token, string? expressionCaseValue, char operation)
         {
             var expressionCaseValueIsDouble = double.TryParse(expressionCaseValue, out double doubleExpressionCaseValue);
             if (expressionCaseValueIsDouble)
@@ -172,7 +168,7 @@ namespace KInspector.Core.Tokens
             return false;
         }
 
-        private static bool TryResolveBoolToken(bool token, string expressionCaseValue)
+        private static bool TryResolveBoolToken(bool token, string? expressionCaseValue)
         {
             var expressionCaseValueIsBool = bool.TryParse(expressionCaseValue, out bool boolExpressionCaseValue);
             if (expressionCaseValueIsBool && token == boolExpressionCaseValue)
@@ -183,7 +179,7 @@ namespace KInspector.Core.Tokens
             return false;
         }
 
-        private static bool TryResolveStringToken(string token, string expressionCaseValue)
+        private static bool TryResolveStringToken(string? token, string? expressionCaseValue)
         {
             if (token == expressionCaseValue)
             {

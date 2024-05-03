@@ -12,7 +12,7 @@ namespace KInspector.Core.Models
         [JsonConverter(typeof(StringEnumConverter))]
         public ResultsStatus Status { get; set; }
 
-        public string Summary { get; set; }
+        public string? Summary { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ResultsType Type { get; set; }

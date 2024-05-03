@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
@@ -9,7 +6,7 @@ namespace KInspector.Core.Tokens
 {
     public static class TokenExpressionResolver
     {
-        private static IEnumerable<(Type tokenExpressionType, string pattern)> TokenExpressionTypePatterns { get; set; }
+        private static IEnumerable<(Type tokenExpressionType, string pattern)>? TokenExpressionTypePatterns { get; set; }
 
         public static void RegisterTokenExpressions(Assembly assembly)
         {
@@ -46,7 +43,7 @@ namespace KInspector.Core.Tokens
 
         internal static string ResolveTokenExpressions(string term, object tokenValues)
         {
-            var allTokenExpressionPatterns = TokenExpressionTypePatterns
+            var allTokenExpressionPatterns = TokenExpressionTypePatterns?
                 .Select(tokenExpressionTypePattern => tokenExpressionTypePattern.pattern)
                 .Where(pattern => !string.IsNullOrEmpty(pattern));
 
@@ -58,9 +55,9 @@ namespace KInspector.Core.Tokens
             return string.Join(string.Empty, resolvedExpressions);
         }
 
-        private static IDictionary<string, object> GetValuesDictionary(object tokenValues)
+        private static IDictionary<string, object?> GetValuesDictionary(object tokenValues)
         {
-            if (tokenValues is IDictionary<string, object> dictionary)
+            if (tokenValues is IDictionary<string, object?> dictionary)
             {
                 return dictionary;
             }

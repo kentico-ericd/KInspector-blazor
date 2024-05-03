@@ -6,7 +6,7 @@ namespace KInspector.Infrastructure.Services
 {
     public class InstanceService : IInstanceService
     {
-        private readonly IInstanceRepository _instanceRepository;
+        private readonly IConfigService _configService;
         private readonly ISiteRepository _siteRepository;
         private readonly IVersionRepository _versionRepository;
         private readonly IDatabaseService _databaseService;
@@ -14,37 +14,20 @@ namespace KInspector.Infrastructure.Services
         public Instance? CurrentInstance { get; private set; }
 
         public InstanceService(
-            IInstanceRepository instanceRepository,
+            IConfigService configService,
             IVersionRepository versionRepository,
             ISiteRepository siteRepository,
             IDatabaseService databaseService)
         {
-            _instanceRepository = instanceRepository;
+            _configService = configService;
             _versionRepository = versionRepository;
             _siteRepository = siteRepository;
             _databaseService = databaseService;
         }
 
-        public bool DeleteInstance(Guid instanceGuid)
-        {
-            return _instanceRepository.DeleteInstance(instanceGuid);
-        }
-
-        public Instance GetInstance(Guid instanceGuid)
-        {
-            return _instanceRepository.GetInstance(instanceGuid);
-        }
-
-        public Instance SetCurrentInstance(Guid instanceGuid)
-        {
-            CurrentInstance = _instanceRepository.GetInstance(instanceGuid);
-
-            return CurrentInstance;
-        }
-
         public InstanceDetails GetInstanceDetails(Guid instanceGuid)
         {
-            var instance = _instanceRepository.GetInstance(instanceGuid);
+            var instance = _configService.GetInstance(instanceGuid);
 
             return GetInstanceDetails(instance);
         }
@@ -71,16 +54,6 @@ namespace KInspector.Infrastructure.Services
                 DatabaseVersion = _versionRepository.GetKenticoDatabaseVersion(instance),
                 Sites = _siteRepository.GetSites(instance)
             };
-        }
-
-        public IList<Instance> GetInstances()
-        {
-            return _instanceRepository.GetInstances();
-        }
-
-        public Instance UpsertInstance(Instance instance)
-        {
-            return _instanceRepository.UpsertInstance(instance);
         }
     }
 }

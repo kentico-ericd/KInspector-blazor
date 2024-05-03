@@ -3,23 +3,32 @@
 @using KInspector.Core.Models
 @using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
-@inject IInstanceService instanceService
+@inject IConfigService configService
 
 <PageTitle>Instances</PageTitle>
 
 @{
-    var instances = instanceService.GetInstances();
+    var instances = configService.GetConfig().Instances;
 }
 
-<section class="w-full h-full overflow-auto">
-    <div class="flex items-center py-8 px-4 mx-auto lg:py-16 lg:px-6 space-y-8 lg:space-y-0">
+<section class="w-screen">
+    <div class="w-1/3 mx-auto">
+        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">Connect to an instance</h1>
+        <p class="mb-6 text-lg font-normal text-gray-500 lg:text-xl">
+            Click "Connect" to begin using KInspector on an existing Kentico 12 or 13 instance. Or, click the orange tile to register a new instance and connect to it.
+        </p>
+    </div>
+</section>
+
+<section class="w-full h-full scrollbar overflow-auto">
+    <div class="flex items-center justify-center py-8 px-4 mx-auto lg:py-16 lg:px-6 space-y-8 lg:space-y-0">
         <!-- New instance card -->
         <a href="#">
-            <div class="flex flex-col items-center p-6 mx-2 max-w-lg text-center text-gray-900 bg-orange-400 rounded-lg border border-gray-500 shadow hover:shadow-lg dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
+            <div class="flex flex-col items-center p-6 mx-2 max-w-lg text-center text-gray-900 bg-orange-400 rounded-lg border border-gray-500 shadow hover:shadow-lg xl:p-8">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                <p class="font-light sm:text-lg dark:text-gray-400">Add new instance</p>
+                <p class="font-light sm:text-lg">Add new instance</p>
             </div>
         </a>
 

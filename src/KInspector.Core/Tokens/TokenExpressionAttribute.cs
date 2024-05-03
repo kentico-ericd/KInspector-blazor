@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KInspector.Core.Tokens
+﻿namespace KInspector.Core.Tokens
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class TokenExpressionAttribute : Attribute

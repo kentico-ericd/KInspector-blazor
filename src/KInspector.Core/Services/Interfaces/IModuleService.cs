@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using KInspector.Core.Models;
+﻿using KInspector.Core.Models;
 using KInspector.Core.Modules;
 
 namespace KInspector.Core.Services.Interfaces
