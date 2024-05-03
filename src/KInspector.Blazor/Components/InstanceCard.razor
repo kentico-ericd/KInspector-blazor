@@ -6,6 +6,7 @@
 @inject NavigationManager navigationManager
 
 @{
+    var currentInstance = configService.GetCurrentInstance();
     var details = instanceService.GetInstanceDetails(Instance);
 }
 
@@ -36,7 +37,14 @@
             <span>Administration path: @Instance.AdminPath</span>
         </li>
     </ul>
-    <button @onclick="SetCurrentInstance" class="text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-primary-900">Connect</button>
+    @if (currentInstance?.Guid.Equals(Instance.Guid) ?? false)
+    {
+        <button @onclick="DisconnectInstance" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white dark:focus:ring-red-900">Disconnect</button>
+    }
+    else
+    {
+        <button @onclick="SetCurrentInstance" class="text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white dark:focus:ring-primary-900">Connect</button>
+    }
 </div>
 
 @code {
@@ -46,6 +54,12 @@
     private void SetCurrentInstance()
     {
         configService.SetCurrentInstance(Instance.Guid);
-        navigationManager.NavigateTo("/reports", true);
+        navigationManager.NavigateTo("/instances", true);
+    }
+
+    private void DisconnectInstance()
+    {
+        configService.SetCurrentInstance(null);
+        navigationManager.NavigateTo("/instances", true);
     }
 }

@@ -14,6 +14,6 @@ namespace KInspector.Core.Services.Interfaces
 
         Instance? GetCurrentInstance();
 
-        Instance SetCurrentInstance(Guid? guid);
+        Instance? SetCurrentInstance(Guid? guid);
     }
 }

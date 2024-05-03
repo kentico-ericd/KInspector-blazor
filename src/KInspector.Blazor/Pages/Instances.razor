@@ -23,7 +23,7 @@
 <section class="w-full h-full scrollbar overflow-auto">
     <div class="flex items-center justify-center py-8 px-4 mx-auto lg:py-16 lg:px-6 space-y-8 lg:space-y-0">
         <!-- New instance card -->
-        <a href="#">
+        <a href="#" data-modal-target="new-instance-modal" data-modal-toggle="new-instance-modal">
             <div class="flex flex-col items-center p-6 mx-2 max-w-lg text-center text-gray-900 bg-orange-400 rounded-lg border border-gray-500 shadow hover:shadow-lg xl:p-8">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -38,3 +38,5 @@
         }
     </div>
 </section>
+
+<NewInstanceModal />

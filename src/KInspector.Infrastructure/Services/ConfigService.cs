@@ -49,23 +49,13 @@ namespace KInspector.Infrastructure.Services
             return config.Instances.FirstOrDefault(i => i.Guid == config.CurrentInstance);
         }
 
-        public Instance SetCurrentInstance(Guid? guid)
+        public Instance? SetCurrentInstance(Guid? guid)
         {
-            if (guid is null)
-            {
-                throw new ArgumentNullException(nameof(guid));
-            }
-
             var config = GetConfig();
             var selectedInstance = config.Instances.FirstOrDefault(i => i.Guid.Equals(guid));
-            if (selectedInstance is null)
-            {
-                throw new InvalidOperationException($"Instance with GUID '{guid}' doesn't exist.");
-            }
-
             config.CurrentInstance = guid;
-
             SaveConfig(config);
+
             return selectedInstance;
         }
 
