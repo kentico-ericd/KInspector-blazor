@@ -11,20 +11,22 @@ namespace KInspector.Infrastructure.Services
         private readonly IConfigService configService;
         private readonly IReportRepository reportRepository;
         private readonly IActionRepository actionRepository;
+        private readonly IInstanceService instanceService;
 
-        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IConfigService configService, IDatabaseService databaseService)
+        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IConfigService configService, IDatabaseService databaseService, IInstanceService instanceService)
         {
             this.reportRepository = reportRepository;
             this.actionRepository = actionRepository;
             this.configService = configService;
             this.databaseService = databaseService;
+            this.instanceService = instanceService;
         }
 
         public ActionResults ExecuteAction(string codename, Guid instanceGuid, string optionsJson)
         {
             var action = actionRepository.GetAction(codename);
             var instance = configService.SetCurrentInstance(instanceGuid);
-            databaseService.Configure(instance.DatabaseSettings);
+            databaseService.Configure(instance.DatabaseSettings, instanceService.GetInstanceDetails(instanceGuid).AdministrationConnectionString);
 
             return action.Execute(optionsJson);
         }
@@ -44,7 +46,7 @@ namespace KInspector.Infrastructure.Services
             var report = reportRepository.GetReport(reportCodename);
             var instance = configService.SetCurrentInstance(instanceGuid);
 
-            databaseService.Configure(instance.DatabaseSettings);
+            databaseService.Configure(instance.DatabaseSettings, instanceService.GetInstanceDetails(instanceGuid).AdministrationConnectionString);
 
             return report.GetResults();
         }

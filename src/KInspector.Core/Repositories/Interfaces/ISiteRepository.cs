@@ -6,6 +6,6 @@ namespace KInspector.Core.Repositories.Interfaces
     {
         Site GetSite(Instance instance, int siteId);
 
-        IList<Site> GetSites(Instance instance);
+        IList<Site> GetSites(DatabaseSettings? databaseSettings, string? connectionString);
     }
 }

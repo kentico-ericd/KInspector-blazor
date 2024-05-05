@@ -12,9 +12,9 @@ namespace KInspector.Infrastructure.Services
     {
         private IDbConnection? _connection;
 
-        public void Configure(DatabaseSettings databaseSettings)
+        public void Configure(DatabaseSettings? databaseSettings, string? connectionString)
         {
-            _connection = DatabaseHelper.GetSqlConnection(databaseSettings);
+            _connection = DatabaseHelper.GetSqlConnection(databaseSettings, connectionString);
         }
 
         public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath)

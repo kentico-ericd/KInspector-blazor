@@ -22,13 +22,12 @@ builder.Services.AddRazorPages().AddJsonOptions(o =>
 builder.Services.AddServerSideBlazor();
 
 var app = builder.Build();
-
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
+app.UseDeveloperExceptionPage();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

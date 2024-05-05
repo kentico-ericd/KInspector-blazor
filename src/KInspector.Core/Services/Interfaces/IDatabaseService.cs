@@ -6,7 +6,7 @@ namespace KInspector.Core.Services.Interfaces
 {
     public interface IDatabaseService : IService
     {
-        void Configure(DatabaseSettings databaseSettings);
+        void Configure(DatabaseSettings? databaseSettings, string? connectionString);
 
         IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath);
 

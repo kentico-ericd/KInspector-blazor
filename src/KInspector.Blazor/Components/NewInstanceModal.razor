@@ -1,7 +1,12 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using KInspector.Core.Services.Interfaces
 @inject IConfigService configService
+@inject ICmsFileService fileService
 @inject NavigationManager navigationManager
+
+@{
+    var cmsConnectionString = fileService.GetCMSConnectionString(Model?.AdminPath);
+}
 
 <div id="new-instance-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-2xl max-h-full">
@@ -37,29 +42,39 @@
                         <label for="adminUrl" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Administration URL</label>
                         <InputText required id="adminUrl" @bind-Value="Model!.AdminUrl" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                     </div>
-                    <div class="mb-5">
-                        <label for="server" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SQL server</label>
-                        <InputText required id="server" @bind-Value="Model!.Server" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                    </div>
-                    <div class="mb-5">
-                        <label for="database" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Database name</label>
-                        <InputText required id="database" @bind-Value="Model!.Database" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                    </div>
-                    <div class="flex items-start mb-5">
-                        <div class="flex items-center h-5">
-                            <InputCheckbox id="integrated" @bind-Value="Model!.IntegratedSecurity" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" />
-                        </div>
-                        <label for="integrated" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Integrated security</label>
-                    </div>
-                    @if (!Model.IntegratedSecurity)
+                    @if (string.IsNullOrEmpty(cmsConnectionString))
                     {
                         <div class="mb-5">
-                            <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User name</label>
-                            <InputText id="user" @bind-Value="Model!.User" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            <label for="server" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SQL server</label>
+                            <InputText id="server" @bind-Value="Model!.Server" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         </div>
                         <div class="mb-5">
-                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                            <InputText type="password" id="password" @bind-Value="Model!.Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            <label for="database" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Database name</label>
+                            <InputText id="database" @bind-Value="Model!.Database" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        </div>
+                        <div class="flex items-start mb-5">
+                            <div class="flex items-center h-5">
+                                <InputCheckbox id="integrated" @bind-Value="Model!.IntegratedSecurity" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" />
+                            </div>
+                            <label for="integrated" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Integrated security</label>
+                        </div>
+                        @if (!Model.IntegratedSecurity)
+                        {
+                            <div class="mb-5">
+                                <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User name</label>
+                                <InputText id="user" @bind-Value="Model!.User" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            </div>
+                            <div class="mb-5">
+                                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                                <InputText type="password" id="password" @bind-Value="Model!.Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="mb-5">
+                            <label for="adminConnectionString" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Administration connection string</label>
+                            <input type="text" disabled id="adminConnectionString" value="@cmsConnectionString" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         </div>
                     }
                 </div>
@@ -75,20 +90,16 @@
 @code {
     [SupplyParameterFromForm]
     public NewInstance? Model { get; set; }
-    private EditContext? editContext;
-    private ValidationMessageStore? messageStore;
 
-    protected override void OnInitialized() {
-        Model ??= new();
-    }
+    protected override void OnInitialized() => Model ??= new();
 
     private void Submit()
     {
         configService.UpsertInstance(new()
         {
             Guid = Guid.NewGuid(),
-            AdminPath = Model?.AdminPath,
-            AdminUrl = Model?.AdminUrl,
+            AdministrationPath = Model?.AdminPath,
+            AdministrationUrl = Model?.AdminUrl,
             Name = Model?.Name,
             DatabaseSettings = new()
             {
@@ -114,10 +125,8 @@
         [Required]
         public string? AdminUrl { get; set; }
 
-        [Required]
         public string? Server { get; set; }
 
-        [Required]
         public string? Database { get; set; }
 
         public bool IntegratedSecurity { get; set; }

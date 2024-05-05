@@ -24,7 +24,7 @@ namespace KInspector.Infrastructure.Services
 
         public Version? GetKenticoAdministrationVersion(Instance instance)
         {
-            return instance.AdminPath is null ? null : GetKenticoAdministrationVersion(instance.AdminPath);
+            return instance.AdministrationPath is null ? null : GetKenticoAdministrationVersion(instance.AdministrationPath);
         }
 
         public Version? GetKenticoAdministrationVersion(string rootPath)
@@ -64,13 +64,9 @@ namespace KInspector.Infrastructure.Services
             return new Version(version);
         }
 
-        public Version? GetKenticoDatabaseVersion(Instance instance)
+        public Version? GetKenticoDatabaseVersion(DatabaseSettings? databaseSettings, string? connectionString)
         {
-            return instance.DatabaseSettings is null ? null : GetKenticoDatabaseVersion(instance.DatabaseSettings);
-        }
-
-        public Version? GetKenticoDatabaseVersion(DatabaseSettings databaseSettings)
-        {
+            databaseService.Configure(databaseSettings, connectionString);
             var settingsKeys = databaseService.ExecuteSqlFromFile<string>(getCmsSettingsPath)
                 .ToList();
 

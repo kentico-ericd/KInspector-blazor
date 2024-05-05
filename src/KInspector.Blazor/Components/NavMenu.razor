@@ -1,5 +1,6 @@
 ﻿@using KInspector.Core.Services.Interfaces
 @inject IConfigService configService
+@inject IInstanceService instanceService
 
 @{
     var currentInstance = configService.GetCurrentInstance();
@@ -43,11 +44,7 @@
             <div class="grid flex-1 items-center justify-end lg:order-2">
                 @if (currentInstance is not null)
                 {
-                    <div class="inline-flex items-center block text-gray-900 dark:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
-                        </svg>&nbsp;Connected: @currentInstance.Name
-                    </div>
+                    <InstanceButton Instance="currentInstance" />
                 }
             </div>
         </div>

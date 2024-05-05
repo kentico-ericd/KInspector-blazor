@@ -8,8 +8,8 @@
 
         public string? Name { get; set; }
 
-        public string? AdminPath { get; set; }
+        public string? AdministrationPath { get; set; }
 
-        public string? AdminUrl { get; set; }
+        public string? AdministrationUrl { get; set; }
     }
 }

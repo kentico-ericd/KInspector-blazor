@@ -7,16 +7,18 @@ namespace KInspector.Core.Helpers
 {
     public static class DatabaseHelper
     {
-        public static IDbConnection GetSqlConnection(DatabaseSettings databaseSettings)
+        public static IDbConnection GetSqlConnection(DatabaseSettings? databaseSettings, string? connectionString)
         {
-            var connectionString = GetConnectionString(databaseSettings);
+            if (connectionString is not null)
+            {
+                return GetSqlConnection(connectionString);
+            }
+            else
+            {
+                var dbSettingsString = GetConnectionString(databaseSettings);
 
-            return GetSqlConnection(connectionString);
-        }
-
-        public static IDbConnection GetSqlConnection(string connectionString)
-        {
-            return new SqlConnection(connectionString);
+                return GetSqlConnection(dbSettingsString);
+            }
         }
 
         private static string GetConnectionString(DatabaseSettings databaseSettings)
@@ -37,6 +39,11 @@ namespace KInspector.Core.Helpers
             sb["Database"] = databaseSettings.Database;
 
             return sb.ConnectionString;
+        }
+
+        private static IDbConnection GetSqlConnection(string connectionString)
+        {
+            return new SqlConnection(connectionString);
         }
     }
 }

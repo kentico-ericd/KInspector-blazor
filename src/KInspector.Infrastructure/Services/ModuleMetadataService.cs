@@ -56,20 +56,20 @@ namespace KInspector.Core.Helpers
 
             var commonData = new
             {
-                instanceUrl = currentInstance.AdminUrl,
+                instanceUrl = currentInstance.AdministrationUrl,
                 administrationVersion = instanceDetails.AdministrationVersion,
-                databaseVersion = instanceDetails.DatabaseVersion
+                databaseVersion = instanceDetails.AdministrationDatabaseVersion
             };
 
-            Term name = ModuleMetadata.Details.Name;
+            Term? name = ModuleMetadata.Details.Name;
 
             ModuleMetadata.Details.Name = name.With(commonData);
 
-            Term shortDescription = ModuleMetadata.Details.ShortDescription;
+            Term? shortDescription = ModuleMetadata.Details.ShortDescription;
 
             ModuleMetadata.Details.ShortDescription = shortDescription.With(commonData);
 
-            Term longDescription = ModuleMetadata.Details.LongDescription;
+            Term? longDescription = ModuleMetadata.Details.LongDescription;
 
             ModuleMetadata.Details.LongDescription = longDescription.With(commonData);
 

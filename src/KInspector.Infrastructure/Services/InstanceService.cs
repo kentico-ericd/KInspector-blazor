@@ -7,19 +7,20 @@ namespace KInspector.Infrastructure.Services
     public class InstanceService : IInstanceService
     {
         private readonly IConfigService _configService;
+        private readonly ICmsFileService _fileService;
         private readonly ISiteRepository _siteRepository;
         private readonly IVersionRepository _versionRepository;
         private readonly IDatabaseService _databaseService;
 
-        public Instance? CurrentInstance { get; private set; }
-
         public InstanceService(
             IConfigService configService,
+            ICmsFileService fileService,
             IVersionRepository versionRepository,
             ISiteRepository siteRepository,
             IDatabaseService databaseService)
         {
             _configService = configService;
+            _fileService = fileService;
             _versionRepository = versionRepository;
             _siteRepository = siteRepository;
             _databaseService = databaseService;
@@ -28,6 +29,10 @@ namespace KInspector.Infrastructure.Services
         public InstanceDetails GetInstanceDetails(Guid instanceGuid)
         {
             var instance = _configService.GetInstance(instanceGuid);
+            if (instance is null)
+            {
+                throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'");
+            }
 
             return GetInstanceDetails(instance);
         }
@@ -40,20 +45,19 @@ namespace KInspector.Infrastructure.Services
                 throw new InvalidOperationException("Instance missing GUID.");
             }
 
-            if (instance.DatabaseSettings is null)
-            {
-                throw new InvalidOperationException("Instance missing database settings.");
-            }
-
-            _databaseService.Configure(instance.DatabaseSettings);
-
-            return new InstanceDetails
+            var connectionString = _fileService.GetCMSConnectionString(instance.AdministrationPath);
+            var instanceDetails = new InstanceDetails
             {
                 Guid = guid,
                 AdministrationVersion = _versionRepository.GetKenticoAdministrationVersion(instance),
-                DatabaseVersion = _versionRepository.GetKenticoDatabaseVersion(instance),
-                Sites = _siteRepository.GetSites(instance)
+                AdministrationDatabaseVersion = _versionRepository.GetKenticoDatabaseVersion(instance.DatabaseSettings, connectionString),
+                AdministrationConnectionString = connectionString,
+                Sites = _siteRepository.GetSites(instance.DatabaseSettings, connectionString)
             };
+
+            _databaseService.Configure(instance.DatabaseSettings, instanceDetails.AdministrationConnectionString);
+
+            return instanceDetails;
         }
     }
 }
