@@ -8,7 +8,7 @@ namespace KInspector.Core.Services.Interfaces
     {
         string? GetFaviconPath(string instanceRoot, string relativeFaviconPath = DefaultKenticoPaths.Favicon);
 
-        Dictionary<string, string> GetResourceStringsFromResx(string instanceRoot, string relativeResxFilePath = DefaultKenticoPaths.PrimaryResxFile);
+        Dictionary<string, string> GetResourceStringsFromResx(string? instanceRoot, string relativeResxFilePath = DefaultKenticoPaths.PrimaryResxFile);
 
         string? GetCMSConnectionString(string? instanceRoot, string relativeWebConfigFilePath = DefaultKenticoPaths.WebConfigFile);
 

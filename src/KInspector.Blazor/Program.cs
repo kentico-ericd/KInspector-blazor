@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 
 using KInspector.Core;
 using KInspector.Infrastructure;
+using KInspector.Reports;
 
 using System.Text.Json.Serialization;
 
@@ -13,6 +14,7 @@ builder.Host
     {
         containerBuilder.RegisterModule<CoreModule>();
         containerBuilder.RegisterModule<InfrastructureModule>();
+        containerBuilder.RegisterModule<ReportsModule>();
     });
 
 builder.Services.AddRazorPages().AddJsonOptions(o =>

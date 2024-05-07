@@ -9,5 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KInspector.Infrastructure\KInspector.Infrastructure.csproj" />
+    <ProjectReference Include="..\KInspector.Reports\KInspector.Reports.csproj" />
   </ItemGroup>
 </Project>

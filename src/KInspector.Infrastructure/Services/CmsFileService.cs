@@ -29,7 +29,7 @@ namespace KInspector.Core.Helpers
             return webConfig.SelectSingleNode("/configuration/connectionStrings/add[@name='CMSConnectionString']")?.Attributes?["connectionString"]?.Value;
         }
 
-        public Dictionary<string, string> GetResourceStringsFromResx(string instanceRoot, string relativeResxFilePath = DefaultKenticoPaths.PrimaryResxFile)
+        public Dictionary<string, string> GetResourceStringsFromResx(string? instanceRoot, string relativeResxFilePath = DefaultKenticoPaths.PrimaryResxFile)
         {
             var resourceXml = GetXmlDocument(instanceRoot, relativeResxFilePath);
             var resourceStringNodes = resourceXml?.SelectNodes("/root/data");

@@ -18,9 +18,9 @@ namespace KInspector.Core.Models
             return new Term(value);
         }
 
-        public static implicit operator string(Term term)
+        public static implicit operator string(Term? term)
         {
-            return term.ToString();
+            return term?.ToString() ?? string.Empty;
         }
 
         public override string ToString()
