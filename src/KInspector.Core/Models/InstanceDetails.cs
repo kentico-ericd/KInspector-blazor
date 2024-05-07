@@ -8,8 +8,6 @@
 
         public Version? AdministrationDatabaseVersion { get; set; }
 
-        public string? AdministrationConnectionString { get; set; }
-
         public IEnumerable<Site>? Sites { get; set; }
     }
 }

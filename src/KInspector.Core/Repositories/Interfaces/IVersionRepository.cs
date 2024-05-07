@@ -8,6 +8,6 @@ namespace KInspector.Core.Repositories.Interfaces
 
         Version? GetKenticoAdministrationVersion(string rootPath);
 
-        Version? GetKenticoDatabaseVersion(DatabaseSettings? databaseSettings, string? connectionString);
+        Version? GetKenticoDatabaseVersion(DatabaseSettings databaseSettings);
     }
 }

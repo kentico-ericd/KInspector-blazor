@@ -45,17 +45,15 @@ namespace KInspector.Infrastructure.Services
                 throw new InvalidOperationException("Instance missing GUID.");
             }
 
-            var connectionString = _fileService.GetCMSConnectionString(instance.AdministrationPath);
             var instanceDetails = new InstanceDetails
             {
                 Guid = guid,
                 AdministrationVersion = _versionRepository.GetKenticoAdministrationVersion(instance),
-                AdministrationDatabaseVersion = _versionRepository.GetKenticoDatabaseVersion(instance.DatabaseSettings, connectionString),
-                AdministrationConnectionString = connectionString,
-                Sites = _siteRepository.GetSites(instance.DatabaseSettings, connectionString)
+                AdministrationDatabaseVersion = _versionRepository.GetKenticoDatabaseVersion(instance.DatabaseSettings),
+                Sites = _siteRepository.GetSites(instance.DatabaseSettings)
             };
 
-            _databaseService.Configure(instance.DatabaseSettings, instanceDetails.AdministrationConnectionString);
+            _databaseService.Configure(instance.DatabaseSettings);
 
             return instanceDetails;
         }

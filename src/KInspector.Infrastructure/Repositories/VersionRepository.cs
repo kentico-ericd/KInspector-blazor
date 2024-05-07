@@ -64,9 +64,9 @@ namespace KInspector.Infrastructure.Services
             return new Version(version);
         }
 
-        public Version? GetKenticoDatabaseVersion(DatabaseSettings? databaseSettings, string? connectionString)
+        public Version? GetKenticoDatabaseVersion(DatabaseSettings databaseSettings)
         {
-            databaseService.Configure(databaseSettings, connectionString);
+            databaseService.Configure(databaseSettings);
             var settingsKeys = databaseService.ExecuteSqlFromFile<string>(getCmsSettingsPath)
                 .ToList();
 

@@ -7,43 +7,30 @@ namespace KInspector.Core.Helpers
 {
     public static class DatabaseHelper
     {
-        public static IDbConnection GetSqlConnection(DatabaseSettings? databaseSettings, string? connectionString)
+        public static IDbConnection GetSqlConnection(DatabaseSettings databaseSettings)
         {
-            if (connectionString is not null)
+            if (!string.IsNullOrEmpty(databaseSettings.AdministrationConnectionString))
             {
-                return GetSqlConnection(connectionString);
+                return new SqlConnection(databaseSettings.AdministrationConnectionString);
             }
             else
             {
-                var dbSettingsString = GetConnectionString(databaseSettings);
+                SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
+                if (databaseSettings.IntegratedSecurity)
+                {
+                    sb.IntegratedSecurity = true;
+                }
+                else
+                {
+                    sb.UserID = databaseSettings.User;
+                    sb.Password = databaseSettings.Password;
+                }
 
-                return GetSqlConnection(dbSettingsString);
+                sb["Server"] = databaseSettings.Server;
+                sb["Database"] = databaseSettings.Database;
+
+                return new SqlConnection(sb.ConnectionString);
             }
-        }
-
-        private static string GetConnectionString(DatabaseSettings databaseSettings)
-        {
-            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
-
-            if (databaseSettings.IntegratedSecurity)
-            {
-                sb.IntegratedSecurity = true;
-            }
-            else
-            {
-                sb.UserID = databaseSettings.User;
-                sb.Password = databaseSettings.Password;
-            }
-
-            sb["Server"] = databaseSettings.Server;
-            sb["Database"] = databaseSettings.Database;
-
-            return sb.ConnectionString;
-        }
-
-        private static IDbConnection GetSqlConnection(string connectionString)
-        {
-            return new SqlConnection(connectionString);
         }
     }
 }

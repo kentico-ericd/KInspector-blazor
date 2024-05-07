@@ -5,7 +5,7 @@
 @inject NavigationManager navigationManager
 
 @{
-    var cmsConnectionString = fileService.GetCMSConnectionString(Model?.AdminPath);
+    Model!.CMSConnectionString = fileService.GetCMSConnectionString(Model?.AdminPath);
 }
 
 <div id="new-instance-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -42,7 +42,7 @@
                         <label for="adminUrl" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Administration URL</label>
                         <InputText required id="adminUrl" @bind-Value="Model!.AdminUrl" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                     </div>
-                    @if (string.IsNullOrEmpty(cmsConnectionString))
+                    @if (string.IsNullOrEmpty(Model!.CMSConnectionString))
                     {
                         <div class="mb-5">
                             <label for="server" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SQL server</label>
@@ -74,7 +74,7 @@
                     {
                         <div class="mb-5">
                             <label for="adminConnectionString" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Administration connection string</label>
-                            <input type="text" disabled id="adminConnectionString" value="@cmsConnectionString" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            <InputText disabled id="adminConnectionString" @bind-Value="Model!.CMSConnectionString" class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         </div>
                     }
                 </div>
@@ -108,6 +108,7 @@
                 IntegratedSecurity = Model?.IntegratedSecurity ?? false,
                 User = Model?.User,
                 Password = Model?.Password,
+                AdministrationConnectionString = Model?.CMSConnectionString
             }
         });
 
@@ -134,5 +135,7 @@
         public string? User { get; set; }
 
         public string? Password { get; set; }
+
+        public string? CMSConnectionString { get; set; }
     }
 }

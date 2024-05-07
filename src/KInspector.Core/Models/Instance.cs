@@ -2,7 +2,7 @@
 {
     public class Instance
     {
-        public DatabaseSettings? DatabaseSettings { get; set; }
+        public DatabaseSettings DatabaseSettings { get; set; } = new();
 
         public Guid? Guid { get; set; }
 

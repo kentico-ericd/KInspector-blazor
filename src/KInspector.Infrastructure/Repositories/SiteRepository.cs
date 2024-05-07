@@ -13,7 +13,7 @@ namespace KInspector.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public IList<Site> GetSites(DatabaseSettings? databaseSettings, string? connectionString)
+        public IList<Site> GetSites(DatabaseSettings databaseSettings)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace KInspector.Infrastructure.Repositories
                         SiteDomainName as DomainName,
                         SitePresentationURL as PresentationUrl
                     FROM CMS_Site";
-                var connection = DatabaseHelper.GetSqlConnection(databaseSettings, connectionString);
+                var connection = DatabaseHelper.GetSqlConnection(databaseSettings);
                 var sites = connection.Query<Site>(query).ToList();
 
                 return sites;

@@ -11,5 +11,7 @@
         public string? Server { get; set; }
 
         public string? User { get; set; }
+
+        public string? AdministrationConnectionString { get; set; }
     }
 }
