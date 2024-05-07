@@ -15,7 +15,7 @@ namespace KInspector.Core.Helpers
             var executingDirectory = DirectoryHelper.GetExecutingDirectory();
             var fullPathToScript = $"{executingDirectory}/{relativeFilePath}";
             var query = File.ReadAllText(fullPathToScript);
-            if (literalReplacements != null)
+            if (literalReplacements is not null)
             {
                 foreach (var replacement in literalReplacements)
                 {

@@ -7,20 +7,17 @@ namespace KInspector.Infrastructure.Services
     public class InstanceService : IInstanceService
     {
         private readonly IConfigService _configService;
-        private readonly ICmsFileService _fileService;
         private readonly ISiteRepository _siteRepository;
         private readonly IVersionRepository _versionRepository;
         private readonly IDatabaseService _databaseService;
 
         public InstanceService(
             IConfigService configService,
-            ICmsFileService fileService,
             IVersionRepository versionRepository,
             ISiteRepository siteRepository,
             IDatabaseService databaseService)
         {
             _configService = configService;
-            _fileService = fileService;
             _versionRepository = versionRepository;
             _siteRepository = siteRepository;
             _databaseService = databaseService;
@@ -37,8 +34,13 @@ namespace KInspector.Infrastructure.Services
             return GetInstanceDetails(instance);
         }
 
-        public InstanceDetails GetInstanceDetails(Instance instance)
+        public InstanceDetails GetInstanceDetails(Instance? instance)
         {
+            if (instance is null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
             var guid = instance.Guid ?? Guid.Empty;
             if (guid == Guid.Empty)
             {

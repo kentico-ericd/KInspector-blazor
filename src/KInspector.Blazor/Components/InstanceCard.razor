@@ -64,11 +64,11 @@
 
 @code {
     [Parameter, EditorRequired]
-    public Instance Instance { get; set; }
+    public Instance? Instance { get; set; }
 
     private void SetCurrentInstance()
     {
-        configService.SetCurrentInstance(Instance.Guid);
+        configService.SetCurrentInstance(Instance?.Guid);
         navigationManager.NavigateTo("/instances", true);
     }
 
@@ -80,7 +80,7 @@
 
     private void DeleteInstance()
     {
-        configService.DeleteInstance(Instance.Guid);
+        configService.DeleteInstance(Instance?.Guid);
         navigationManager.NavigateTo("/instances", true);
     }
 }

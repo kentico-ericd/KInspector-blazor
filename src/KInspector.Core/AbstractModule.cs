@@ -39,6 +39,11 @@ namespace KInspector.Core
         private static string GetDirectParentNamespace(Type reportType)
         {
             var fullNameSpace = reportType.Namespace;
+            if (fullNameSpace is null)
+            {
+                throw new InvalidOperationException("Error getting report namespace.");
+            }
+
             var indexAfterLastPeriod = fullNameSpace.LastIndexOf('.') + 1;
 
             return fullNameSpace.Substring(indexAfterLastPeriod, fullNameSpace.Length - indexAfterLastPeriod);

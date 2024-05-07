@@ -6,7 +6,7 @@ namespace KInspector.Core.Tokens
 {
     public static class TokenExpressionResolver
     {
-        private static IEnumerable<(Type tokenExpressionType, string pattern)>? TokenExpressionTypePatterns { get; set; }
+        private static IEnumerable<(Type tokenExpressionType, string pattern)> TokenExpressionTypePatterns { get; set; } = Enumerable.Empty<(Type tokenExpressionType, string pattern)>();
 
         public static void RegisterTokenExpressions(Assembly assembly)
         {
@@ -43,11 +43,11 @@ namespace KInspector.Core.Tokens
 
         internal static string ResolveTokenExpressions(string term, object tokenValues)
         {
-            var allTokenExpressionPatterns = TokenExpressionTypePatterns?
+            var allTokenExpressionPatterns = TokenExpressionTypePatterns
                 .Select(tokenExpressionTypePattern => tokenExpressionTypePattern.pattern)
                 .Where(pattern => !string.IsNullOrEmpty(pattern));
 
-            var joinedTokenExpressionPatterns = string.Join(Constants.Pipe, allTokenExpressionPatterns);
+            var joinedTokenExpressionPatterns = string.Join(Constants.Pipe, allTokenExpressionPatterns ?? Enumerable.Empty<string>());
             var tokenDictionary = GetValuesDictionary(tokenValues);
             var resolvedExpressions = Regex.Split(term, joinedTokenExpressionPatterns)
                 .Select(tokenExpression => ResolveTokenExpression(tokenExpression, tokenDictionary));
@@ -75,17 +75,17 @@ namespace KInspector.Core.Tokens
                 && prop.GetMethod != null;
         }
 
-        private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object> tokenDictionary)
+        private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object?> tokenDictionary)
         {
             var (leadingChar, innerTokenExpression, trailingChar) = GetSplitExpression(tokenExpression);
-            string resolvedExpression = null;
+            string? resolvedExpression = null;
             foreach (var (tokenExpressionType, pattern) in TokenExpressionTypePatterns)
             {
                 if (Regex.IsMatch(innerTokenExpression, pattern))
                 {
                     var expressionObject = RuntimeHelpers.GetUninitializedObject(tokenExpressionType) as ITokenExpression;
 
-                    resolvedExpression = expressionObject.Resolve(innerTokenExpression, tokenDictionary);
+                    resolvedExpression = expressionObject?.Resolve(innerTokenExpression, tokenDictionary);
 
                     break;
                 }

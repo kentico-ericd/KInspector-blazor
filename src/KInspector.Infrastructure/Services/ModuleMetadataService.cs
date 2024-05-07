@@ -49,31 +49,31 @@ namespace KInspector.Core.Helpers
                 mergedMetadata = GetMergedMetadata(defaultMetadata, currentMetadata);
             }
 
-            var ModuleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
+            var moduleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
 
             var currentInstance = configService.GetCurrentInstance();
             var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
 
             var commonData = new
             {
-                instanceUrl = currentInstance.AdministrationUrl,
+                instanceUrl = currentInstance?.AdministrationUrl,
                 administrationVersion = instanceDetails.AdministrationVersion,
                 databaseVersion = instanceDetails.AdministrationDatabaseVersion
             };
 
-            Term? name = ModuleMetadata.Details.Name;
+            Term? name = moduleMetadata.Details.Name;
 
-            ModuleMetadata.Details.Name = name.With(commonData);
+            moduleMetadata.Details.Name = name.With(commonData);
 
-            Term? shortDescription = ModuleMetadata.Details.ShortDescription;
+            Term? shortDescription = moduleMetadata.Details.ShortDescription;
 
-            ModuleMetadata.Details.ShortDescription = shortDescription.With(commonData);
+            moduleMetadata.Details.ShortDescription = shortDescription.With(commonData);
 
-            Term? longDescription = ModuleMetadata.Details.LongDescription;
+            Term? longDescription = moduleMetadata.Details.LongDescription;
 
-            ModuleMetadata.Details.LongDescription = longDescription.With(commonData);
+            moduleMetadata.Details.LongDescription = longDescription.With(commonData);
 
-            return ModuleMetadata;
+            return moduleMetadata;
         }
 
         private static T DeserializeMetadataFromYamlFile<T>(

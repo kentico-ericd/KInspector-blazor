@@ -8,12 +8,12 @@ namespace KInspector.Core.Models
 
         private object? TokenValues { get; set; }
 
-        private Term(string value)
+        private Term(string? value)
         {
-            Markdown = value;
+            Markdown = value ?? string.Empty;
         }
 
-        public static implicit operator Term(string value)
+        public static implicit operator Term(string? value)
         {
             return new Term(value);
         }

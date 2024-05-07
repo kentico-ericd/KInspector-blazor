@@ -20,6 +20,11 @@ namespace KInspector.Core
             try
             {
                 var options = JsonConvert.DeserializeObject<TOptions>(OptionsJson);
+                if (options is null)
+                {
+                    throw new InvalidOperationException("Error deserializing action options.");
+                }
+
                 return Execute(options);
             }
             catch

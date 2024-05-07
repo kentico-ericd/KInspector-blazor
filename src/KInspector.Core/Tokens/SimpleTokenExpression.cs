@@ -10,7 +10,7 @@ namespace KInspector.Core.Tokens
     {
         private static readonly char[] expressionBoundary = new[] { '<', '>' };
 
-        public string? Resolve(string tokenExpression, IDictionary<string, object> tokenDictionary)
+        public string? Resolve(string tokenExpression, IDictionary<string, object?> tokenDictionary)
         {
             var trimmedTokenExpression = tokenExpression.Trim(expressionBoundary);
             var expression = GetExpression(trimmedTokenExpression);
@@ -77,7 +77,7 @@ namespace KInspector.Core.Tokens
             return (segments[0], cases, defaultValue);
         }
 
-        private static (string?, char, string) GetCase(string expressionCase)
+        private static (string?, char, string?) GetCase(string expressionCase)
         {
             var operation = Constants.Equals;
             var pair = expressionCase.SplitAtFirst(Constants.Colon);
@@ -86,7 +86,7 @@ namespace KInspector.Core.Tokens
                 return (null, operation, pair.first);
             }
 
-            var firstChar = pair.first[0];
+            var firstChar = pair.first?[0] ?? char.MinValue;
             var operationChars = new[] { Constants.MoreThan, Constants.LessThan };
             if (!operationChars.Contains(firstChar))
             {
@@ -98,11 +98,11 @@ namespace KInspector.Core.Tokens
                 if (firstChar == item) operation = item;
             }
 
-            return (pair.first.Substring(1), operation, pair.second);
+            return (pair.first?.Substring(1), operation, pair.second);
         }
 
         public bool TryResolveToken(
-            object token, 
+            object? token, 
             string? expressionCaseValue, 
             char operation, 
             string? expressionCaseResult, 

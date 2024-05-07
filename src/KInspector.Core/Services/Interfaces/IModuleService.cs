@@ -5,7 +5,7 @@ namespace KInspector.Core.Services.Interfaces
 {
     public interface IModuleService : IService
     {
-        IReport GetReport(string codename);
+        IReport? GetReport(string codename);
 
         ReportResults GetReportResults(string reportCodename, Guid instanceGuid);
 
@@ -13,7 +13,8 @@ namespace KInspector.Core.Services.Interfaces
 
         IEnumerable<IAction> GetActions(Guid instanceGuid);
 
-        IAction GetAction(string codename);
+        IAction? GetAction(string codename);
+
         ActionResults ExecuteAction(string actionCodename, Guid instanceGuid, string optionsJson);
     }
 }

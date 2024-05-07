@@ -32,10 +32,17 @@ namespace KInspector.Infrastructure.Services
             return ExecuteSqlFromFile<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
+        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return _connection.Query<T>(query, (object)parameters);
+            if (parameters is null)
+            {
+                return _connection.Query<T>(query);
+            }
+            else
+            {
+                return _connection.Query<T>(query, (object)parameters);
+            }
         }
 
         public DataTable ExecuteSqlFromFileAsDataTable(string relativeFilePath)
@@ -61,11 +68,21 @@ namespace KInspector.Infrastructure.Services
             return ExecuteSqlFromFileGeneric(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
+        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return _connection.Query(query, (object)parameters)
-                .Select(x => (IDictionary<string, object>)x);
+            IEnumerable<dynamic> results;
+            if (parameters is null)
+            {
+                results = _connection.Query(query);
+            }
+            else
+            {
+                results = _connection.Query(query, (object)parameters);
+            }
+
+
+            return results.Select(x => (IDictionary<string, object>)x);
         }
 
         public T ExecuteSqlFromFileScalar<T>(string relativeFilePath)
@@ -83,10 +100,17 @@ namespace KInspector.Infrastructure.Services
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string> literalReplacements, dynamic parameters)
+        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
-            return _connection.QueryFirst<T>(query, (object)parameters);
+            if (parameters is null)
+            {
+                return _connection.QueryFirst<T>(query);
+            }
+            else
+            {
+                return _connection.QueryFirst<T>(query, (object)parameters);
+            }
         }
     }
 }
