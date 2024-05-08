@@ -9,13 +9,3 @@ body {
     background-clip: border-box;
     background-origin: padding-box;
 }
-
-.page {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-main {
-    flex: 1;
-}

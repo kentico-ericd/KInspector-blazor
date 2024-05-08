@@ -32,7 +32,6 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
 
             return CompileResults(fieldsWithMismatchedTypes);
         }
-        
 
         private ReportResults CompileResults(IEnumerable<CmsPageTypeField> fieldsWithMismatchedTypes)
         {

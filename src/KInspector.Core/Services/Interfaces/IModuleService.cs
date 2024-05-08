@@ -9,9 +9,9 @@ namespace KInspector.Core.Services.Interfaces
 
         ReportResults GetReportResults(string reportCodename, Guid instanceGuid);
 
-        IEnumerable<IReport> GetReports(Guid instanceGuid);
+        IEnumerable<IReport> GetReports();
 
-        IEnumerable<IAction> GetActions(Guid instanceGuid);
+        IEnumerable<IAction> GetActions();
 
         IAction? GetAction(string codename);
 

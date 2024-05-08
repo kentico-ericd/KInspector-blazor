@@ -27,7 +27,6 @@ namespace KInspector.Core.Helpers
             where T : new()
         {
             var metadataDirectory = $"{DirectoryHelper.GetExecutingDirectory()}\\{moduleCodename}\\Metadata\\";
-
             var currentMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
                 metadataDirectory,
                 CurrentCultureName,
@@ -35,9 +34,7 @@ namespace KInspector.Core.Helpers
             );
 
             var currentCultureIsDefaultCulture = CurrentCultureName == DEFAULT_CULTURE_NAME;
-
             var mergedMetadata = new ModuleMetadata<T>();
-
             if (!currentCultureIsDefaultCulture)
             {
                 var defaultMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
@@ -50,10 +47,8 @@ namespace KInspector.Core.Helpers
             }
 
             var moduleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
-
             var currentInstance = configService.GetCurrentInstance();
             var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
-
             var commonData = new
             {
                 instanceUrl = currentInstance?.AdministrationUrl,
@@ -62,15 +57,12 @@ namespace KInspector.Core.Helpers
             };
 
             Term? name = moduleMetadata.Details.Name;
-
             moduleMetadata.Details.Name = name.With(commonData);
 
             Term? shortDescription = moduleMetadata.Details.ShortDescription;
-
             moduleMetadata.Details.ShortDescription = shortDescription.With(commonData);
 
             Term? longDescription = moduleMetadata.Details.LongDescription;
-
             moduleMetadata.Details.LongDescription = longDescription.With(commonData);
 
             return moduleMetadata;
@@ -121,10 +113,8 @@ namespace KInspector.Core.Helpers
             var mergedMetadata = new ModuleMetadata<T>();
 
             mergedMetadata.Details.Name = overrideMetadata.Details.Name ?? defaultMetadata.Details.Name;
-            mergedMetadata.Details.ShortDescription = 
-                overrideMetadata.Details.ShortDescription ?? defaultMetadata.Details.ShortDescription;
-            mergedMetadata.Details.LongDescription = 
-                overrideMetadata.Details.LongDescription ?? defaultMetadata.Details.LongDescription;
+            mergedMetadata.Details.ShortDescription = overrideMetadata.Details.ShortDescription ?? defaultMetadata.Details.ShortDescription;
+            mergedMetadata.Details.LongDescription = overrideMetadata.Details.LongDescription ?? defaultMetadata.Details.LongDescription;
 
             RecursivelySetPropertyValues(
                 typeof(T),

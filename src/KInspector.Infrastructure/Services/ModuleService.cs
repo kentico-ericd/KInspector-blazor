@@ -41,9 +41,8 @@ namespace KInspector.Infrastructure.Services
 
         public IAction? GetAction(string codename) => actionRepository.GetAction(codename);
 
-        public IEnumerable<IAction> GetActions(Guid instanceGuid)
+        public IEnumerable<IAction> GetActions()
         {
-            configService.SetCurrentInstance(instanceGuid);
             return actionRepository.GetActions();
         }
 
@@ -68,9 +67,8 @@ namespace KInspector.Infrastructure.Services
             return report.GetResults();
         }
 
-        public IEnumerable<IReport> GetReports(Guid instanceGuid)
+        public IEnumerable<IReport> GetReports()
         {
-            configService.SetCurrentInstance(instanceGuid);
             return reportRepository.GetReports();
         }
     }

@@ -1,5 +1,4 @@
 ﻿@using KInspector.Core.Models
-@using KInspector.Core.Repositories.Interfaces
 @using KInspector.Core.Services.Interfaces
 @inject IInstanceService instanceService
 @inject IConfigService configService
@@ -11,7 +10,7 @@
 }
 
 <div class="flex flex-col p-6 mx-4 max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow xl:p-8 dark:border-gray-600 dark:bg-gray-800 dark:text-white">
-    <h3 class="mb-4 text-2xl font-semibold">@Instance.Name</h3>
+    <h3 class="mb-4 text-2xl font-semibold">@Instance!.Name</h3>
     <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400"><a href="@Instance.AdministrationUrl" target="_blank">@Instance.AdministrationUrl</a></p>
     <div class="flex justify-center items-baseline my-8">
         <span class="mr-2 text-5xl font-extrabold">@(details.Sites?.Count() ?? 0)</span>
@@ -68,7 +67,7 @@
 
     private void SetCurrentInstance()
     {
-        configService.SetCurrentInstance(Instance?.Guid);
+        configService.SetCurrentInstance(Instance!.Guid);
         navigationManager.NavigateTo("/instances", true);
     }
 
@@ -80,7 +79,7 @@
 
     private void DeleteInstance()
     {
-        configService.DeleteInstance(Instance?.Guid);
+        configService.DeleteInstance(Instance!.Guid);
         navigationManager.NavigateTo("/instances", true);
     }
 }
