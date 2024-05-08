@@ -5,8 +5,7 @@ module.exports = {
         "./node_modules/flowbite/**/*.js"
     ],
     plugins: [
-        require('flowbite/plugin'),
-        require('tailwind-scrollbar')
+        require('flowbite/plugin')
     ],
     darkMode: 'class',
     theme: {

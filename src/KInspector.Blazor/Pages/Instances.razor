@@ -4,7 +4,6 @@
 @using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
 @inject IConfigService configService
-@inject IJSRuntime js
 
 <PageTitle>Instances</PageTitle>
 
@@ -12,40 +11,46 @@
     var instances = configService.GetConfig().Instances;
 }
 
-<section class="w-screen">
-    <div class="w-1/3 mx-auto">
-        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">Connect to an instance</h1>
-        <p class="mb-6 text-lg font-normal text-gray-500 lg:text-xl">
-            Click "Connect" to begin using KInspector on an existing Kentico 12 or 13 instance. Or, click the orange tile to register a new instance and connect to it.
-        </p>
+<h1 class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">Instances</h1>
+
+<button type="button"
+    data-modal-target="new-instance-modal" data-modal-toggle="new-instance-modal"
+    class="px-5 py-2.5 mb-4 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
+    </svg>
+    New instance
+</button>
+
+@if (instances.Any())
+{
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        DLL Version
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Database Version
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        # of Sites
+                    </th>
+                    <th scope="col" class="px-6 py-3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var instance in instances)
+                {
+                    <InstanceRow Instance="@instance" />
+                }
+            </tbody>
+        </table>
     </div>
-</section>
-
-<section class="w-full scrollbar overflow-auto flex items-center py-8 px-4 mx-auto lg:py-16 lg:px-6 space-y-8 lg:space-y-0">
-    <!-- New instance card -->
-    <a href="#" data-modal-target="new-instance-modal" data-modal-toggle="new-instance-modal">
-        <div class="flex flex-col items-center p-6 mx-2 max-w-lg text-center text-gray-900 bg-orange-400 rounded-lg border border-gray-500 shadow hover:shadow-lg xl:p-8">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            <p class="font-light sm:text-lg">Add new instance</p>
-        </div>
-    </a>
-
-    @foreach(var instance in instances)
-    {
-        <InstanceCard Instance="@instance" />
-    }
-</section>
+}
 
 <NewInstanceModal />
-
-@code {
-    protected override async Task OnAfterRenderAsync(bool isFirstRender)
-    {
-        if (isFirstRender)
-        {
-            await js.InvokeVoidAsync("window.initializeFlowbite");
-        }
-    }
-}

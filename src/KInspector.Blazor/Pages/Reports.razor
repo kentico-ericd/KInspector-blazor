@@ -17,14 +17,16 @@
     var reports = moduleService.GetReports();
 }
 
-<section class="w-full h-full py-8 px-4 mx-auto lg:py-16 lg:px-6 space-y-8 lg:space-y-0 scrollbar overflow-auto">
-        <div id="accordion-flush" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">
-            @foreach (var report in reports)
-            {
-                <ReportCard Report="@report" />
-            }
-        </div>
-</section>
+<h1 class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">Reports</h1>
+
+<div class="px-4 mx-auto space-y-8 lg:space-y-0">
+    <div id="accordion-flush" data-accordion="collapse" data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">
+        @foreach (var report in reports)
+        {
+            <ReportAccordion Report="@report" />
+        }
+    </div>
+</div>
 
 @code {
     protected override async Task OnAfterRenderAsync(bool isFirstRender)

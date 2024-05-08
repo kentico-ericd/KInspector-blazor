@@ -1,10 +1,22 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime js
 
 <PageTitle>KInspector</PageTitle>
 
-<div class="page h-screen w-full overflow-hidden">
+<div class="antialiased h-full bg-gray-50 dark:bg-gray-900">
     <NavMenu />
-    <main class="w-full p-6 pt-10">
+
+    <main class="p-6 pl-12 md:ml-64 h-auto">
         @Body
     </main>
-</div>
+  </div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        if (isFirstRender)
+        {
+            await js.InvokeVoidAsync("window.initializeFlowbite");
+        }
+    }
+}
