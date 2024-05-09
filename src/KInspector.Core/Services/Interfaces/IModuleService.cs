@@ -7,7 +7,7 @@ namespace KInspector.Core.Services.Interfaces
     {
         IReport? GetReport(string codename);
 
-        ReportResults GetReportResults(string reportCodename, Guid instanceGuid);
+        ReportResults GetReportResults(IReport report);
 
         IEnumerable<IReport> GetReports();
 
@@ -15,6 +15,6 @@ namespace KInspector.Core.Services.Interfaces
 
         IAction? GetAction(string codename);
 
-        ActionResults ExecuteAction(string actionCodename, Guid instanceGuid, string optionsJson);
+        ActionResults ExecuteAction(IAction action, string optionsJson);
     }
 }

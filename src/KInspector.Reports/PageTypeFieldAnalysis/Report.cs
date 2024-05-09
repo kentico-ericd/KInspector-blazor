@@ -40,7 +40,8 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
                 return new ReportResults
                 {
                     Status = ResultsStatus.Good,
-                    Summary = Metadata.Terms.Summaries?.Good
+                    Summary = Metadata.Terms.Summaries?.Good,
+                    Type = ResultsType.NoResults
                 };
             }
 
@@ -55,8 +56,7 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Information,
-                Summary = Metadata.Terms.Summaries?.Information?.With(new { fieldResultCount }),
-                
+                Summary = Metadata.Terms.Summaries?.Information?.With(new { fieldResultCount })
             };
 
             results.Data.FieldResults = fieldResults;

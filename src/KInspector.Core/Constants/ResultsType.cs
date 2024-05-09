@@ -2,7 +2,7 @@
 {
     public enum ResultsType
     {
-        String,
+        NoResults,
         StringList,
         Table,
         TableList

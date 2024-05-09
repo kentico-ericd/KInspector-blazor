@@ -9,5 +9,7 @@ namespace KInspector.Core.Services.Interfaces
         string CurrentCultureName { get; }
 
         ModuleMetadata<T> GetModuleMetadata<T>(string moduleCodename) where T : new();
+
+        ModuleDetails GetModuleDetails(string moduleCodename);
     }
 }

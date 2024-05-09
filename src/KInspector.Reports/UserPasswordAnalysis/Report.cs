@@ -68,7 +68,7 @@ namespace KInspector.Reports.UserPasswordAnalysis
             {
                 return new ReportResults
                 {
-                    Type = ResultsType.String,
+                    Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };

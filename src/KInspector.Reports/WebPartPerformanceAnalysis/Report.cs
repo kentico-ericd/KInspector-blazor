@@ -112,13 +112,14 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             var affectedWebPartCount = webPartSummaries.Count();
             var summary = Metadata.Terms.Summary?.With(new { affectedDocumentCount, affectedTemplateCount, affectedWebPartCount });
             var status = templateSummaries.Any() ? ResultsStatus.Warning : ResultsStatus.Good;
+            var type = templateSummaries.Any() ? ResultsType.TableList : ResultsType.NoResults;
 
             return new ReportResults
             {
                 Status = status,
                 Summary = summary,
                 Data = data,
-                Type = ResultsType.TableList
+                Type = type
             };
         }
     }

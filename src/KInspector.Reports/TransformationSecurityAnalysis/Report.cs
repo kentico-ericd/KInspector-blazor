@@ -136,7 +136,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             {
                 return new ReportResults()
                 {
-                    Type = ResultsType.String,
+                    Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.GoodSummary
                 };

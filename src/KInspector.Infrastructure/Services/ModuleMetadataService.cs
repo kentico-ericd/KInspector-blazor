@@ -1,6 +1,6 @@
 using KInspector.Core.Models;
 using KInspector.Core.Services.Interfaces;
-
+using Markdig;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -23,10 +23,62 @@ namespace KInspector.Core.Helpers
             this.instanceService = instanceService;
         }
 
+        public ModuleDetails GetModuleDetails(string moduleCodename)
+        {
+            var metadataDirectory = GetMetadataDirectory(moduleCodename);
+            var currentMetadata = DeserializeMetadataFromYamlFile<dynamic>(
+                metadataDirectory,
+                CurrentCultureName,
+                false
+            );
+            var currentDetails = new ModuleDetails
+            {
+                Name = currentMetadata["details"]["name"],
+                ShortDescription = currentMetadata["details"]["shortDescription"],
+                LongDescription = currentMetadata["details"]["longDescription"],
+            };
+
+            var currentCultureIsDefaultCulture = CurrentCultureName == DEFAULT_CULTURE_NAME;
+            var mergedDetails = new ModuleDetails();
+            if (!currentCultureIsDefaultCulture)
+            {
+                var defaultMetadata = DeserializeMetadataFromYamlFile<dynamic>(
+                    metadataDirectory,
+                    DefaultCultureName,
+                    true
+                );
+
+                mergedDetails.Name = currentDetails.Name ?? defaultMetadata["details"]["name"];
+                mergedDetails.ShortDescription = currentDetails.ShortDescription ?? defaultMetadata["details"]["shortDescription"];
+                mergedDetails.LongDescription = currentDetails.LongDescription ?? defaultMetadata["details"]["longDescription"];
+            }
+
+            var details = currentCultureIsDefaultCulture ? currentDetails : mergedDetails;
+            var currentInstance = configService.GetCurrentInstance();
+            var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
+            var commonData = new
+            {
+                instanceUrl = currentInstance?.AdministrationUrl,
+                administrationVersion = instanceDetails.AdministrationVersion,
+                databaseVersion = instanceDetails.AdministrationDatabaseVersion
+            };
+
+            Term? name = details.Name;
+            details.Name = Markdown.ToHtml(name.With(commonData));
+
+            Term? shortDescription = details.ShortDescription;
+            details.ShortDescription = Markdown.ToHtml(shortDescription.With(commonData));
+
+            Term? longDescription = details.LongDescription;
+            details.LongDescription = Markdown.ToHtml(longDescription.With(commonData));
+
+            return details;
+        }
+
         public ModuleMetadata<T> GetModuleMetadata<T>(string moduleCodename)
             where T : new()
         {
-            var metadataDirectory = $"{DirectoryHelper.GetExecutingDirectory()}\\{moduleCodename}\\Metadata\\";
+            var metadataDirectory = GetMetadataDirectory(moduleCodename);
             var currentMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
                 metadataDirectory,
                 CurrentCultureName,
@@ -57,16 +109,18 @@ namespace KInspector.Core.Helpers
             };
 
             Term? name = moduleMetadata.Details.Name;
-            moduleMetadata.Details.Name = name.With(commonData);
+            moduleMetadata.Details.Name = Markdown.ToHtml(name.With(commonData));
 
             Term? shortDescription = moduleMetadata.Details.ShortDescription;
-            moduleMetadata.Details.ShortDescription = shortDescription.With(commonData);
+            moduleMetadata.Details.ShortDescription = Markdown.ToHtml(shortDescription.With(commonData));
 
             Term? longDescription = moduleMetadata.Details.LongDescription;
-            moduleMetadata.Details.LongDescription = longDescription.With(commonData);
+            moduleMetadata.Details.LongDescription = Markdown.ToHtml(longDescription.With(commonData));
 
             return moduleMetadata;
         }
+
+        private static string GetMetadataDirectory(string moduleCodename) => $"{DirectoryHelper.GetExecutingDirectory()}\\{moduleCodename}\\Metadata\\";
 
         private static T DeserializeMetadataFromYamlFile<T>(
             string metadataDirectory,
@@ -74,13 +128,13 @@ namespace KInspector.Core.Helpers
             bool ignoreUnmatchedProperties)
             where T : new()
         {
-            var ModuleMetadataPath = new List<string> { cultureName, DEFAULT_CULTURE_NAME }
+            var moduleMetadataPath = new List<string> { cultureName, DEFAULT_CULTURE_NAME }
                 .Select(culture => $"{metadataDirectory}{culture}.yaml")
                 .FirstOrDefault(path => File.Exists(path));
 
-            if (!String.IsNullOrEmpty(ModuleMetadataPath))
+            if (!String.IsNullOrEmpty(moduleMetadataPath))
             {
-                var fileText = File.ReadAllText(ModuleMetadataPath);
+                var fileText = File.ReadAllText(moduleMetadataPath);
 
                 return DeserializeYaml<T>(fileText, ignoreUnmatchedProperties);
             }

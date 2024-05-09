@@ -104,6 +104,7 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             if (combinedResults.Status == ResultsStatus.Good)
             {
                 combinedResults.Summary = Metadata.Terms.NoContentTreeConsistencyIssuesFound;
+                combinedResults.Type = ResultsType.NoResults;
             }
 
             return combinedResults;
@@ -142,7 +143,7 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
                 Data = data,
                 Status = data.Rows.Any() ? ResultsStatus.Error : ResultsStatus.Good,
                 Summary = string.Empty,
-                Type = ResultsType.Table,
+                Type = data.Rows.Any() ? ResultsType.Table : ResultsType.NoResults,
             };
         }
 

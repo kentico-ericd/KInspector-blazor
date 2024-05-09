@@ -83,7 +83,7 @@ namespace KInspector.Reports.TaskProcessingAnalysis
                     .Select(AsTaskCountLabel),
                 Status = totalUnprocessedTasks > 0 ? ResultsStatus.Warning : ResultsStatus.Good,
                 Summary = Metadata.Terms.CountUnprocessedTask?.With(new { count = totalUnprocessedTasks }),
-                Type = ResultsType.StringList
+                Type = totalUnprocessedTasks > 0 ? ResultsType.StringList : ResultsType.NoResults
             };
         }
     }

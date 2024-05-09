@@ -59,11 +59,7 @@ namespace KInspector.Reports.ClassTableValidation
 
             var totalErrors = tableErrors + classErrors;
 
-            var results = new ReportResults
-            {
-                Type = ResultsType.TableList
-            };
-
+            var results = new ReportResults();
             results.Data.TableResults = tableResults;
             results.Data.ClassResults = classResults;
 
@@ -72,11 +68,13 @@ namespace KInspector.Reports.ClassTableValidation
                 case 0:
                     results.Status = ResultsStatus.Good;
                     results.Summary = Metadata.Terms.NoIssuesFound;
+                    results.Type = ResultsType.NoResults;
                     break;
 
                 default:
                     results.Status = ResultsStatus.Error;
                     results.Summary = Metadata.Terms.CountIssueFound?.With(new { count = totalErrors });
+                    results.Type = ResultsType.TableList;
                     break;
             }
 

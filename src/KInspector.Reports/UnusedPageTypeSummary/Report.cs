@@ -30,7 +30,7 @@ namespace KInspector.Reports.UnusedPageTypeSummary
 
             return new ReportResults
             {
-                Type = ResultsType.Table,
+                Type = countOfUnusedPageTypes > 0 ? ResultsType.Table : ResultsType.NoResults,
                 Status = ResultsStatus.Information,
                 Summary = Metadata.Terms.CountUnusedPageType?.With(new { count = countOfUnusedPageTypes }),
                 Data = new TableResult<PageType>()

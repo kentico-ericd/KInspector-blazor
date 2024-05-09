@@ -20,18 +20,12 @@ namespace KInspector.Infrastructure.Services
             this.databaseService = databaseService;
         }
 
-        public ActionResults ExecuteAction(string actionCodename, Guid instanceGuid, string optionsJson)
+        public ActionResults ExecuteAction(IAction action, string optionsJson)
         {
-            var action = actionRepository.GetAction(actionCodename);
-            if (action is null)
-            {
-                throw new InvalidOperationException($"No action with code name '{actionCodename}.'");
-            }
-
-            var instance = configService.SetCurrentInstance(instanceGuid);
+            var instance = configService.GetCurrentInstance();
             if (instance is null)
             {
-                throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'");
+                throw new InvalidOperationException($"There is no connected instance.'");
             }
 
             databaseService.Configure(instance.DatabaseSettings);
@@ -48,18 +42,12 @@ namespace KInspector.Infrastructure.Services
 
         public IReport? GetReport(string codename) => reportRepository.GetReport(codename);
 
-        public ReportResults GetReportResults(string reportCodename, Guid instanceGuid)
+        public ReportResults GetReportResults(IReport report)
         {
-            var report = reportRepository.GetReport(reportCodename);
-            if (report is null)
-            {
-                throw new InvalidOperationException($"No report with code name '{reportCodename}.'");
-            }
-
-            var instance = configService.SetCurrentInstance(instanceGuid);
+            var instance = configService.GetCurrentInstance();
             if (instance is null)
             {
-                throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'");
+                throw new InvalidOperationException($"There is no connected instance.'");
             }
 
             databaseService.Configure(instance.DatabaseSettings);

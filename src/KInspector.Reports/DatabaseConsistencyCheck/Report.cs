@@ -51,7 +51,7 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
             {
                 return new ReportResults
                 {
-                    Type = ResultsType.String,
+                    Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.NoIssuesFound,
                     Data = string.Empty

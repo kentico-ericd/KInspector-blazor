@@ -199,7 +199,8 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
                 return new ReportResults
                 {
                     Status = ResultsStatus.Good,
-                    Summary = Metadata.Terms.Summaries?.Good
+                    Summary = Metadata.Terms.Summaries?.Good,
+                    Type = ResultsType.NoResults
                 };
             }
 

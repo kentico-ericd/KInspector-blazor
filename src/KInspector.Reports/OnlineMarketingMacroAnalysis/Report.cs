@@ -33,7 +33,8 @@ namespace KInspector.Reports.OnlineMarketingMacroAnalysis
                 return new ReportResults
                 {
                     Status = ResultsStatus.Good,
-                    Summary = Metadata.Terms.Good
+                    Summary = Metadata.Terms.Good,
+                    Type = ResultsType.NoResults
                 };
             }
 

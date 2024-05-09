@@ -28,7 +28,7 @@ namespace KInspector.Reports.DatabaseTableSizeAnalysis
 
             return new ReportResults
             {
-                Type = ResultsType.Table,
+                Type = top25LargestTables.Any() ? ResultsType.Table : ResultsType.NoResults,
                 Status = ResultsStatus.Information,
                 Summary = Metadata.Terms.CheckResultsTableForAnyIssues,
                 Data = new TableResult<DatabaseTableSizeResult>()

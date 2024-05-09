@@ -48,6 +48,7 @@ namespace KInspector.Reports.TemplateLayoutAnalysis
             if (countIdenticalPageLayouts == 0)
             {
                 results.Summary = Metadata.Terms.NoIdenticalPageLayoutsFound;
+                results.Type = ResultsType.NoResults;
             }
             else
             {

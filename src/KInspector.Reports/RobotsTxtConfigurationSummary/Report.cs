@@ -50,29 +50,43 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
                     Data = string.Empty,
                     Status = ResultsStatus.Warning,
                     Summary = Metadata.Terms.RobotsTxtNotFound,
-                    Type = ResultsType.String
+                    Type = ResultsType.NoResults
                 };
             }
 
             var instanceUri = new Uri(adminUrl);
             var testUri = new Uri(instanceUri, Constants.RobotsTxtRelativePath);
-            var found = ConfirmUriStatusCode(testUri, HttpStatusCode.OK).Result;
 
-            return new ReportResults
-            {
-                Data = string.Empty,
-                Status = found ? ResultsStatus.Good : ResultsStatus.Warning,
-                Summary = found ? Metadata.Terms.RobotsTxtFound : Metadata.Terms.RobotsTxtNotFound,
-                Type = ResultsType.String
-            };
+            return GetUriResults(testUri);
         }
 
-        private async Task<bool> ConfirmUriStatusCode(Uri testUri, HttpStatusCode expectedStatusCode)
+        private ReportResults GetUriResults(Uri testUri)
         {
-            // Ignore invalid certificates
-            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((a, b, c, d) => { return true; });
-            HttpResponseMessage response = await _httpClient.GetAsync(testUri);
-            return response.StatusCode == expectedStatusCode;
+            try
+            {
+                // Ignore invalid certificates
+                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((a, b, c, d) => { return true; });
+                HttpResponseMessage response = _httpClient.GetAsync(testUri).ConfigureAwait(false).GetAwaiter().GetResult();
+                var found = response.StatusCode == HttpStatusCode.OK;
+
+                return new ReportResults
+                {
+                    Data = string.Empty,
+                    Status = found ? ResultsStatus.Good : ResultsStatus.Warning,
+                    Summary = found ? Metadata.Terms.RobotsTxtFound : Metadata.Terms.RobotsTxtNotFound,
+                    Type = ResultsType.NoResults
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ReportResults
+                {
+                    Data = string.Empty,
+                    Status = ResultsStatus.Error,
+                    Summary = ex.Message,
+                    Type = ResultsType.NoResults
+                };
+            }
         }
     }
 }
