@@ -9,7 +9,7 @@ namespace KInspector.Core.Services.Interfaces
 
         ReportResults GetReportResults(IReport report);
 
-        IEnumerable<IReport> GetReports();
+        IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false);
 
         IEnumerable<IAction> GetActions();
 

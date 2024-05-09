@@ -1,37 +1,55 @@
 ﻿@page "/reports"
+@using KInspector.Core.Modules
 @using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
 @inject IModuleService moduleService
 @inject IConfigService configService
+@inject IInstanceService instanceService
 @inject IJSRuntime js
 
 <PageTitle>Reports</PageTitle>
 
-@{
-    var currentInstance = configService.GetCurrentInstance();
-    if (currentInstance is null)
-    {
-        throw new InvalidOperationException("An instance must be connected.");
-    }
-
-    var reports = moduleService.GetReports();
-}
-
 <h1 class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">Reports</h1>
 
-<div class="px-4 mx-auto space-y-8 lg:space-y-0">
-    @foreach (var report in reports)
+<ModuleFilters FiltersChanged="UpdateState" @ref="Filters" />
+
+<div class="space-y-8 lg:space-y-0">
+    @foreach (var report in ReportList)
     {
         <ReportAccordion Report="@report" />
     }
 </div>
 
 @code {
+    ModuleFilters? Filters;
+
+    private IEnumerable<IReport> ReportList
+    {
+        get
+        {
+            var currentInstance = configService.GetCurrentInstance();
+            if (currentInstance is null)
+            {
+                throw new InvalidOperationException("An instance must be connected.");
+            }
+
+            var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
+            var showUntested = Filters?.ShowUntested ?? false;
+            var showIncompatible = Filters?.ShowIncompatible ?? false;
+
+            return moduleService.GetReports(showUntested, showIncompatible);
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool isFirstRender)
     {
-        if (isFirstRender)
-        {
-            await js.InvokeVoidAsync("window.initializeFlowbite");
-        }
+        // Init Flowbite every time, not just first load as accordions added to the layout by filters
+        // don't function without Flowbite
+        await js.InvokeVoidAsync("window.initializeFlowbite");
+    }
+
+    private void UpdateState()
+    {
+        StateHasChanged();
     }
 }

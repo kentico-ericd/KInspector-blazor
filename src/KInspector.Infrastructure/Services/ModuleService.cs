@@ -11,13 +11,15 @@ namespace KInspector.Infrastructure.Services
         private readonly IConfigService configService;
         private readonly IReportRepository reportRepository;
         private readonly IActionRepository actionRepository;
+        private readonly IInstanceService instanceService;
 
-        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IConfigService configService, IDatabaseService databaseService)
+        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IConfigService configService, IDatabaseService databaseService, IInstanceService instanceService)
         {
             this.reportRepository = reportRepository;
             this.actionRepository = actionRepository;
             this.configService = configService;
             this.databaseService = databaseService;
+            this.instanceService = instanceService;
         }
 
         public ActionResults ExecuteAction(IAction action, string optionsJson)
@@ -55,9 +57,29 @@ namespace KInspector.Infrastructure.Services
             return report.GetResults();
         }
 
-        public IEnumerable<IReport> GetReports()
+        public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false)
         {
-            return reportRepository.GetReports();
+            var reports = reportRepository.GetReports();
+            var instance = configService.GetCurrentInstance();
+            if (instance is null)
+            {
+                return reports;
+            }
+
+            var instanceDetails = instanceService.GetInstanceDetails(instance);
+            var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
+            var filtered = reports.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion));
+            if (getUntested)
+            {
+                filtered = filtered.Union(reports.Where(r => !r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+            }
+
+            if (getIncompatible)
+            {
+                filtered = filtered.Union(reports.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+            }
+
+            return filtered;
         }
     }
 }

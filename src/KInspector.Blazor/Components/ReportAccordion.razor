@@ -2,20 +2,30 @@
 @using KInspector.Core.Modules
 @using KInspector.Core.Services.Interfaces
 @inject IModuleService moduleService
+@inject IConfigService configService
+@inject IInstanceService instanceService
 @inject IModuleMetadataService moduleMetadataService
 
 @{
-    var details = moduleMetadataService.GetModuleDetails(Report!.Codename);
+    var moduleDetails = moduleMetadataService.GetModuleDetails(Report!.Codename);
 }
 
 <div id="report-@Report!.Codename" data-accordion="collapse">
     <h2 id="heading-@Report!.Codename">
         <button type="button"
-                class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+                class="flex items-center justify-between w-full p-5 rtl:text-right text-gray-500 border border-b-0 border-gray-200 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
                 data-accordion-target="#body-@Report!.Codename" aria-expanded="false" aria-controls="body-@Report!.Codename">
-            <div class="text-left">
-                <span class="text-gray-600 dark:text-gray-200">@((MarkupString)details.Name)</span>
-                <br /><span class="text-gray-500">@((MarkupString)details.ShortDescription)</span>
+            <div class="flex text-left">
+                @if (IsIncompatible)
+                {
+                    <span class="bg-red-100 text-red-800 text-xs font-medium me-4 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">Incompatible</span>
+                }
+                @if (IsUntested && !IsIncompatible)
+                {
+                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-4 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">Untested</span>
+                }
+                <span class="text-gray-600 dark:text-gray-200 font-medium">@((MarkupString)moduleDetails.Name)</span>
+                <span class="text-gray-400 ml-6">@((MarkupString)moduleDetails.ShortDescription)</span>
             </div>
             <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
@@ -29,7 +39,7 @@
                 class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
                 Run
             </button>
-            @((MarkupString)details.LongDescription)
+            @((MarkupString)moduleDetails.LongDescription)
         </div>
         @if (Results is not null)
         {
@@ -39,10 +49,32 @@
 </div>
 
 @code {
+    private int adminDbVersion = 0;
+
     [Parameter, EditorRequired]
     public IReport? Report { get; set; }
 
     public ReportResults? Results { get; set; }
+
+    private bool IsIncompatible => Report!.IncompatibleVersions.Select(v => v.Major).Contains(AdminDatabaseMajorVersion);
+
+    private bool IsUntested => !Report!.CompatibleVersions.Select(v => v.Major).Contains(AdminDatabaseMajorVersion);
+
+    private int AdminDatabaseMajorVersion
+    {
+        get
+        {
+            if (adminDbVersion == 0)
+            {
+                var currentInstance = configService.GetCurrentInstance();
+                var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
+
+                adminDbVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
+            }
+
+            return adminDbVersion;
+        }
+    }
 
     private void RunReport()
     {
