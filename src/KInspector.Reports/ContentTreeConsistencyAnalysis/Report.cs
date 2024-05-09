@@ -6,6 +6,7 @@ using KInspector.Core.Services.Interfaces;
 using KInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 
 using System.Text;
+using System.Xml.Linq;
 
 namespace KInspector.Reports.ContentTreeConsistencyAnalysis
 {
@@ -91,12 +92,20 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             var summaryBuilder = new StringBuilder();
             foreach (var reportResults in allReportResults)
             {
-                var name = ((string)reportResults.Data.Name);
-                ((IDictionary<string, object>)combinedResults.Data).Add(reportResults.Data.Name, reportResults.Data);
-                if (reportResults.Status == ResultsStatus.Error)
+                foreach (var table in reportResults.TableResults)
                 {
-                    summaryBuilder.Append(Metadata.Terms.NameFound?.With(new { name }));
-                    combinedResults.Status = ResultsStatus.Error;
+                    var name = table.Name;
+                    combinedResults.TableResults.Add(new TableResult
+                    {
+                        Name = name,
+                        Rows = table.Rows
+                    });
+
+                    if (reportResults.Status == ResultsStatus.Error)
+                    {
+                        summaryBuilder.Append(Metadata.Terms.NameFound?.With(new { name }));
+                        combinedResults.Status = ResultsStatus.Error;
+                    }
                 }
             }
 
@@ -127,24 +136,23 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             return GetTestResult<CmsDocumentNode>(name, script, Scripts.GetDocumentNodeDetails);
         }
 
-        private ReportResults GetTestResult<T>(string name, string script, string getDetailsScript)
+        private ReportResults GetTestResult<T>(string name, string script, string getDetailsScript) where T : class
         {
             var nodeIds = databaseService.ExecuteSqlFromFile<int>(script);
             var details = databaseService.ExecuteSqlFromFile<T>(getDetailsScript, new { IDs = nodeIds.ToArray() });
-
-            var data = new TableResult<T>
+            var results = new ReportResults
+            {
+                Status = details.Any() ? ResultsStatus.Error : ResultsStatus.Good,
+                Summary = string.Empty,
+                Type = details.Any() ? ResultsType.TableList : ResultsType.NoResults,
+            };
+            results.TableResults.Add(new TableResult
             {
                 Name = name,
                 Rows = details
-            };
+            });
 
-            return new ReportResults
-            {
-                Data = data,
-                Status = data.Rows.Any() ? ResultsStatus.Error : ResultsStatus.Good,
-                Summary = string.Empty,
-                Type = data.Rows.Any() ? ResultsType.Table : ResultsType.NoResults,
-            };
+            return results;
         }
 
         private ReportResults GetTreeNodeTestResult(string name, string script)
@@ -177,18 +185,28 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
                 comparisonResults.AddRange(classComparisionResults);
             }
 
-            var data = new TableResult<VersionHistoryMismatchResult>
+            if (comparisonResults.Any())
             {
-                Name = Metadata.Terms.WorkflowInconsistencies,
-                Rows = comparisonResults
-            };
+                var results = new ReportResults
+                {
+                    Summary = string.Empty,
+                    Status = ResultsStatus.Error,
+                    Type = ResultsType.TableList
+                };
+                results.TableResults.Add(new TableResult
+                {
+                    Name = Metadata.Terms.WorkflowInconsistencies,
+                    Rows = comparisonResults
+                });
+
+                return results;
+            }
 
             return new ReportResults
             {
-                Data = data,
-                Status = data.Rows.Any() ? ResultsStatus.Error : ResultsStatus.Good,
                 Summary = string.Empty,
-                Type = ResultsType.Table,
+                Status = ResultsStatus.Good,
+                Type = ResultsType.NoResults
             };
         }
     }

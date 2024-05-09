@@ -89,7 +89,7 @@ namespace KInspector.Reports.ColumnFieldValidation
             }
         }
 
-        private IEnumerable<TableResult> GetTablesWithAddedColumns(
+        private IEnumerable<TableValidationResult> GetTablesWithAddedColumns(
             IEnumerable<TableColumn> tableColumns,
             IEnumerable<CmsClass> cmsClasses
             )
@@ -120,7 +120,7 @@ namespace KInspector.Reports.ColumnFieldValidation
 
                 if (addedColumns.Any())
                 {
-                    yield return new TableResult()
+                    yield return new TableValidationResult()
                     {
                         TableColumnsNotInClass = string.Join(", ", addedColumns),
                         TableName = tableColumnNameTypes.Key
@@ -201,7 +201,7 @@ namespace KInspector.Reports.ColumnFieldValidation
 
         private ReportResults CompileResults(
             IEnumerable<CmsClassResult> cmsClassesWithAddedFields,
-            IEnumerable<TableResult> tablesWithAddedColumns
+            IEnumerable<TableValidationResult> tablesWithAddedColumns
             )
         {
             if (!cmsClassesWithAddedFields.Any() && !tablesWithAddedColumns.Any())
@@ -221,13 +221,13 @@ namespace KInspector.Reports.ColumnFieldValidation
             };
 
             var cmsClassesResultCount = IfAnyAddTableResult(
-                errorReportResults.Data,
+                errorReportResults.TableResults,
                 cmsClassesWithAddedFields,
                 Metadata.Terms.TableTitles?.ClassesWithAddedFields
             );
 
             var tablesResultCount = IfAnyAddTableResult(
-                errorReportResults.Data,
+                errorReportResults.TableResults,
                 tablesWithAddedColumns,
                 Metadata.Terms.TableTitles?.TablesWithAddedColumns
             );
@@ -241,19 +241,15 @@ namespace KInspector.Reports.ColumnFieldValidation
             return errorReportResults;
         }
 
-        private static int IfAnyAddTableResult<T>(dynamic data, IEnumerable<T> results, Term tableNameTerm)
+        private static int IfAnyAddTableResult(IList<TableResult> tables, IEnumerable<object> results, Term? tableNameTerm)
         {
             if (results.Any())
             {
-                var tableResult = new TableResult<T>
+                tables.Add(new TableResult
                 {
                     Name = tableNameTerm,
                     Rows = results
-                };
-
-                IDictionary<string, object> dictionaryData = data;
-
-                dictionaryData.Add(tableNameTerm, tableResult);
+                });
             }
 
             return results.Count();

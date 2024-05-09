@@ -47,7 +47,6 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             {
                 return new ReportResults
                 {
-                    Data = string.Empty,
                     Status = ResultsStatus.Warning,
                     Summary = Metadata.Terms.RobotsTxtNotFound,
                     Type = ResultsType.NoResults
@@ -71,7 +70,6 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
 
                 return new ReportResults
                 {
-                    Data = string.Empty,
                     Status = found ? ResultsStatus.Good : ResultsStatus.Warning,
                     Summary = found ? Metadata.Terms.RobotsTxtFound : Metadata.Terms.RobotsTxtNotFound,
                     Type = ResultsType.NoResults
@@ -81,7 +79,6 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             {
                 return new ReportResults
                 {
-                    Data = string.Empty,
                     Status = ResultsStatus.Error,
                     Summary = ex.Message,
                     Type = ResultsType.NoResults

@@ -80,33 +80,8 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
 
         private ReportResults CompileResults(IEnumerable<TemplateSummary> templateSummaries)
         {
-            var templateSummaryTable = new TableResult<TemplateSummary>()
-            {
-                Name = "Template Summary",
-                Rows = templateSummaries
-            };
-
             var webPartSummaries = templateSummaries.SelectMany(x => x.AffectedWebParts);
-            var webPartSummaryTable = new TableResult<WebPartSummary>()
-            {
-                Name = "Web Part Summary",
-                Rows = webPartSummaries
-            };
-
             var documentSummaries = templateSummaries.SelectMany(x => x.AffectedDocuments);
-            var documentSummaryTable = new TableResult<Document>()
-            {
-                Name = "Document Summary",
-                Rows = documentSummaries
-            };
-
-            var data = new
-            {
-                TemplateSummaryTable = templateSummaryTable,
-                WebPartSummaryTable = webPartSummaryTable,
-                DocumentSummaryTable = documentSummaryTable
-            };
-
             var affectedDocumentCount = documentSummaries.Count();
             var affectedTemplateCount = templateSummaries.Count();
             var affectedWebPartCount = webPartSummaries.Count();
@@ -114,13 +89,40 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             var status = templateSummaries.Any() ? ResultsStatus.Warning : ResultsStatus.Good;
             var type = templateSummaries.Any() ? ResultsType.TableList : ResultsType.NoResults;
 
-            return new ReportResults
+            var result = new ReportResults
             {
                 Status = status,
                 Summary = summary,
-                Data = data,
                 Type = type
             };
+            if (templateSummaries.Any())
+            {
+                result.TableResults.Add(new TableResult
+                {
+                    Name = "Template Summary",
+                    Rows = templateSummaries
+                });
+            }
+
+            if (documentSummaries.Any())
+            {
+                result.TableResults.Add(new TableResult
+                {
+                    Name = "Document Summary",
+                    Rows = documentSummaries
+                });
+            }
+
+            if (webPartSummaries.Any())
+            {
+                result.TableResults.Add(new TableResult
+                {
+                    Name = "Web Part Summary",
+                    Rows = webPartSummaries
+                });
+            }
+
+            return result;
         }
     }
 }

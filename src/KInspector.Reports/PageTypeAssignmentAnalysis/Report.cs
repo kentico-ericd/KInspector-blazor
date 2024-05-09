@@ -36,17 +36,19 @@ namespace KInspector.Reports.PageTypeAssignmentAnalysis
             var unassignedPageTypeCount = unassignedPageTypes.Count();
             if (unassignedPageTypeCount > 0)
             {
-                return new ReportResults
+                var results = new ReportResults
                 {
                     Status = ResultsStatus.Warning,
-                    Type = ResultsType.Table,
-                    Summary = Metadata.Terms.WarningSummary?.With(new { unassignedPageTypeCount }),
-                    Data = new TableResult<PageType>()
-                    {
-                        Name = Metadata.Terms.UnassignedPageTypesTableHeader,
-                        Rows = unassignedPageTypes
-                    }
+                    Type = ResultsType.TableList,
+                    Summary = Metadata.Terms.WarningSummary?.With(new { unassignedPageTypeCount })
                 };
+                results.TableResults.Add(new TableResult
+                {
+                    Name = Metadata.Terms.UnassignedPageTypesTableHeader,
+                    Rows = unassignedPageTypes
+                });
+
+                return results;
             }
 
             return new ReportResults

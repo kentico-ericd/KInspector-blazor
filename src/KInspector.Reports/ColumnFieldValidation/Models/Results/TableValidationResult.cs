@@ -1,6 +1,6 @@
 ﻿namespace KInspector.Reports.ColumnFieldValidation.Models.Results
 {
-    public class TableResult
+    public class TableValidationResult
     {
         public string? TableName { get; set; }
 

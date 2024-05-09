@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-
-using KInspector.Core.Constants;
+﻿using KInspector.Core.Constants;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -17,11 +15,8 @@ namespace KInspector.Core.Models
         [JsonConverter(typeof(StringEnumConverter))]
         public ResultsType Type { get; set; }
 
-        public dynamic Data { get; set; }
+        public IList<TableResult> TableResults { get; } = new List<TableResult>();
 
-        public ReportResults()
-        {
-            Data = new ExpandoObject();
-        }
+        public IList<string> StringResults { get; } = new List<string>();
     }
 }

@@ -1,11 +1,12 @@
 ﻿@using System.Reflection
+@using KInspector.Core.Models
 
-<div class="relative w-full overflow-x-auto shadow-md sm:rounded-lg">
+<div class="relative w-full mb-4 overflow-x-auto shadow-md sm:rounded-lg">
     <div class="w-full max-w-screen-xlmx-auto">
         <div class="relative overflow-hidden bg-white dark:bg-gray-800">
             <div class="flex-row items-center justify-between p-4 space-y-3 sm:flex sm:space-y-0 sm:space-x-4">
                 <div>
-                    <h5 class="mr-3 font-semibold dark:text-white">@Data!.Name</h5>
+                    <h5 class="mr-3 font-semibold dark:text-white">@Table!.Name</h5>
                 </div>
             </div>
         </div>
@@ -79,13 +80,18 @@
     private readonly int PAGE_SIZE = 10;
 
     [Parameter, EditorRequired]
-    public dynamic? Data { get; set; }
+    public TableResult? Table { get; set; }
 
     private IEnumerable<string> Headers
     {
         get
         {
-            var firstItem = Data!.Rows[0];
+            var firstItem = Table!.Rows.FirstOrDefault();
+            if (firstItem is null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
             IEnumerable<PropertyInfo> properties = firstItem.GetType().GetProperties();
 
             return properties.Select(prop => prop.Name);
@@ -114,7 +120,7 @@
 
     private int PageCount => Convert.ToInt32(Math.Ceiling(RowCount / Convert.ToDecimal(PAGE_SIZE)));
 
-    private int RowCount => Data!.Rows.Count;
+    private int RowCount => Table!.Rows.Count();
 
     private void SetPage(int page)
     {
@@ -123,7 +129,7 @@
 
     private IEnumerable<dynamic> GetPagedObjects(int page = 0)
     {
-        IEnumerable<dynamic> allRows = Data!.Rows;
+        IEnumerable<dynamic> allRows = Table!.Rows;
 
         return allRows
           .Skip(PAGE_SIZE * page)

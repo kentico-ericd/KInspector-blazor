@@ -44,25 +44,21 @@ namespace KInspector.Reports.ClassTableValidation
         private ReportResults CompileResults(IEnumerable<TableWithNoClass> tablesWithMissingClass, IEnumerable<ClassWithNoTable> classesWithMissingTable)
         {
             var tableErrors = tablesWithMissingClass.Count();
-            var tableResults = new TableResult<dynamic>()
+            var tableResults = new TableResult()
             {
                 Name = Metadata.Terms.DatabaseTablesWithMissingKenticoClasses,
                 Rows = tablesWithMissingClass
             };
 
             var classErrors = classesWithMissingTable.Count();
-            var classResults = new TableResult<dynamic>()
+            var classResults = new TableResult()
             {
                 Name = Metadata.Terms.KenticoClassesWithMissingDatabaseTables,
                 Rows = classesWithMissingTable
             };
 
             var totalErrors = tableErrors + classErrors;
-
             var results = new ReportResults();
-            results.Data.TableResults = tableResults;
-            results.Data.ClassResults = classResults;
-
             switch (totalErrors)
             {
                 case 0:
@@ -75,6 +71,8 @@ namespace KInspector.Reports.ClassTableValidation
                     results.Status = ResultsStatus.Error;
                     results.Summary = Metadata.Terms.CountIssueFound?.With(new { count = totalErrors });
                     results.Type = ResultsType.TableList;
+                    results.TableResults.Add(tableResults);
+                    results.TableResults.Add(classResults);
                     break;
             }
 

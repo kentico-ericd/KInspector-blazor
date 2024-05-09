@@ -21,7 +21,7 @@ terms:
     overviewTableHeader: Database settings overview
     summary: <explicitlyEnabledSettingsCount> database <explicitlyEnabledSettingsCount|setting|settings> explicitly enabled
   webConfig:
-    debugKeyDisplayName: Compilation Debug,
+    debugKeyDisplayName: Compilation Debug
     overviewTableHeader: Web.config settings overview
     summary: <enabledSettingsText> enabled in web.config
     traceKeyDisplayName: Application Tracing

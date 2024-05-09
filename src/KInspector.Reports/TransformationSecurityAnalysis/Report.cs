@@ -145,59 +145,28 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             var oneIssueOfEachType = allIssues
                 .GroupBy(transformationIssue => transformationIssue.IssueType)
                 .Select(g => g.First());
-
             var issueTypes = oneIssueOfEachType
                 .Select(transformationIssue => new IssueTypeResult(transformationIssue.IssueType ?? string.Empty, IssueAnalyzers.DetectedIssueTypes));
-
-            var issueTypesResult = new TableResult<IssueTypeResult>
-            {
-                Name = Metadata.Terms.TableTitles?.IssueTypes,
-                Rows = issueTypes
-            };
-
             var usedIssueTypes = IssueAnalyzers.DetectedIssueTypes
                 .Keys
                 .Where(issueType => oneIssueOfEachType
                     .Select(issue => issue.IssueType)
                     .Contains(issueType)
                 );
-
             var allTransformations = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.WebParts)
                 .SelectMany(webPart => webPart.Properties)
                 .Select(webPartProperty => webPartProperty.Transformation)
                 .GroupBy(transformation => transformation?.FullName)
                 .Select(g => g.First());
-
             var transformationsResultRows = allTransformations
                 .Select(transformation => new TransformationResult(transformation, CountTransformationUses(transformation, pageTemplates), usedIssueTypes))
                 .OrderBy(transformationResult => transformationResult.Uses);
-
-            var transformationsResult = new TableResult<TransformationResult>
-            {
-                Name = Metadata.Terms.TableTitles?.TransformationsWithIssues,
-                Rows = transformationsResultRows
-            };
-
             var transformationUsageResultRows = pageTemplates
                 .SelectMany(AsTransformationUsageResults);
-
-            var transformationUsageResult = new TableResult<TransformationUsageResult>
-            {
-                Name = Metadata.Terms.TableTitles?.TransformationUsage,
-                Rows = transformationUsageResultRows
-            };
-
             var templateUsageResultRows = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.Pages)
                 .Select(page => new TemplateUsageResult(page));
-
-            var templateUsageResult = new TableResult<TemplateUsageResult>
-            {
-                Name = Metadata.Terms.TableTitles?.TemplateUsage,
-                Rows = templateUsageResultRows
-            };
-
             var summaryCount = allTransformations
                 .Select(transformation => transformation.Issues)
                 .Count();
@@ -205,19 +174,34 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             var issueTypesAsCsv = string.Join(',', usedIssueTypes
                 .Select(issueType => TransformationIssue.ReplaceEachUppercaseLetterWithASpaceAndTheLetter(issueType)));
 
-            return new ReportResults()
+            var result = new ReportResults()
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Warning,
-                Summary = Metadata.Terms.WarningSummary?.With(new { summaryCount, issueTypesAsCsv }),
-                Data = new
-                {
-                    issueTypesResult,
-                    transformationsResult,
-                    transformationUsageResult,
-                    templateUsageResult
-                }
+                Summary = Metadata.Terms.WarningSummary?.With(new { summaryCount, issueTypesAsCsv })
             };
+            result.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.TableTitles?.IssueTypes,
+                Rows = issueTypes
+            });
+            result.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.TableTitles?.TransformationUsage,
+                Rows = transformationUsageResultRows
+            });
+            result.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.TableTitles?.TemplateUsage,
+                Rows = templateUsageResultRows
+            });
+            result.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.TableTitles?.TransformationsWithIssues,
+                Rows = transformationsResultRows
+            });
+
+            return result;
         }
 
         private static int CountTransformationUses(Transformation transformation, IEnumerable<PageTemplate> pageTemplates)

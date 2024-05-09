@@ -25,21 +25,20 @@ namespace KInspector.Reports.SampleReport
         {
             var random = new Random();
             var issueCount = random.Next(0, 3);
-            var data = new List<string>();
-            for (int i = 0; i < issueCount; i++)
+            var results = new ReportResults()
             {
-                var name = $"test-{i}";
-                var problem = GetRandomString(10);
-                data.Add(Metadata.Terms.DetailedResult?.With(new { name, problem }));
-            }
-
-            return new ReportResults()
-            {
-                Data = data,
                 Type = ResultsType.StringList,
                 Status = ResultsStatus.Information,
                 Summary = Metadata.Terms.Summary?.With(new { issueCount })
             };
+            for (int i = 0; i < issueCount; i++)
+            {
+                var name = $"test-{i}";
+                var problem = GetRandomString(10);
+                results.StringResults.Add(Metadata.Terms.DetailedResult?.With(new { name, problem }));
+            }
+
+            return results;
         }
 
         private string GetRandomString(int size)

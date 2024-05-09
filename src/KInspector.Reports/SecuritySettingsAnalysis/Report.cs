@@ -211,13 +211,13 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
             };
 
             var cmsSettingsKeyResultsCount = IfAnyAddTableResult(
-                errorReportResults.Data,
+                errorReportResults.TableResults,
                 cmsSettingsKeyResults,
                 Metadata.Terms.TableTitles?.AdminSecuritySettings
                 );
 
             var webConfigSettingsResultsCount = IfAnyAddTableResult(
-                errorReportResults.Data,
+                errorReportResults.TableResults,
                 webConfigSettingsResults,
                 Metadata.Terms.TableTitles?.WebConfigSecuritySettings
                 );
@@ -231,19 +231,15 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
             return errorReportResults;
         }
 
-        private static int IfAnyAddTableResult<T>(dynamic data, IEnumerable<T> results, Term tableNameTerm)
+        private static int IfAnyAddTableResult(IList<TableResult> tables, IEnumerable<object> results, Term? tableNameTerm)
         {
             if (results.Any())
             {
-                var tableResult = new TableResult<T>
+                tables.Add(new TableResult
                 {
                     Name = tableNameTerm,
                     Rows = results
-                };
-
-                IDictionary<string, object> dictionaryData = data;
-
-                dictionaryData.Add(tableNameTerm, tableResult);
+                });
             }
 
             return results.Count();

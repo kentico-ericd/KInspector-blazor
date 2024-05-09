@@ -34,26 +34,27 @@ namespace KInspector.Reports.TemplateLayoutAnalysis
         private ReportResults CompileResults(IEnumerable<IdenticalPageLayouts> identicalPageLayouts)
         {
             var countIdenticalPageLayouts = identicalPageLayouts.Count();
-            var results = new ReportResults
-            {
-                Status = ResultsStatus.Information,
-                Type = ResultsType.Table,
-                Data = new TableResult<dynamic>()
-                {
-                    Name = Metadata.Terms.IdenticalPageLayouts,
-                    Rows = identicalPageLayouts
-                }
-            };
-
             if (countIdenticalPageLayouts == 0)
             {
-                results.Summary = Metadata.Terms.NoIdenticalPageLayoutsFound;
-                results.Type = ResultsType.NoResults;
+                return new ReportResults
+                {
+                    Type = ResultsType.NoResults,
+                    Status = ResultsStatus.Information,
+                    Summary = Metadata.Terms.NoIdenticalPageLayoutsFound
+                };
             }
-            else
+
+            var results = new ReportResults
             {
-                results.Summary = Metadata.Terms.CountIdenticalPageLayoutFound?.With(new { count = countIdenticalPageLayouts });
-            }
+                Type = ResultsType.TableList,
+                Status = ResultsStatus.Information,
+                Summary = Metadata.Terms.CountIdenticalPageLayoutFound?.With(new { count = countIdenticalPageLayouts })
+            };
+            results.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.IdenticalPageLayouts,
+                Rows = identicalPageLayouts
+            });
 
             return results;
         }

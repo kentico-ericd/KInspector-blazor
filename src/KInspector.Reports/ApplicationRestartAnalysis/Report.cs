@@ -66,19 +66,19 @@ namespace KInspector.Reports.ApplicationRestartAnalysis
                 totalStartEvents
             });
 
-            var data = new TableResult<CmsEventLog>()
+            var results = new ReportResults
+            {
+                Summary = summary,
+                Type = ResultsType.TableList,
+                Status = ResultsStatus.Information
+            };
+            results.TableResults.Add(new TableResult()
             {
                 Name = Metadata.Terms.TableTitles?.ApplicationRestartEvents,
                 Rows = cmsEventLogs
-            };
+            });
 
-            return new ReportResults
-            {
-                Data = data,
-                Status = ResultsStatus.Information,
-                Summary = summary,
-                Type = ResultsType.Table
-            };
+            return results;
         }
     }
 }

@@ -4,7 +4,6 @@
     {
         NoResults,
         StringList,
-        Table,
         TableList
     }
 }

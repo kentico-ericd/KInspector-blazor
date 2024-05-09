@@ -28,17 +28,19 @@ namespace KInspector.Reports.UnusedPageTypeSummary
             var unusedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetUnusedPageTypes);
             var countOfUnusedPageTypes = unusedPageTypes.Count();
 
-            return new ReportResults
+            var results = new ReportResults
             {
-                Type = countOfUnusedPageTypes > 0 ? ResultsType.Table : ResultsType.NoResults,
+                Type = countOfUnusedPageTypes > 0 ? ResultsType.TableList : ResultsType.NoResults,
                 Status = ResultsStatus.Information,
-                Summary = Metadata.Terms.CountUnusedPageType?.With(new { count = countOfUnusedPageTypes }),
-                Data = new TableResult<PageType>()
-                {
-                    Name = Metadata.Terms.UnusedPageTypes,
-                    Rows = unusedPageTypes
-                }
+                Summary = Metadata.Terms.CountUnusedPageType?.With(new { count = countOfUnusedPageTypes })
             };
+            results.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.UnusedPageTypes,
+                Rows = unusedPageTypes
+            });
+
+            return results;
         }
     }
 }

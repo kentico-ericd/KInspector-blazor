@@ -1406,6 +1406,10 @@ input:checked + .toggle-bg {
   flex-direction: row;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
 .flex-wrap {
   flex-wrap: wrap;
 }
@@ -2041,6 +2045,11 @@ input:checked + .toggle-bg {
 
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.report-accordion ul {
+  list-style-type: disc;
+  list-style-position: inside;
 }
 
 .after\:absolute::after {

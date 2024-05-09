@@ -118,11 +118,11 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
                 new SettingsKey("Trace", Metadata.Terms.WebConfig?.TraceKeyDisplayName, isTraceEnabled, false)
             };
 
-            results.Data.WebConfigSettingsResults = new TableResult<SettingsKey>()
+            results.TableResults.Add(new TableResult
             {
                 Name = Metadata.Terms.WebConfig?.OverviewTableHeader,
                 Rows = webconfigSettingsValues
-            };
+            });
         }
 
         private void AnalyzeDatabaseSettingsResults(ReportResults results, IEnumerable<SettingsKey> databaseSettingsKeys)
@@ -138,18 +138,18 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
 
                 results.Summary += Metadata.Terms.Database?.Summary?.With(new { explicitlyEnabledSettingsCount });
 
-                results.Data.DatabaseSettingsEnabledNotByDefaultResults = new TableResult<SettingsKey>()
+                results.TableResults.Add(new TableResult
                 {
                     Name = Metadata.Terms.Database?.ExplicitlyEnabledSettingsTableHeader,
                     Rows = explicitlyEnabledSettings
-                };
+                });
             }
 
-            results.Data.AllDatabaseSettings = new TableResult<SettingsKey>()
+            results.TableResults.Add(new TableResult
             {
                 Name = Metadata.Terms.Database?.OverviewTableHeader,
                 Rows = databaseSettingsKeys
-            };
+            });
         }
     }
 }

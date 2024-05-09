@@ -48,27 +48,23 @@ namespace KInspector.Reports.OnlineMarketingMacroAnalysis
                     totalIssues
                 })
             };
-            var contactGroupResults = new TableResult<dynamic>()
+            results.TableResults.Add(new TableResult
             {
                 Name = Metadata.Terms.ContactGroupTable,
                 Rows = contactGroups
-            };
-            
-            var automationTriggerResults = new TableResult<dynamic>()
+            });
+
+            results.TableResults.Add(new TableResult
             {
                 Name = Metadata.Terms.AutomationTriggerTable,
                 Rows = automationTriggers
-            };
+            });
 
-            var scoreRuleResults = new TableResult<dynamic>()
+            results.TableResults.Add(new TableResult
             {
                 Name = Metadata.Terms.ScoreRuleTable,
                 Rows = scoreRules
-            };
-
-            results.Data.AutomationTriggerTable = automationTriggerResults;
-            results.Data.ContactGroupTable = contactGroupResults;
-            results.Data.ScoreRuleTable = scoreRuleResults;
+            });
 
             return results;
         }

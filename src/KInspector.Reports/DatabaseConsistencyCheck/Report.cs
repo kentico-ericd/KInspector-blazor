@@ -39,13 +39,19 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
 
             if (hasIssues)
             {
-                return new ReportResults
+                var result = new ReportResults
                 {
-                    Type = ResultsType.Table,
+                    Type = ResultsType.TableList,
                     Status = ResultsStatus.Error,
-                    Summary = Metadata.Terms.CheckResultsTableForAnyIssues,
-                    Data = checkDbResults
+                    Summary = Metadata.Terms.CheckResultsTableForAnyIssues
                 };
+                result.TableResults.Add(new TableResult
+                {
+                    Name = "CHECKDB results",
+                    Rows = checkDbResults.Rows.OfType<DataRow>()
+                });
+
+                return result;
             }
             else
             {
@@ -53,8 +59,7 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
                 {
                     Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,
-                    Summary = Metadata.Terms.NoIssuesFound,
-                    Data = string.Empty
+                    Summary = Metadata.Terms.NoIssuesFound
                 };
             }
         }

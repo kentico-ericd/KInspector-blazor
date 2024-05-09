@@ -25,18 +25,26 @@ namespace KInspector.Reports.DatabaseTableSizeAnalysis
         public override ReportResults GetResults()
         {
             var top25LargestTables = databaseService.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables);
-
-            return new ReportResults
+            var results = new ReportResults
             {
-                Type = top25LargestTables.Any() ? ResultsType.Table : ResultsType.NoResults,
                 Status = ResultsStatus.Information,
-                Summary = Metadata.Terms.CheckResultsTableForAnyIssues,
-                Data = new TableResult<DatabaseTableSizeResult>()
+                Summary = Metadata.Terms.CheckResultsTableForAnyIssues
+            };
+            if (top25LargestTables.Any())
+            {
+                results.Type = ResultsType.TableList;
+                results.TableResults.Add(new TableResult
                 {
                     Name = Metadata.Terms.Top25Results,
                     Rows = top25LargestTables
-                }
-            };
+                });
+            }
+            else
+            {
+                results.Type = ResultsType.NoResults;
+            }
+
+            return results;
         }
     }
 }

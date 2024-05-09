@@ -76,15 +76,19 @@ namespace KInspector.Reports.TaskProcessingAnalysis
         private ReportResults CompileResults(Dictionary<TaskType, int> taskResults)
         {
             var totalUnprocessedTasks = taskResults.Sum(x => x.Value);
-            return new ReportResults()
+            var results = new ReportResults
             {
-                Data = taskResults
-                    .Where(x => x.Value > 0)
-                    .Select(AsTaskCountLabel),
                 Status = totalUnprocessedTasks > 0 ? ResultsStatus.Warning : ResultsStatus.Good,
                 Summary = Metadata.Terms.CountUnprocessedTask?.With(new { count = totalUnprocessedTasks }),
                 Type = totalUnprocessedTasks > 0 ? ResultsType.StringList : ResultsType.NoResults
             };
+            var taskSummaries = taskResults.Where(x => x.Value > 0).Select(AsTaskCountLabel);
+            foreach (var str in taskSummaries)
+            {
+                results.StringResults.Add(str);
+            }
+
+            return results;
         }
     }
 }

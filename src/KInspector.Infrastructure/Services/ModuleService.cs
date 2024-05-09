@@ -1,3 +1,4 @@
+using KInspector.Core.Constants;
 using KInspector.Core.Models;
 using KInspector.Core.Modules;
 using KInspector.Core.Repositories.Interfaces;
@@ -54,7 +55,19 @@ namespace KInspector.Infrastructure.Services
 
             databaseService.Configure(instance.DatabaseSettings);
 
-            return report.GetResults();
+            try
+            {
+                return report.GetResults();
+            }
+            catch (Exception ex)
+            {
+                return new ReportResults
+                {
+                    Status = ResultsStatus.Error,
+                    Summary = ex.Message,
+                    Type = ResultsType.NoResults
+                };
+            }
         }
 
         public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false)
@@ -71,7 +84,10 @@ namespace KInspector.Infrastructure.Services
             var filtered = reports.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion));
             if (getUntested)
             {
-                filtered = filtered.Union(reports.Where(r => !r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+                filtered = filtered.Union(reports.Where(r =>
+                    !r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion) &&
+                    !r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)
+                ));
             }
 
             if (getIncompatible)
@@ -79,7 +95,7 @@ namespace KInspector.Infrastructure.Services
                 filtered = filtered.Union(reports.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
             }
 
-            return filtered;
+            return filtered.OrderBy(r => r.Codename);
         }
     }
 }

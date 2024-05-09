@@ -46,12 +46,6 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             }
 
             var fieldResultCount = fieldsWithMismatchedTypes.Count();
-            var fieldResults = new TableResult<dynamic>()
-            {
-                Name = Metadata.Terms.TableTitles?.MatchingPageTypeFieldsWithDifferentDataTypes,
-                Rows = fieldsWithMismatchedTypes
-            };
-
             var results = new ReportResults
             {
                 Type = ResultsType.TableList,
@@ -59,7 +53,11 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
                 Summary = Metadata.Terms.Summaries?.Information?.With(new { fieldResultCount })
             };
 
-            results.Data.FieldResults = fieldResults;
+            results.TableResults.Add(new TableResult
+            {
+                Name = Metadata.Terms.TableTitles?.MatchingPageTypeFieldsWithDifferentDataTypes,
+                Rows = fieldsWithMismatchedTypes
+            });
 
             return results;
         }

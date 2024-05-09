@@ -77,18 +77,17 @@ namespace KInspector.Reports.UserPasswordAnalysis
             var errorReportResults = new ReportResults
             {
                 Type = ResultsType.TableList,
-                Status = ResultsStatus.Error,
-                Data = new List<TableResult<CmsUserResult>>()
+                Status = ResultsStatus.Error
             };
 
             var emptyCount = IfAnyAddTableResult(
-                errorReportResults.Data,
+                errorReportResults.TableResults,
                 usersWithEmptyPasswords,
                 Metadata.Terms.TableTitles?.EmptyPasswords
                 );
 
             var plaintextCount = IfAnyAddTableResult(
-                errorReportResults.Data,
+                errorReportResults.TableResults,
                 usersWithPlaintextPasswords,
                 Metadata.Terms.TableTitles?.PlaintextPasswords
                 );
@@ -98,17 +97,15 @@ namespace KInspector.Reports.UserPasswordAnalysis
             return errorReportResults;
         }
 
-        private static int IfAnyAddTableResult<T>(dynamic data, IEnumerable<T> results, Term tableNameTerm)
+        private static int IfAnyAddTableResult(IList<TableResult> tables, IEnumerable<object> results, Term? tableNameTerm)
         {
             if (results.Any())
             {
-                var tableResult = new TableResult<T>
+                tables.Add(new TableResult
                 {
                     Name = tableNameTerm,
                     Rows = results
-                };
-
-                data.Add(tableResult);
+                });
             }
 
             return results.Count();
