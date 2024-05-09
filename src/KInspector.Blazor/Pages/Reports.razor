@@ -25,10 +25,11 @@
     {
         get
         {
+            var tag = Filters?.SelectedTag;
             var showUntested = Filters?.ShowUntested ?? false;
             var showIncompatible = Filters?.ShowIncompatible ?? false;
 
-            return moduleService.GetReports(showUntested, showIncompatible);
+            return moduleService.GetReports(showUntested, showIncompatible, tag);
         }
     }
 

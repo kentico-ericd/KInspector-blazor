@@ -70,7 +70,7 @@ namespace KInspector.Infrastructure.Services
             }
         }
 
-        public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false)
+        public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null)
         {
             var instance = configService.GetCurrentInstance();
             if (instance is null)
@@ -93,6 +93,11 @@ namespace KInspector.Infrastructure.Services
             if (getIncompatible)
             {
                 filtered = filtered.Union(reports.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+            }
+
+            if (!string.IsNullOrEmpty(tag))
+            {
+                filtered = filtered.Where(r => r.Tags.Contains(tag));
             }
 
             return filtered.OrderBy(r => r.Codename);
