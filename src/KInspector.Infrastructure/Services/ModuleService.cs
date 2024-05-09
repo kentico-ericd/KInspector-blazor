@@ -59,15 +59,15 @@ namespace KInspector.Infrastructure.Services
 
         public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false)
         {
-            var reports = reportRepository.GetReports();
             var instance = configService.GetCurrentInstance();
             if (instance is null)
             {
-                return reports;
+                throw new InvalidOperationException("An instance must be connected.");
             }
 
             var instanceDetails = instanceService.GetInstanceDetails(instance);
             var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
+            var reports = reportRepository.GetReports();
             var filtered = reports.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion));
             if (getUntested)
             {
