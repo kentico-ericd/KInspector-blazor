@@ -23,14 +23,14 @@ namespace KInspector.Reports.OnlineMarketingMacroAnalysis
             ReportTags.OnlineMarketing
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var contactGroups = databaseService.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions);
             var automationTriggers = databaseService.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions);
             var scoreRules = databaseService.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions);
             if (!contactGroups.Any() && !automationTriggers.Any() && !scoreRules.Any())
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.Good,
@@ -39,7 +39,7 @@ namespace KInspector.Reports.OnlineMarketingMacroAnalysis
             }
 
             var totalIssues = contactGroups.Count() + automationTriggers.Count() + scoreRules.Count();
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Warning,

@@ -8,6 +8,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KInspector.Actions\KInspector.Actions.csproj" />
     <ProjectReference Include="..\KInspector.Infrastructure\KInspector.Infrastructure.csproj" />
     <ProjectReference Include="..\KInspector.Reports\KInspector.Reports.csproj" />
   </ItemGroup>

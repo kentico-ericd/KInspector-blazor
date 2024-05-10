@@ -31,7 +31,7 @@ namespace KInspector.Reports.ColumnFieldValidation
             ReportTags.Health
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var cmsClasses = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClasses);
 
@@ -199,14 +199,14 @@ namespace KInspector.Reports.ColumnFieldValidation
             return (name, type);
         }
 
-        private ReportResults CompileResults(
+        private ModuleResults CompileResults(
             IEnumerable<CmsClassResult> cmsClassesWithAddedFields,
             IEnumerable<TableValidationResult> tablesWithAddedColumns
             )
         {
             if (!cmsClassesWithAddedFields.Any() && !tablesWithAddedColumns.Any())
             {
-                return new ReportResults()
+                return new ModuleResults()
                 {
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries?.Good,
@@ -214,31 +214,31 @@ namespace KInspector.Reports.ColumnFieldValidation
                 };
             }
 
-            var errorReportResults = new ReportResults
+            var errorModuleResults = new ModuleResults
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Error
             };
 
             var cmsClassesResultCount = IfAnyAddTableResult(
-                errorReportResults.TableResults,
+                errorModuleResults.TableResults,
                 cmsClassesWithAddedFields,
                 Metadata.Terms.TableTitles?.ClassesWithAddedFields
             );
 
             var tablesResultCount = IfAnyAddTableResult(
-                errorReportResults.TableResults,
+                errorModuleResults.TableResults,
                 tablesWithAddedColumns,
                 Metadata.Terms.TableTitles?.TablesWithAddedColumns
             );
 
-            errorReportResults.Summary = Metadata.Terms.Summaries?.Error?.With(new
+            errorModuleResults.Summary = Metadata.Terms.Summaries?.Error?.With(new
             {
                 cmsClassesResultCount,
                 tablesResultCount
             });
 
-            return errorReportResults;
+            return errorModuleResults;
         }
 
         private static int IfAnyAddTableResult(IList<TableResult> tables, IEnumerable<object> results, Term? tableNameTerm)

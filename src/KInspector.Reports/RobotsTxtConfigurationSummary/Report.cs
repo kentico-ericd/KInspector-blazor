@@ -40,12 +40,12 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             ReportTags.SEO,
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var adminUrl = configService.GetCurrentInstance()?.AdministrationUrl;
             if (adminUrl is null)
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Warning,
                     Summary = Metadata.Terms.RobotsTxtNotFound,
@@ -59,7 +59,7 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             return GetUriResults(testUri);
         }
 
-        private ReportResults GetUriResults(Uri testUri)
+        private ModuleResults GetUriResults(Uri testUri)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
                 HttpResponseMessage response = _httpClient.GetAsync(testUri).ConfigureAwait(false).GetAwaiter().GetResult();
                 var found = response.StatusCode == HttpStatusCode.OK;
 
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = found ? ResultsStatus.Good : ResultsStatus.Warning,
                     Summary = found ? Metadata.Terms.RobotsTxtFound : Metadata.Terms.RobotsTxtNotFound,
@@ -77,7 +77,7 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             }
             catch (Exception ex)
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Error,
                     Summary = ex.Message,

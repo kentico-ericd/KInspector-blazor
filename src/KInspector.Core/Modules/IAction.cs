@@ -4,6 +4,8 @@ namespace KInspector.Core.Modules
 {
     public interface IAction : IModule
     {
-        ActionResults Execute(string OptionsJson);
+        ModuleResults Execute(string optionsJson);
+
+        Type GetOptionsType();
     }
 }

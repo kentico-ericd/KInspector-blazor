@@ -10,6 +10,6 @@ namespace KInspector.Core
         {
         }
 
-        public abstract ReportResults GetResults();
+        public abstract ModuleResults GetResults();
     }
 }

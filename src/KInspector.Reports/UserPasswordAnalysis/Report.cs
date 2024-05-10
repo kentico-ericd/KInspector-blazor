@@ -32,7 +32,7 @@ namespace KInspector.Reports.UserPasswordAnalysis
             "public"
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var users = databaseService.ExecuteSqlFromFile<CmsUser>(
                 Scripts.GetEnabledAndNotExternalUsers,
@@ -60,13 +60,13 @@ namespace KInspector.Reports.UserPasswordAnalysis
                 .Select(user => new CmsUserResult(user));
         }
 
-        private ReportResults CompileResults(
+        private ModuleResults CompileResults(
             IEnumerable<CmsUserResult> usersWithEmptyPasswords,
             IEnumerable<CmsUserResult> usersWithPlaintextPasswords)
         {
             if (!usersWithEmptyPasswords.Any() && !usersWithPlaintextPasswords.Any())
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,
@@ -74,27 +74,27 @@ namespace KInspector.Reports.UserPasswordAnalysis
                 };
             }
 
-            var errorReportResults = new ReportResults
+            var errorModuleResults = new ModuleResults
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Error
             };
 
             var emptyCount = IfAnyAddTableResult(
-                errorReportResults.TableResults,
+                errorModuleResults.TableResults,
                 usersWithEmptyPasswords,
                 Metadata.Terms.TableTitles?.EmptyPasswords
                 );
 
             var plaintextCount = IfAnyAddTableResult(
-                errorReportResults.TableResults,
+                errorModuleResults.TableResults,
                 usersWithPlaintextPasswords,
                 Metadata.Terms.TableTitles?.PlaintextPasswords
                 );
 
-            errorReportResults.Summary = Metadata.Terms.ErrorSummary?.With(new { emptyCount, plaintextCount });
+            errorModuleResults.Summary = Metadata.Terms.ErrorSummary?.With(new { emptyCount, plaintextCount });
 
-            return errorReportResults;
+            return errorModuleResults;
         }
 
         private static int IfAnyAddTableResult(IList<TableResult> tables, IEnumerable<object> results, Term? tableNameTerm)

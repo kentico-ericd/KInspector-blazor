@@ -28,18 +28,18 @@ namespace KInspector.Reports.ApplicationRestartAnalysis
             this.databaseService = databaseService;
         }
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var cmsEventLogs = databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode);
 
             return CompileResults(cmsEventLogs);
         }
 
-        private ReportResults CompileResults(IEnumerable<CmsEventLog> cmsEventLogs)
+        private ModuleResults CompileResults(IEnumerable<CmsEventLog> cmsEventLogs)
         {
             if (!cmsEventLogs.Any())
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries?.Good
@@ -66,7 +66,7 @@ namespace KInspector.Reports.ApplicationRestartAnalysis
                 totalStartEvents
             });
 
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Summary = summary,
                 Type = ResultsType.TableList,

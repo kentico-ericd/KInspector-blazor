@@ -1,0 +1,26 @@
+﻿@using KInspector.Blazor.Components.Modules
+@using KInspector.Core.Models
+@using KInspector.Core.Modules
+@using KInspector.Core.Services.Interfaces
+@using Newtonsoft.Json
+@inject IModuleService moduleService
+
+<div id="module-@Action!.Codename" class="module-accordion" data-accordion="collapse">
+    <ModuleHeader Module="Action" Results="Results" />
+    <ModuleBody @ref="Body" Module="Action" Results="Results" RunHandler="RunAction" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public IAction? Action { get; set; }
+
+    public ModuleResults? Results { get; set; }
+
+    private ModuleBody? Body { get; set; }
+
+    private void RunAction()
+    {
+        var options = Body!.GetOptions();
+        Results = moduleService.ExecuteAction(Action!, JsonConvert.SerializeObject(options));
+    }
+}

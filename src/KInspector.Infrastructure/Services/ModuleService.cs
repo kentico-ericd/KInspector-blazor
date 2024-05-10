@@ -23,7 +23,7 @@ namespace KInspector.Infrastructure.Services
             this.instanceService = instanceService;
         }
 
-        public ActionResults ExecuteAction(IAction action, string optionsJson)
+        public ModuleResults ExecuteAction(IAction action, string optionsJson)
         {
             var instance = configService.GetCurrentInstance();
             if (instance is null)
@@ -45,7 +45,7 @@ namespace KInspector.Infrastructure.Services
 
         public IReport? GetReport(string codename) => reportRepository.GetReport(codename);
 
-        public ReportResults GetReportResults(IReport report)
+        public ModuleResults GetReportResults(IReport report)
         {
             var instance = configService.GetCurrentInstance();
             if (instance is null)
@@ -61,7 +61,7 @@ namespace KInspector.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Error,
                     Summary = ex.Message,

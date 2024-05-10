@@ -32,7 +32,7 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
            ReportTags.Health
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var instance = _configService.GetCurrentInstance();
             if (instance is null)
@@ -84,9 +84,9 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
             }
         }
 
-        private ReportResults CompileResults(IEnumerable<SettingsKey> databaseSettingsKeys, bool isCompilationDebugEnabled, bool isTraceEnabled)
+        private ModuleResults CompileResults(IEnumerable<SettingsKey> databaseSettingsKeys, bool isCompilationDebugEnabled, bool isTraceEnabled)
         {
-            var results = new ReportResults()
+            var results = new ModuleResults()
             {
                 Status = ResultsStatus.Information,
                 Summary = Metadata.Terms.CheckResultsTableForAnyIssues,
@@ -99,7 +99,7 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
             return results;
         }
 
-        private void AnalyzeWebConfigSettings(ReportResults results, bool isCompilationDebugEnabled, bool isTraceEnabled)
+        private void AnalyzeWebConfigSettings(ModuleResults results, bool isCompilationDebugEnabled, bool isTraceEnabled)
         {
             var isDebugOrTraceEnabledInWebConfig = isCompilationDebugEnabled || isTraceEnabled;
             if (isDebugOrTraceEnabledInWebConfig)
@@ -125,7 +125,7 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
             });
         }
 
-        private void AnalyzeDatabaseSettingsResults(ReportResults results, IEnumerable<SettingsKey> databaseSettingsKeys)
+        private void AnalyzeDatabaseSettingsResults(ModuleResults results, IEnumerable<SettingsKey> databaseSettingsKeys)
         {
             var explicitlyEnabledSettings = databaseSettingsKeys.Where(x => x.KeyValue && !x.KeyDefaultValue);
             var explicitlyEnabledSettingsCount = explicitlyEnabledSettings.Count();

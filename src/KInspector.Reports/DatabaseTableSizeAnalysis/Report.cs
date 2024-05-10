@@ -22,10 +22,10 @@ namespace KInspector.Reports.DatabaseTableSizeAnalysis
             ReportTags.Health
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var top25LargestTables = databaseService.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables);
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Status = ResultsStatus.Information,
                 Summary = Metadata.Terms.CheckResultsTableForAnyIssues

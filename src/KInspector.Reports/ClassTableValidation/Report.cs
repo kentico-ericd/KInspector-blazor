@@ -31,7 +31,7 @@ namespace KInspector.Reports.ClassTableValidation
             ReportTags.Health,
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var instance = configService.GetCurrentInstance();
             var instanceDetails = instanceService.GetInstanceDetails(instance);
@@ -41,7 +41,7 @@ namespace KInspector.Reports.ClassTableValidation
             return CompileResults(tablesWithMissingClass, classesWithMissingTable);
         }
 
-        private ReportResults CompileResults(IEnumerable<TableWithNoClass> tablesWithMissingClass, IEnumerable<ClassWithNoTable> classesWithMissingTable)
+        private ModuleResults CompileResults(IEnumerable<TableWithNoClass> tablesWithMissingClass, IEnumerable<ClassWithNoTable> classesWithMissingTable)
         {
             var tableErrors = tablesWithMissingClass.Count();
             var tableResults = new TableResult()
@@ -58,7 +58,7 @@ namespace KInspector.Reports.ClassTableValidation
             };
 
             var totalErrors = tableErrors + classErrors;
-            var results = new ReportResults();
+            var results = new ModuleResults();
             switch (totalErrors)
             {
                 case 0:

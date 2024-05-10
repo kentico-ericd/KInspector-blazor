@@ -22,7 +22,7 @@ namespace KInspector.Reports.TaskProcessingAnalysis
            ReportTags.Health
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var unprocessedIntegrationBusTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedIntegrationBusTasks);
             var unprocessedScheduledTasks = databaseService.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedScheduledTasks);
@@ -73,10 +73,10 @@ namespace KInspector.Reports.TaskProcessingAnalysis
             return label?.With(new { count });
         }
 
-        private ReportResults CompileResults(Dictionary<TaskType, int> taskResults)
+        private ModuleResults CompileResults(Dictionary<TaskType, int> taskResults)
         {
             var totalUnprocessedTasks = taskResults.Sum(x => x.Value);
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Status = totalUnprocessedTasks > 0 ? ResultsStatus.Warning : ResultsStatus.Good,
                 Summary = Metadata.Terms.CountUnprocessedTask?.With(new { count = totalUnprocessedTasks }),

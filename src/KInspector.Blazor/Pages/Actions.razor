@@ -1,6 +1,48 @@
 ﻿@page "/actions"
+@using KInspector.Blazor.Components.Modules
+@using KInspector.Core.Modules
+@using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
+@inject IModuleService moduleService
+@inject IJSRuntime js
 
 <PageTitle>Actions</PageTitle>
 
 <h1 class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">Actions</h1>
+
+<ModuleFilters FiltersChanged="UpdateState" @ref="Filters" />
+
+<div class="space-y-8 lg:space-y-0">
+    @foreach (var action in ActionList)
+    {
+        <ActionAccordion Action="@action" />
+    }
+</div>
+
+@code {
+    ModuleFilters? Filters;
+
+    private IEnumerable<IAction> ActionList
+    {
+        get
+        {
+            var tag = Filters?.SelectedTag;
+            var showUntested = Filters?.ShowUntested ?? false;
+            var showIncompatible = Filters?.ShowIncompatible ?? false;
+
+            return moduleService.GetActions();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        // Init Flowbite every time, not just first load as accordions added to the layout by filters
+        // don't function without Flowbite
+        await js.InvokeVoidAsync("window.initializeFlowbite");
+    }
+
+    private void UpdateState()
+    {
+        StateHasChanged();
+    }
+}

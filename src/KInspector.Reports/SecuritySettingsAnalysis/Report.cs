@@ -42,7 +42,7 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
             this.configService = configService;
         }
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null)
                 .Analyzers
@@ -189,14 +189,14 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
             }
         }
 
-        private ReportResults CompileResults(
+        private ModuleResults CompileResults(
             IEnumerable<CmsSettingsKeyResult> cmsSettingsKeyResults,
             IEnumerable<WebConfigSettingResult> webConfigSettingsResults
             )
         {
             if (!cmsSettingsKeyResults.Any() && !webConfigSettingsResults.Any())
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries?.Good,
@@ -204,31 +204,31 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
                 };
             }
 
-            var errorReportResults = new ReportResults
+            var errorModuleResults = new ModuleResults
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Warning
             };
 
             var cmsSettingsKeyResultsCount = IfAnyAddTableResult(
-                errorReportResults.TableResults,
+                errorModuleResults.TableResults,
                 cmsSettingsKeyResults,
                 Metadata.Terms.TableTitles?.AdminSecuritySettings
                 );
 
             var webConfigSettingsResultsCount = IfAnyAddTableResult(
-                errorReportResults.TableResults,
+                errorModuleResults.TableResults,
                 webConfigSettingsResults,
                 Metadata.Terms.TableTitles?.WebConfigSecuritySettings
                 );
 
-            errorReportResults.Summary = Metadata.Terms.Summaries?.Warning?.With(new
+            errorModuleResults.Summary = Metadata.Terms.Summaries?.Warning?.With(new
             {
                 cmsSettingsKeyResultsCount,
                 webConfigSettingsResultsCount
             });
 
-            return errorReportResults;
+            return errorModuleResults;
         }
 
         private static int IfAnyAddTableResult(IList<TableResult> tables, IEnumerable<object> results, Term? tableNameTerm)

@@ -16,7 +16,7 @@ namespace KInspector.Core
         protected AbstractAction(IModuleMetadataService moduleMetadataService)
             : base(moduleMetadataService) { }
 
-        public ActionResults Execute(string OptionsJson) {
+        public ModuleResults Execute(string OptionsJson) {
             try
             {
                 var options = JsonConvert.DeserializeObject<TOptions>(OptionsJson);
@@ -33,8 +33,13 @@ namespace KInspector.Core
             }
         }
 
-        public abstract ActionResults Execute(TOptions Options);
+        public Type GetOptionsType()
+        {
+            return typeof(TOptions);
+        }
 
-        public abstract ActionResults GetInvalidOptionsResult();
+        public abstract ModuleResults Execute(TOptions Options);
+
+        public abstract ModuleResults GetInvalidOptionsResult();
     }
 }

@@ -21,11 +21,11 @@ namespace KInspector.Reports.SampleReport
             ReportTags.Consistency
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var random = new Random();
             var issueCount = random.Next(0, 3);
-            var results = new ReportResults()
+            var results = new ModuleResults()
             {
                 Type = ResultsType.StringList,
                 Status = ResultsStatus.Information,

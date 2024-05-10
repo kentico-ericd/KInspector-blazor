@@ -24,19 +24,19 @@ namespace KInspector.Reports.TemplateLayoutAnalysis
             ReportTags.PortalEngine
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var identicalLayouts = databaseService.ExecuteSqlFromFile<IdenticalPageLayouts>(Scripts.GetIdenticalLayouts);
 
             return CompileResults(identicalLayouts);
         }
 
-        private ReportResults CompileResults(IEnumerable<IdenticalPageLayouts> identicalPageLayouts)
+        private ModuleResults CompileResults(IEnumerable<IdenticalPageLayouts> identicalPageLayouts)
         {
             var countIdenticalPageLayouts = identicalPageLayouts.Count();
             if (countIdenticalPageLayouts == 0)
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Type = ResultsType.NoResults,
                     Status = ResultsStatus.Information,
@@ -44,7 +44,7 @@ namespace KInspector.Reports.TemplateLayoutAnalysis
                 };
             }
 
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Information,

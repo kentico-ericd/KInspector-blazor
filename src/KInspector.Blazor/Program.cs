@@ -15,6 +15,7 @@ builder.Host
         containerBuilder.RegisterModule<CoreModule>();
         containerBuilder.RegisterModule<InfrastructureModule>();
         containerBuilder.RegisterModule<ReportsModule>();
+        containerBuilder.RegisterModule<ActionsModule>();
     });
 
 builder.Services.AddRazorPages().AddJsonOptions(o =>

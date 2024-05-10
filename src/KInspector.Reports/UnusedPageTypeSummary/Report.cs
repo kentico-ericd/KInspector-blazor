@@ -23,12 +23,12 @@ namespace KInspector.Reports.UnusedPageTypeSummary
             ReportTags.Information
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var unusedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetUnusedPageTypes);
             var countOfUnusedPageTypes = unusedPageTypes.Count();
 
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Type = countOfUnusedPageTypes > 0 ? ResultsType.TableList : ResultsType.NoResults,
                 Status = ResultsStatus.Information,

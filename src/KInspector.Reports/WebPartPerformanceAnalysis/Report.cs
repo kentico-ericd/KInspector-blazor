@@ -28,7 +28,7 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             ReportTags.WebParts,
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var affectedTemplates = _databaseService.ExecuteSqlFromFile<PageTemplate>(Scripts.GetAffectedTemplates);
             var affectedTemplateIds = affectedTemplates.Select(x => x.PageTemplateID).ToArray();
@@ -78,7 +78,7 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             });
         }
 
-        private ReportResults CompileResults(IEnumerable<TemplateSummary> templateSummaries)
+        private ModuleResults CompileResults(IEnumerable<TemplateSummary> templateSummaries)
         {
             var webPartSummaries = templateSummaries.SelectMany(x => x.AffectedWebParts);
             var documentSummaries = templateSummaries.SelectMany(x => x.AffectedDocuments);
@@ -89,7 +89,7 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             var status = templateSummaries.Any() ? ResultsStatus.Warning : ResultsStatus.Good;
             var type = templateSummaries.Any() ? ResultsType.TableList : ResultsType.NoResults;
 
-            var result = new ReportResults
+            var result = new ModuleResults
             {
                 Status = status,
                 Summary = summary,

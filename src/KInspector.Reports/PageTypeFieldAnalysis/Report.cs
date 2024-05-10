@@ -25,7 +25,7 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             ReportTags.Health
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var pagetypeFields = databaseService.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields);
             var fieldsWithMismatchedTypes = CheckForMismatchedTypes(pagetypeFields);
@@ -33,11 +33,11 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             return CompileResults(fieldsWithMismatchedTypes);
         }
 
-        private ReportResults CompileResults(IEnumerable<CmsPageTypeField> fieldsWithMismatchedTypes)
+        private ModuleResults CompileResults(IEnumerable<CmsPageTypeField> fieldsWithMismatchedTypes)
         {
             if (!fieldsWithMismatchedTypes.Any())
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Good,
                     Summary = Metadata.Terms.Summaries?.Good,
@@ -46,7 +46,7 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             }
 
             var fieldResultCount = fieldsWithMismatchedTypes.Count();
-            var results = new ReportResults
+            var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Information,

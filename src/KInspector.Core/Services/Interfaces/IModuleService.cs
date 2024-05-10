@@ -7,7 +7,7 @@ namespace KInspector.Core.Services.Interfaces
     {
         IReport? GetReport(string codename);
 
-        ReportResults GetReportResults(IReport report);
+        ModuleResults GetReportResults(IReport report);
 
         IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null);
 
@@ -15,6 +15,6 @@ namespace KInspector.Core.Services.Interfaces
 
         IAction? GetAction(string codename);
 
-        ActionResults ExecuteAction(IAction action, string optionsJson);
+        ModuleResults ExecuteAction(IAction action, string optionsJson);
     }
 }

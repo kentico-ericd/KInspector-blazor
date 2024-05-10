@@ -24,7 +24,7 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
             ReportTags.Health
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
 #pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown
             var checkDbResults = databaseService.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults);
@@ -33,13 +33,13 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
             return CompileResults(checkDbResults);
         }
 
-        private ReportResults CompileResults(DataTable checkDbResults)
+        private ModuleResults CompileResults(DataTable checkDbResults)
         {
             var hasIssues = checkDbResults.Rows.Count > 0;
 
             if (hasIssues)
             {
-                var result = new ReportResults
+                var result = new ModuleResults
                 {
                     Type = ResultsType.TableList,
                     Status = ResultsStatus.Error,
@@ -55,7 +55,7 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
             }
             else
             {
-                return new ReportResults
+                return new ModuleResults
                 {
                     Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,

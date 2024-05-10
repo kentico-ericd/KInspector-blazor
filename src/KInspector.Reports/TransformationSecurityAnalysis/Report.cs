@@ -43,7 +43,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             ReportTags.Security
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var transformationDtos = databaseService.ExecuteSqlFromFile<TransformationDto>(Scripts.GetTransformations);
             var transformationsWithIssues = GetTransformationsWithIssues(transformationDtos);
@@ -125,7 +125,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
                 );
         }
 
-        private ReportResults CompileResults(IEnumerable<PageTemplate> pageTemplates)
+        private ModuleResults CompileResults(IEnumerable<PageTemplate> pageTemplates)
         {
             var allIssues = pageTemplates
                 .SelectMany(pageTemplate => pageTemplate.WebParts)
@@ -134,7 +134,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
 
             if (!allIssues.Any())
             {
-                return new ReportResults()
+                return new ModuleResults()
                 {
                     Type = ResultsType.NoResults,
                     Status = ResultsStatus.Good,
@@ -174,7 +174,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             var issueTypesAsCsv = string.Join(',', usedIssueTypes
                 .Select(issueType => TransformationIssue.ReplaceEachUppercaseLetterWithASpaceAndTheLetter(issueType)));
 
-            var result = new ReportResults()
+            var result = new ModuleResults()
             {
                 Type = ResultsType.TableList,
                 Status = ResultsStatus.Warning,

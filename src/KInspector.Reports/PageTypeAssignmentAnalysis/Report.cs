@@ -24,19 +24,19 @@ namespace KInspector.Reports.PageTypeAssignmentAnalysis
             ReportTags.Consistency
         };
 
-        public override ReportResults GetResults()
+        public override ModuleResults GetResults()
         {
             var unassignedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetPageTypesNotAssignedToSite);
 
             return CompileResults(unassignedPageTypes);
         }
 
-        private ReportResults CompileResults(IEnumerable<PageType> unassignedPageTypes)
+        private ModuleResults CompileResults(IEnumerable<PageType> unassignedPageTypes)
         {
             var unassignedPageTypeCount = unassignedPageTypes.Count();
             if (unassignedPageTypeCount > 0)
             {
-                var results = new ReportResults
+                var results = new ModuleResults
                 {
                     Status = ResultsStatus.Warning,
                     Type = ResultsType.TableList,
@@ -51,7 +51,7 @@ namespace KInspector.Reports.PageTypeAssignmentAnalysis
                 return results;
             }
 
-            return new ReportResults
+            return new ModuleResults
             {
                 Status = ResultsStatus.Good,
                 Summary = Metadata.Terms.NoIssuesFound,
