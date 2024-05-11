@@ -1,16 +1,18 @@
 ﻿@page "/reports"
 @using KInspector.Blazor.Components.Modules
 @using KInspector.Core.Modules
+@using KInspector.Core.Repositories.Interfaces
 @using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
 @inject IModuleService moduleService
+@inject IReportRepository reportRepository
 @inject IJSRuntime js
 
 <PageTitle>Reports</PageTitle>
 
 <h1 class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">Reports</h1>
 
-<ModuleFilters FiltersChanged="UpdateState" @ref="Filters" />
+<ModuleFilters Tags="UsedTags" FiltersChanged="UpdateState" @ref="Filters" />
 
 <div class="space-y-8 lg:space-y-0">
     @foreach (var report in ReportList)
@@ -31,6 +33,21 @@
             var showIncompatible = Filters?.ShowIncompatible ?? false;
 
             return moduleService.GetReports(showUntested, showIncompatible, tag);
+        }
+    }
+
+    private IEnumerable<string> UsedTags
+    {
+        get
+        {
+            var reports = reportRepository.GetReports();
+            var tags = Enumerable.Empty<string>();
+            foreach (var r in reports)
+            {
+                tags = tags.Union(r.Tags);
+            }
+
+            return tags;
         }
     }
 

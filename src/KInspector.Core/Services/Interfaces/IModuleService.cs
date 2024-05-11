@@ -11,7 +11,7 @@ namespace KInspector.Core.Services.Interfaces
 
         IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null);
 
-        IEnumerable<IAction> GetActions();
+        IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null);
 
         IAction? GetAction(string codename);
 

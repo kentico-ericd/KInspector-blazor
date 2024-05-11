@@ -38,9 +38,37 @@ namespace KInspector.Infrastructure.Services
 
         public IAction? GetAction(string codename) => actionRepository.GetAction(codename);
 
-        public IEnumerable<IAction> GetActions()
+        public IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null)
         {
-            return actionRepository.GetActions();
+            var instance = configService.GetCurrentInstance();
+            if (instance is null)
+            {
+                throw new InvalidOperationException("An instance must be connected.");
+            }
+
+            var instanceDetails = instanceService.GetInstanceDetails(instance);
+            var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
+            var actions = actionRepository.GetActions();
+            var filtered = actions.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion));
+            if (getUntested)
+            {
+                filtered = filtered.Union(actions.Where(r =>
+                    !r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion) &&
+                    !r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)
+                ));
+            }
+
+            if (getIncompatible)
+            {
+                filtered = filtered.Union(actions.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+            }
+
+            if (!string.IsNullOrEmpty(tag))
+            {
+                filtered = filtered.Where(r => r.Tags.Contains(tag));
+            }
+
+            return filtered.OrderBy(r => r.Codename);
         }
 
         public IReport? GetReport(string codename) => reportRepository.GetReport(codename);
