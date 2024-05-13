@@ -2,13 +2,10 @@
 @using KInspector.Core.Models
 @using KInspector.Core.Modules
 @using KInspector.Core.Services.Interfaces
+@using Markdig
 @inject IConfigService configService
 @inject IInstanceService instanceService
 @inject IModuleMetadataService moduleMetadataService
-
-@{
-    var moduleDetails = moduleMetadataService.GetModuleDetails(Module!.Codename);
-}
 
 <h2 id="heading-@Module!.Codename">
     <button type="button"
@@ -27,8 +24,8 @@
             {
                 <ResultIcon ModuleName="Module!.Codename" Result="Results" />
             }
-            <span class="@(Results is not null ? "ml-3" : "") text-gray-600 dark:text-gray-200 font-medium">@((MarkupString)(moduleDetails.Name ?? string.Empty))</span>
-            <span class="text-gray-400 ml-6">@((MarkupString)(moduleDetails.ShortDescription ?? string.Empty))</span>
+            <span class="@(Results is not null ? "ml-3" : "") text-gray-600 dark:text-gray-200 font-medium">@Name</span>
+            <span class="text-gray-400 ml-6">@ShortDescription</span>
         </div>
         <div class="flex text-right">
             @foreach (var tag in Module!.Tags)
@@ -50,6 +47,12 @@
 
     [Parameter]
     public ModuleResults? Results { get; set; }
+
+    private ModuleDetails ModuleDetails => moduleMetadataService.GetModuleDetails(Module!.Codename);
+
+    private MarkupString ShortDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.ShortDescription ?? string.Empty));
+
+    private MarkupString Name => new MarkupString(Markdown.ToHtml(ModuleDetails.Name ?? string.Empty));
 
     private bool IsIncompatible => Module!.IncompatibleVersions.Select(v => v.Major).Contains(AdminDatabaseMajorVersion);
 

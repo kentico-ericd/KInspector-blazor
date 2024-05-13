@@ -25,11 +25,6 @@ namespace KInspector.Actions.SiteStatusSummary
 
         public override ModuleResults Execute(Options? options)
         {
-            if (options?.SiteId == 0)
-            {
-                return ExecuteListing();
-            }
-
             if (!SiteIsValid(options?.SiteId))
             {
                 return GetInvalidOptionsResult();
@@ -83,9 +78,7 @@ namespace KInspector.Actions.SiteStatusSummary
         {
             var sites = databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
 
-            return siteId > 0 &&
-                sites.Any(s => s.ID == siteId) &&
-                (sites.FirstOrDefault(s => s.ID == siteId)?.Running ?? true);
+            return siteId > 0 && sites.Any(s => s.ID == siteId);
         }
     }
 }

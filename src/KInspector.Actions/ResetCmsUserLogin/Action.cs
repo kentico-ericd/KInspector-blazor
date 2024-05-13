@@ -25,20 +25,15 @@ namespace KInspector.Actions.ResetCmsUserLogin
 
         public override ModuleResults Execute(Options? options)
         {
-            if (options?.UserId < 0)
+            if (!UserIsValid(options?.UserId))
             {
                 return GetInvalidOptionsResult();
-            }
-
-            // No user provided, list users
-            if (options?.UserId == 0)
-            {
-                return ExecuteListing();
             }
 
             // Reset provided user
             databaseService.ExecuteSqlFromFileGeneric(Scripts.ResetAndEnableUser, new { UserID = options?.UserId });
             var result = ExecuteListing();
+            result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.UserReset?.With(new {
                 userId = options?.UserId
             });
@@ -76,6 +71,13 @@ namespace KInspector.Actions.ResetCmsUserLogin
                 Status = ResultsStatus.Error,
                 Summary = Metadata.Terms.InvalidOptions
             };
+        }
+
+        private bool UserIsValid(int? userId)
+        {
+            var users = databaseService.ExecuteSqlFromFile<CmsUser>(Scripts.GetAdministrators);
+
+            return userId > 0 && users.Any(u => u.UserID == userId);
         }
     }
 }

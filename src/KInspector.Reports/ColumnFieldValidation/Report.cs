@@ -134,7 +134,7 @@ namespace KInspector.Reports.ColumnFieldValidation
             string? name = element.Attribute("name")?.Value;
             string? type = string.Empty;
 
-            if (element.Attribute("type") != null)
+            if (element.Attribute("type") is not null)
             {
                 type = element.Attribute("type")?.Value;
             }
@@ -143,7 +143,7 @@ namespace KInspector.Reports.ColumnFieldValidation
                 .Attributes()
                 .FirstOrDefault(attribute => attribute.Name.LocalName == "DataType");
 
-            if (attributeDataType != null)
+            if (attributeDataType is not null)
             {
                 type = attributeDataType.Value;
             }
@@ -152,7 +152,7 @@ namespace KInspector.Reports.ColumnFieldValidation
                 .Descendants()
                 .FirstOrDefault(childElement => childElement.Name.LocalName == "restriction");
 
-            if (childElementWithType?.Attribute("base") != null)
+            if (childElementWithType?.Attribute("base") is not null)
             {
                 type = childElementWithType.Attribute("base")?.Value;
             }

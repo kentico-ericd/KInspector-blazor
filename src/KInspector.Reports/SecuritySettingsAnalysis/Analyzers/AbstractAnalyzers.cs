@@ -52,12 +52,12 @@ namespace KInspector.Reports.SecuritySettingsAnalysis.Analyzers
 
         protected static bool IsNullOrEquals(string value, string equals)
         {
-            return value == null || Equals(value, equals);
+            return value is null || Equals(value, equals);
         }
 
         protected static bool Equals(string value, string equals)
         {
-            return value != null && value.Equals(equals, StringComparison.InvariantCultureIgnoreCase);
+            return value is not null && value.Equals(equals, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

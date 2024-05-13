@@ -13,7 +13,7 @@ namespace KInspector.Core
         where TTerms : new()
         where TOptions: new()
     {
-        public TOptions Options => new TOptions();
+        public TOptions Options => new();
 
         protected AbstractAction(IModuleMetadataService moduleMetadataService)
             : base(moduleMetadataService) { }

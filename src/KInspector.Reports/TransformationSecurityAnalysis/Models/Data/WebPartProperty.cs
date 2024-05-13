@@ -34,7 +34,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis.Models.Data
 
         public static bool HasIssues(WebPartProperty property)
         {
-            if (property.Transformation == null)
+            if (property.Transformation is null)
             {
                 return false;
             }

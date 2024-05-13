@@ -72,7 +72,7 @@ namespace KInspector.Core.Tokens
         private static bool PropertyIsNotIndexableAndHasGetter(PropertyInfo prop)
         {
             return prop.GetIndexParameters().Length == 0
-                && prop.GetMethod != null;
+                && prop.GetMethod is not null;
         }
 
         private static string ResolveTokenExpression(string tokenExpression, IDictionary<string, object?> tokenDictionary)
@@ -91,7 +91,7 @@ namespace KInspector.Core.Tokens
                 }
             }
 
-            if (string.IsNullOrEmpty(resolvedExpression) && leadingChar != null && trailingChar != null)
+            if (string.IsNullOrEmpty(resolvedExpression) && leadingChar is not null && trailingChar is not null)
             {
                 return Constants.Space.ToString();
             }

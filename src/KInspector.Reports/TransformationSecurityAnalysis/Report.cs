@@ -106,7 +106,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
                         var matchingTransformation = transformationsWithIssues
                             .SingleOrDefault(transformation => transformation.FullName == webPartProperty.TransformationFullName);
 
-                        if (matchingTransformation != null)
+                        if (matchingTransformation is not null)
                         {
                             webPartProperty.Transformation = matchingTransformation;
                         }

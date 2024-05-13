@@ -78,9 +78,7 @@ namespace KInspector.Actions.StagingServerSummary
         {
             var servers = databaseService.ExecuteSqlFromFile<StagingServer>(Scripts.GetStagingServerSummary);
 
-            return serverId > 0 &&
-                servers.Any(s => s.ID == serverId) &&
-                (servers.FirstOrDefault(s => s.ID == serverId)?.Enabled ?? true);
+            return serverId > 0 && servers.Any(s => s.ID == serverId);
         }
     }
 }

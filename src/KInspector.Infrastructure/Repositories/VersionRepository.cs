@@ -73,7 +73,7 @@ namespace KInspector.Infrastructure.Services
             var version = settingsKeys[0];
             var hotfix = settingsKeys[1];
 
-            if (version == null || hotfix == null) {
+            if (version is null || hotfix is null) {
                 return null;
             }
 

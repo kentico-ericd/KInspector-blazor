@@ -25,7 +25,7 @@ namespace KInspector.Core.Models
 
         public override string ToString()
         {
-            if (TokenValues != null)
+            if (TokenValues is not null)
             {
                 return TokenExpressionResolver.ResolveTokenExpressions(Markdown, TokenValues);
             }

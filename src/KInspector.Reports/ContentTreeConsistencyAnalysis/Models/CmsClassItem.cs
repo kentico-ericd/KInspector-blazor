@@ -34,7 +34,7 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis.Models
         {
             get
             {
-                if (_classIdColumn == null && ClassFormDefinitionXml != null)
+                if (_classIdColumn is null && ClassFormDefinitionXml is not null)
                 {
                     _classIdColumn = ClassFields?.Where(x => x.IsIdColumn).Select(x => x.Column).FirstOrDefault();
                 }

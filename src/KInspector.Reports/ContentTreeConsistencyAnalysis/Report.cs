@@ -6,7 +6,6 @@ using KInspector.Core.Services.Interfaces;
 using KInspector.Reports.ContentTreeConsistencyAnalysis.Models;
 
 using System.Text;
-using System.Xml.Linq;
 
 namespace KInspector.Reports.ContentTreeConsistencyAnalysis
 {
@@ -62,7 +61,7 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             {
                 var coupledDataItem = coupledData.FirstOrDefault(x => (int)x[idColumnName] == versionHistoryItem.CoupledDataID);
 
-                if (coupledDataItem != null)
+                if (coupledDataItem is not null)
                 {
                     foreach (var cmsClassField in cmsClassFields)
                     {

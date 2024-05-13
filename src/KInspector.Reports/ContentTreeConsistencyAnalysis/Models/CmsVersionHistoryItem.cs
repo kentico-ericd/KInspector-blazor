@@ -20,7 +20,7 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis.Models
         {
             get
             {
-                if (_coupledDataId == -1 && NodeXml != null)
+                if (_coupledDataId == -1 && NodeXml is not null)
                 {
                     _coupledDataId = GetCoupledDataId();
                 }

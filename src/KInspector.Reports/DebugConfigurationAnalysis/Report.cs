@@ -114,8 +114,8 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
 
             var webconfigSettingsValues = new List<SettingsKey>
             {
-                new SettingsKey("Debug", Metadata.Terms.WebConfig?.DebugKeyDisplayName, isCompilationDebugEnabled, false),
-                new SettingsKey("Trace", Metadata.Terms.WebConfig?.TraceKeyDisplayName, isTraceEnabled, false)
+                new("Debug", Metadata.Terms.WebConfig?.DebugKeyDisplayName, isCompilationDebugEnabled, false),
+                new("Trace", Metadata.Terms.WebConfig?.TraceKeyDisplayName, isTraceEnabled, false)
             };
 
             results.TableResults.Add(new TableResult

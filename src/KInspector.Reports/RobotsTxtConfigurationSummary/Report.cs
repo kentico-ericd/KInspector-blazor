@@ -13,7 +13,7 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
     public class Report : AbstractReport<Terms>
     {
         private readonly IConfigService configService;
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new();
 
         public Report(
             IConfigService configService,

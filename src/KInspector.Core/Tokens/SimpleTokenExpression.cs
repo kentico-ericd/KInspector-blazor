@@ -24,7 +24,7 @@ namespace KInspector.Core.Tokens
                 }
             }
 
-            if (token == null)
+            if (token is null)
             {
                 return string.Empty;
             }
@@ -111,7 +111,7 @@ namespace KInspector.Core.Tokens
         {
             var resolved = false;
             resolvedValue = null;
-            if (token == null)
+            if (token is null)
             {
                 return resolved;
             }

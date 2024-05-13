@@ -31,7 +31,7 @@ namespace KInspector.Actions.SmtpServerSummary
 
         public override ModuleResults ExecutePartial(Options? options)
         {
-            if (options?.ServerId is null &&
+            if (options?.ServerId is not null &&
                 options?.ServerId > 0 &&
                 options?.SiteId is null)
             {

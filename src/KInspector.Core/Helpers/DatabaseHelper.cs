@@ -15,7 +15,7 @@ namespace KInspector.Core.Helpers
             }
             else
             {
-                SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
+                SqlConnectionStringBuilder sb = new();
                 if (databaseSettings.IntegratedSecurity)
                 {
                     sb.IntegratedSecurity = true;

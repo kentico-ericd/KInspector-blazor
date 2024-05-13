@@ -1,8 +1,6 @@
 using KInspector.Core.Models;
 using KInspector.Core.Services.Interfaces;
 
-using Markdig;
-
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -66,13 +64,13 @@ namespace KInspector.Core.Helpers
             };
 
             Term? name = details.Name;
-            details.Name = Markdown.ToHtml(name.With(commonData));
+            details.Name = name.With(commonData);
 
             Term? shortDescription = details.ShortDescription;
-            details.ShortDescription = Markdown.ToHtml(shortDescription.With(commonData));
+            details.ShortDescription = shortDescription.With(commonData);
 
             Term? longDescription = details.LongDescription;
-            details.LongDescription = Markdown.ToHtml(longDescription.With(commonData));
+            details.LongDescription = longDescription.With(commonData);
 
             return details;
         }
@@ -111,13 +109,13 @@ namespace KInspector.Core.Helpers
             };
 
             Term? name = moduleMetadata.Details.Name;
-            moduleMetadata.Details.Name = Markdown.ToHtml(name.With(commonData));
+            moduleMetadata.Details.Name = name.With(commonData);
 
             Term? shortDescription = moduleMetadata.Details.ShortDescription;
-            moduleMetadata.Details.ShortDescription = Markdown.ToHtml(shortDescription.With(commonData));
+            moduleMetadata.Details.ShortDescription = shortDescription.With(commonData);
 
             Term? longDescription = moduleMetadata.Details.LongDescription;
-            moduleMetadata.Details.LongDescription = Markdown.ToHtml(longDescription.With(commonData));
+            moduleMetadata.Details.LongDescription = longDescription.With(commonData);
 
             return moduleMetadata;
         }
@@ -195,7 +193,7 @@ namespace KInspector.Core.Helpers
 
                 var defaultObjectPropertyValue = objectTypeProperty.GetValue(defaultObject);
 
-                object overrideObjectPropertyValue = overrideObject != null
+                object overrideObjectPropertyValue = overrideObject is not null
                     ? objectTypeProperty.GetValue(overrideObject) 
                     : defaultObjectPropertyValue;
 
