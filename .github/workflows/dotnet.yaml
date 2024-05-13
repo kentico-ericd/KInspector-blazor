@@ -38,7 +38,7 @@ jobs:
         cd ./src/KInspector.Blazor
         dotnet publish KInspector.Blazor.csproj /p:PublishDir=..\..\publish -c Release -r win-x64 --self-contained true
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: KInspector
         path: .\publish
