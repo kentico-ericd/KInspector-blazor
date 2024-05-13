@@ -1,7 +1,7 @@
 ﻿@using KInspector.Core.Constants
 @using KInspector.Core.Models
 
-<div class="p-5 text-gray-500 dark:text-gray-400 border border-b-0 border-gray-200 dark:border-gray-700">
+<div class="p-5 module-results text-gray-500 dark:text-gray-400 border border-b-0 border-gray-200 dark:border-gray-700">
     <span class="@Color font-bold">@Results!.Summary</span>
     @if (Results!.Type != ResultsType.NoResults)
     {
@@ -19,7 +19,7 @@
             case ResultsType.StringList:
                 if (Results!.StringResults.Any())
                 {
-                    <div class="flex-col items-center p-2">
+                    <div class="flex-col items-center py-2">
                         <ul class="w-full mb-4 overflow-x-auto">
                             @foreach (var str in Results!.StringResults)
                             {

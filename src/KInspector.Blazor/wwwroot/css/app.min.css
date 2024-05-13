@@ -2073,9 +2073,15 @@ input:checked + .toggle-bg {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-.module-accordion .module-body .module-description ul {
+.module-accordion .module-description ul,
+.module-accordion .module-results ul {
   list-style-type: disc;
   list-style-position: inside;
+  margin-left: 12px;
+}
+
+.module-accordion .module-results .result-table .pagination ul {
+  list-style-type: none;
 }
 
 .after\:absolute::after {

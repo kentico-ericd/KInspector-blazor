@@ -1,4 +1,6 @@
-﻿namespace KInspector.Core.Helpers
+﻿using System.Text;
+
+namespace KInspector.Core.Helpers
 {
     public static class VersionHelper
     {
@@ -18,12 +20,13 @@
 
         public static string ExpandVersionString(string version)
         {
+            var builder = new StringBuilder(version);
             for (int i = 0; i < 2; i++)
             {
-                version += ".0";
+                builder.Append(".0");
             }
 
-            return version;
+            return builder.ToString();
         }
     }
 }

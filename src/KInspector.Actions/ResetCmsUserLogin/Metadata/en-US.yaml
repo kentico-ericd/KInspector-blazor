@@ -1,5 +1,5 @@
 ﻿details:
-  name: Global Administrator Summary
+  name: Reset global administrator
   shortDescription: Reset a global administrator so that you can login with an empty password.
   longDescription: |
     This action ensures that the global administrator user is enabled, their password is blank, and their last changed date is reset to today.

@@ -67,10 +67,11 @@ namespace KInspector.Actions.ResetCmsUserLogin
 
         public override ModuleResults GetInvalidOptionsResult()
         {
-            return new ModuleResults {
-                Status = ResultsStatus.Error,
-                Summary = Metadata.Terms.InvalidOptions
-            };
+            var result = ExecuteListing();
+            result.Status = ResultsStatus.Error;
+            result.Summary = Metadata.Terms.InvalidOptions;
+
+            return result;
         }
 
         private bool UserIsValid(int? userId)

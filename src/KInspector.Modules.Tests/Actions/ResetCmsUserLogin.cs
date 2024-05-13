@@ -62,6 +62,8 @@ namespace KInspector.Tests.Common.Actions
             var results = _mockAction.Execute(optionJson);
 
             // Assert
+            Assert.That(results.TableResults.Any());
+            Assert.That(results.TableResults.FirstOrDefault()?.Rows.Count() == 4);
             Assert.That(results.Status == ResultsStatus.Error);
             _mockDatabaseService.Verify(m => m.ExecuteSqlFromFileGeneric(Scripts.ResetAndEnableUser, It.IsAny<object>()), Times.Never());
         }

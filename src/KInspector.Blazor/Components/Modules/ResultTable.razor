@@ -1,7 +1,7 @@
 ﻿@using System.Reflection
 @using KInspector.Core.Models
 
-<div class="relative w-full my-4 overflow-x-auto sm:rounded-lg">
+<div class="relative result-table w-full my-4 overflow-x-auto sm:rounded-lg">
     <div class="w-full max-w-screen-xlmx-auto">
         <div class="relative overflow-hidden bg-white dark:bg-gray-700">
             <div class="flex-row items-center justify-between p-4 space-y-3 sm:flex sm:space-y-0 sm:space-x-4">
@@ -43,7 +43,7 @@
             }
         </tbody>
     </table>
-    <nav class="flex p-2 items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+    <nav class="pagination flex p-2 items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
         <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
             Showing <span class="font-semibold text-gray-900 dark:text-white">@CurrentPageStartingIndex-@CurrentPageEndingIndex</span>
             of <span class="font-semibold text-gray-900 dark:text-white">@RowCount</span>
