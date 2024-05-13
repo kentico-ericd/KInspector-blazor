@@ -4,6 +4,8 @@ using KInspector.Core.Services.Interfaces;
 
 using Newtonsoft.Json;
 
+using System.Reflection;
+
 namespace KInspector.Core
 {
     public abstract class AbstractAction<TTerms,TOptions>
@@ -16,13 +18,19 @@ namespace KInspector.Core
         protected AbstractAction(IModuleMetadataService moduleMetadataService)
             : base(moduleMetadataService) { }
 
-        public ModuleResults Execute(string OptionsJson) {
+        public ModuleResults Execute(string optionsJson)
+        {
             try
             {
-                var options = JsonConvert.DeserializeObject<TOptions>(OptionsJson);
-                if (options is null)
+                var options = JsonConvert.DeserializeObject<TOptions>(optionsJson);
+                if (OptionsNull(options))
                 {
-                    throw new InvalidOperationException("Error deserializing action options.");
+                    return ExecuteListing();
+                }
+
+                if (OptionsPartial(options))
+                {
+                    return ExecutePartial(options);
                 }
 
                 return Execute(options);
@@ -38,8 +46,64 @@ namespace KInspector.Core
             return typeof(TOptions);
         }
 
-        public abstract ModuleResults Execute(TOptions Options);
+        /// <summary>
+        /// Executed when all options are populated.
+        /// </summary>
+        public abstract ModuleResults Execute(TOptions? options);
+
+        /// <summary>
+        /// Executed when at least one option has a value and one doesn't.
+        /// This could be a valid scenario where an option is hidden and not needed when another option
+        /// is set to a specific value.
+        /// </summary>
+        public abstract ModuleResults ExecutePartial(TOptions? options);
+
+        /// <summary>
+        /// Executed when no options are provided. Should display a list of data that can be modified by
+        /// the action.
+        /// </summary>
+        public abstract ModuleResults ExecuteListing();
 
         public abstract ModuleResults GetInvalidOptionsResult();
+
+        /// <summary>
+        /// Returns <c>true</c> if at least one option has a value and one doesn't.
+        /// </summary>
+        private bool OptionsPartial(TOptions? options)
+        {
+            var hasNull = false;
+            var hasValue = false;
+            PropertyInfo[] properties = typeof(TOptions).GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.GetValue(options) is null)
+                {
+                    hasNull = true;
+                }
+                else
+                {
+                    hasValue = true;
+                }
+            }
+
+            return hasNull && hasValue;
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if all options are null.
+        /// </summary>
+        private bool OptionsNull(TOptions? options)
+        {
+            PropertyInfo[] properties = typeof(TOptions).GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.GetValue(options) is not null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

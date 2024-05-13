@@ -1,21 +1,21 @@
-﻿using KInspector.Actions.ResetCmsUserLogin.Models;
+﻿using KInspector.Actions.SiteStatusSummary.Models;
 using KInspector.Core;
 using KInspector.Core.Constants;
 using KInspector.Core.Helpers;
 using KInspector.Core.Models;
 using KInspector.Core.Services.Interfaces;
 
-namespace KInspector.Actions.ResetCmsUserLogin
+namespace KInspector.Actions.SiteStatusSummary
 {
     public class Action : AbstractAction<Terms, Options>
     {
         private readonly IDatabaseService databaseService;
 
-        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12", "13");
+        public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("12", "13");
 
         public override IList<string> Tags => new List<string> {
-            ModuleTags.Reset,
-            ModuleTags.User
+            ModuleTags.Site,
+            ModuleTags.Configuration
         };
 
         public Action(IDatabaseService databaseService, IModuleMetadataService moduleMetadataService) : base(moduleMetadataService)
@@ -25,22 +25,22 @@ namespace KInspector.Actions.ResetCmsUserLogin
 
         public override ModuleResults Execute(Options? options)
         {
-            if (options?.UserId < 0)
-            {
-                return GetInvalidOptionsResult();
-            }
-
-            // No user provided, list users
-            if (options?.UserId == 0)
+            if (options?.SiteId == 0)
             {
                 return ExecuteListing();
             }
 
-            // Reset provided user
-            databaseService.ExecuteSqlFromFileGeneric(Scripts.ResetAndEnableUser, new { UserID = options?.UserId });
+            if (!SiteIsValid(options?.SiteId))
+            {
+                return GetInvalidOptionsResult();
+            }
+
+            databaseService.ExecuteSqlFromFileGeneric(Scripts.StopSite, new { SiteID = options?.SiteId });
             var result = ExecuteListing();
-            result.Summary = Metadata.Terms.UserReset?.With(new {
-                userId = options?.UserId
+            result.Status = ResultsStatus.Good;
+            result.Summary = Metadata.Terms.SiteStopped?.With(new
+            {
+                siteId = options?.SiteId
             });
 
             return result;
@@ -54,7 +54,7 @@ namespace KInspector.Actions.ResetCmsUserLogin
 
         public override ModuleResults ExecuteListing()
         {
-            var administratorUsers = databaseService.ExecuteSqlFromFile<CmsUser>(Scripts.GetAdministrators);
+            var sites = databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
             var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
@@ -64,7 +64,7 @@ namespace KInspector.Actions.ResetCmsUserLogin
             results.TableResults.Add(new TableResult
             {
                 Name = Metadata.Terms.TableTitle,
-                Rows = administratorUsers
+                Rows = sites
             });
 
             return results;
@@ -72,10 +72,20 @@ namespace KInspector.Actions.ResetCmsUserLogin
 
         public override ModuleResults GetInvalidOptionsResult()
         {
-            return new ModuleResults {
-                Status = ResultsStatus.Error,
-                Summary = Metadata.Terms.InvalidOptions
-            };
+            var result = ExecuteListing();
+            result.Status = ResultsStatus.Error;
+            result.Summary = Metadata.Terms.InvalidOptions;
+
+            return result;
+        }
+
+        private bool SiteIsValid(int? siteId)
+        {
+            var sites = databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
+
+            return siteId > 0 &&
+                sites.Any(s => s.ID == siteId) &&
+                (sites.FirstOrDefault(s => s.ID == siteId)?.Running ?? true);
         }
     }
 }

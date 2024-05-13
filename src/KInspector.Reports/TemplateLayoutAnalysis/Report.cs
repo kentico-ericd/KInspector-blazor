@@ -20,8 +20,8 @@ namespace KInspector.Reports.TemplateLayoutAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information,
-            ReportTags.PortalEngine
+            ModuleTags.Information,
+            ModuleTags.PortalEngine
         };
 
         public override ModuleResults GetResults()

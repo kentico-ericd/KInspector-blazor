@@ -21,8 +21,8 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information,
-            ReportTags.Health
+            ModuleTags.Information,
+            ModuleTags.Health
         };
 
         public override ModuleResults GetResults()

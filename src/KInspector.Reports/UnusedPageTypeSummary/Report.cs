@@ -20,7 +20,7 @@ namespace KInspector.Reports.UnusedPageTypeSummary
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information
+            ModuleTags.Information
         };
 
         public override ModuleResults GetResults()

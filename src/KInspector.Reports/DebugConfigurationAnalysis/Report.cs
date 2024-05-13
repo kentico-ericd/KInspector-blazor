@@ -29,7 +29,7 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
         public override IList<Version> CompatibleVersions => VersionHelper.GetVersionList("10", "11", "12", "13");
 
         public override IList<string> Tags => new List<string> {
-           ReportTags.Health
+           ModuleTags.Health
         };
 
         public override ModuleResults GetResults()

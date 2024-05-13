@@ -1,6 +1,6 @@
 ﻿namespace KInspector.Core.Constants
 {
-    public static class ReportTags
+    public static class ModuleTags
     {
         public const string Consistency = "Consistency";
         public const string EventLog = "Event Log";
@@ -14,5 +14,11 @@
         public const string WebParts = "Web Parts";
         public const string Configuration = "Configuration";
         public const string OnlineMarketing = "On-line Marketing";
+        public const string Reset = "Reset";
+        public const string User = "User";
+        public const string Site = "Site";
+        public const string WebFarms = "Web farms";
+        public const string Staging = "Content staging";
+        public const string Emails = "Emails";
     }
 }

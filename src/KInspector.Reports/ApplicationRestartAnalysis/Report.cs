@@ -16,8 +16,8 @@ namespace KInspector.Reports.ApplicationRestartAnalysis
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.EventLog,
-            ReportTags.Health
+            ModuleTags.EventLog,
+            ModuleTags.Health
         };
 
         public Report(

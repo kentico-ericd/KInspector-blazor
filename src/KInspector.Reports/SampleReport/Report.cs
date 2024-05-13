@@ -18,7 +18,7 @@ namespace KInspector.Reports.SampleReport
         public override IList<Version> CompatibleVersions => new Version[0];
 
         public override IList<string> Tags => new List<string> {
-            ReportTags.Consistency
+            ModuleTags.Consistency
         };
 
         public override ModuleResults GetResults()

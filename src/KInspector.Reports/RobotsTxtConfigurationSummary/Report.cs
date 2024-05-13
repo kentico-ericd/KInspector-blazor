@@ -36,8 +36,8 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
 
         public override IList<string> Tags => new List<string>
         {
-            ReportTags.Information,
-            ReportTags.SEO,
+            ModuleTags.Information,
+            ModuleTags.SEO,
         };
 
         public override ModuleResults GetResults()
