@@ -9,9 +9,9 @@ namespace KInspector.Core.Services.Interfaces
 
         ModuleResults GetReportResults(IReport report);
 
-        IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null);
+        IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null);
 
-        IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null);
+        IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null);
 
         IAction? GetAction(string codename);
 

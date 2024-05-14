@@ -1,12 +1,5 @@
 ﻿@page "/actions"
-@using KInspector.Blazor.Components.Modules
-@using KInspector.Core.Modules
-@using KInspector.Core.Repositories.Interfaces
-@using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
-@inject IModuleService moduleService
-@inject IActionRepository actionRepository
-@inject IJSRuntime js
 
 <PageTitle>Actions</PageTitle>
 
@@ -22,7 +15,7 @@
     </div>
     <div class="mt-2 mb-4 text-sm">
         <p class="mb-2">Actions <b>modfiy data</b> in the connected database. Please ensure you have a backup before running actions!</p>
-        <p>When you run an action without any parameters, the corresponding database table will be shown, allowing you to determine what parameters to suppy. To modify the data, enter the parameters in the form and re-run the action.</p>
+        <p>When you run an action without any parameters, the corresponding database table will be shown, allowing you to determine what parameters to supply. To modify the data, enter the parameters in the form and re-run the action.</p>
     </div>
     <button type="button"
         data-dismiss-target="#alert-additional-content-1" aria-label="Close"
@@ -31,54 +24,4 @@
     </button>
 </div>
 
-<ModuleFilters Tags="UsedTags" FiltersChanged="UpdateState" @ref="Filters" />
-
-<div class="space-y-8 lg:space-y-0">
-    @foreach (var action in ActionList)
-    {
-        <ActionAccordion Action="@action" />
-    }
-</div>
-
-@code {
-    ModuleFilters? Filters;
-
-    private IEnumerable<string> UsedTags
-    {
-        get
-        {
-            var actions = actionRepository.GetActions();
-            var tags = Enumerable.Empty<string>();
-            foreach (var a in actions)
-            {
-                tags = tags.Union(a.Tags);
-            }
-
-            return tags;
-        }
-    }
-
-    private IEnumerable<IAction> ActionList
-    {
-        get
-        {
-            var tag = Filters?.SelectedTag;
-            var showUntested = Filters?.ShowUntested ?? false;
-            var showIncompatible = Filters?.ShowIncompatible ?? false;
-
-            return moduleService.GetActions(showUntested, showIncompatible, tag);
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool isFirstRender)
-    {
-        // Init Flowbite every time, not just first load as accordions added to the layout by filters
-        // don't function without Flowbite
-        await js.InvokeVoidAsync("window.initializeFlowbite");
-    }
-
-    private void UpdateState()
-    {
-        StateHasChanged();
-    }
-}
+<ActionList />

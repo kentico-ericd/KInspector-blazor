@@ -8,7 +8,7 @@ namespace KInspector.Core.Models
     public class ModuleResults
     {
         [JsonConverter(typeof(StringEnumConverter))]
-        public ResultsStatus Status { get; set; }
+        public ResultsStatus Status { get; set; } = ResultsStatus.NotRun;
 
         public string? Summary { get; set; }
 

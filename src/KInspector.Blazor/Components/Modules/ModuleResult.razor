@@ -1,59 +1,30 @@
 ﻿@using KInspector.Core.Constants
 @using KInspector.Core.Models
 
-<div class="p-5 module-results text-gray-500 dark:text-gray-400 border border-b-0 border-gray-200 dark:border-gray-700">
-    <span class="@Color font-bold">@Results!.Summary</span>
-    @if (Results!.Type != ResultsType.NoResults)
-    {
-        
-        @switch (Results!.Type)
+@switch (Results!.Type)
+{
+    case ResultsType.TableList:
+        foreach (var table in Results!.TableResults)
         {
-            case ResultsType.TableList:
-                foreach (var table in Results!.TableResults)
-                {
-                    <div class="flex-col items-center p-2">
-                        <ResultTable Table="@table" />
-                    </div>
-                }
-                break;
-            case ResultsType.StringList:
-                if (Results!.StringResults.Any())
-                {
-                    <div class="flex-col items-center py-2">
-                        <ul class="w-full mb-4 overflow-x-auto">
-                            @foreach (var str in Results!.StringResults)
-                            {
-                                <li>@str</li>
-                            }
-                        </ul>
-                    </div>
-                }
-                break;
+            if (!table.Rows.Any()) continue;
+
+            <ResultTable Table="@table" />
         }
-    }
-</div>
+        break;
+    case ResultsType.StringList:
+        if (Results!.StringResults.Any())
+        {
+            <ul class="w-full overflow-x-auto">
+                @foreach (var str in Results!.StringResults)
+                {
+                    <li>@str</li>
+                }
+            </ul>
+        }
+        break;
+}
 
 @code {
     [Parameter, EditorRequired]
     public ModuleResults? Results { get; set; }
-
-    private string Color
-    {
-        get
-        {
-            switch (Results!.Status)
-            {
-                case ResultsStatus.Good:
-                    return Constants.COLOR_GOOD;
-                case ResultsStatus.Error:
-                    return Constants.COLOR_ERROR;
-                case ResultsStatus.Information:
-                    return Constants.COLOR_INFO;
-                case ResultsStatus.Warning:
-                    return Constants.COLOR_WARN;
-                default:
-                    return "";
-            }
-        }
-    }
 }

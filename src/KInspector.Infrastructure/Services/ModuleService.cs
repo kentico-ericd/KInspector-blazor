@@ -13,14 +13,22 @@ namespace KInspector.Infrastructure.Services
         private readonly IReportRepository reportRepository;
         private readonly IActionRepository actionRepository;
         private readonly IInstanceService instanceService;
+        private readonly IModuleMetadataService moduleMetadataService;
 
-        public ModuleService(IReportRepository reportRepository, IActionRepository actionRepository, IConfigService configService, IDatabaseService databaseService, IInstanceService instanceService)
+        public ModuleService(
+            IReportRepository reportRepository,
+            IActionRepository actionRepository,
+            IConfigService configService,
+            IDatabaseService databaseService,
+            IInstanceService instanceService,
+            IModuleMetadataService moduleMetadataService)
         {
             this.reportRepository = reportRepository;
             this.actionRepository = actionRepository;
             this.configService = configService;
             this.databaseService = databaseService;
             this.instanceService = instanceService;
+            this.moduleMetadataService = moduleMetadataService;
         }
 
         public ModuleResults ExecuteAction(IAction action, string optionsJson)
@@ -38,7 +46,7 @@ namespace KInspector.Infrastructure.Services
 
         public IAction? GetAction(string codename) => actionRepository.GetAction(codename);
 
-        public IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null)
+        public IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
         {
             var instance = configService.GetCurrentInstance();
             if (instance is null)
@@ -66,6 +74,16 @@ namespace KInspector.Infrastructure.Services
             if (!string.IsNullOrEmpty(tag))
             {
                 filtered = filtered.Where(r => r.Tags.Contains(tag));
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                filtered = filtered.Where(r =>
+                {
+                    var details = moduleMetadataService.GetModuleDetails(r.Codename);
+
+                    return details.Name?.Contains(name, StringComparison.InvariantCultureIgnoreCase) ?? true;
+                });
             }
 
             return filtered.OrderBy(r => r.Codename);
@@ -98,7 +116,7 @@ namespace KInspector.Infrastructure.Services
             }
         }
 
-        public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null)
+        public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
         {
             var instance = configService.GetCurrentInstance();
             if (instance is null)
@@ -126,6 +144,16 @@ namespace KInspector.Infrastructure.Services
             if (!string.IsNullOrEmpty(tag))
             {
                 filtered = filtered.Where(r => r.Tags.Contains(tag));
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                filtered = filtered.Where(r =>
+                {
+                    var details = moduleMetadataService.GetModuleDetails(r.Codename);
+
+                    return details.Name?.Contains(name, StringComparison.InvariantCultureIgnoreCase) ?? true;
+                });
             }
 
             return filtered.OrderBy(r => r.Codename);
