@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime js
 
 <PageTitle>KInspector</PageTitle>
 
@@ -10,11 +9,3 @@
         @Body
     </main>
 </div>
-
-@code {
-    protected override async Task OnAfterRenderAsync(bool isFirstRender)
-    {
-        // Init Flowbite every time, not just first load as elements added to the layout dynamically don't function without Flowbite
-        await js.InvokeVoidAsync("window.initializeFlowbite");
-    }
-}

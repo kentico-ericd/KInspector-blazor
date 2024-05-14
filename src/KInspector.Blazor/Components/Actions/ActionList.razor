@@ -1,6 +1,8 @@
 ﻿@using KInspector.Core.Modules
 @using KInspector.Core.Repositories.Interfaces
 @using KInspector.Core.Services.Interfaces
+@inherits LayoutComponentBase
+@inject IJSRuntime js
 @inject IModuleService moduleService
 @inject IActionRepository actionRepository
 
@@ -42,5 +44,11 @@
 
             return moduleService.GetActions(showUntested, showIncompatible, tag, nameFilter);
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        // Init Flowbite every time, not just first load as elements added to the layout dynamically don't function without Flowbite
+        await js.InvokeVoidAsync("window.initializeFlowbite");
     }
 }

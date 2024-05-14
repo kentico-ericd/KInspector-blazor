@@ -55,3 +55,13 @@
 }
 
 <NewInstanceModal />
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        if (isFirstRender)
+        {
+            await js.InvokeVoidAsync("window.initializeFlowbite");
+        }
+    }
+}

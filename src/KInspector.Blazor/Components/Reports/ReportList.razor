@@ -2,6 +2,7 @@
 @using KInspector.Core.Repositories.Interfaces
 @using KInspector.Core.Services.Interfaces
 @inherits LayoutComponentBase
+@inject IJSRuntime js
 @inject IModuleService moduleService
 @inject IReportRepository reportRepository
 
@@ -17,19 +18,6 @@
 @code {
     ModuleFilters? Filters;
 
-    private IEnumerable<IReport> Reports
-    {
-        get
-        {
-            var tag = Filters?.SelectedTag;
-            var showUntested = Filters?.ShowUntested ?? false;
-            var showIncompatible = Filters?.ShowIncompatible ?? false;
-            var nameFilter = Filters?.NameFilter;
-
-            return moduleService.GetReports(showUntested, showIncompatible, tag, nameFilter);
-        }
-    }
-
     private IEnumerable<string> UsedTags
     {
         get
@@ -43,5 +31,24 @@
 
             return tags;
         }
+    }
+
+    private IEnumerable<IReport> Reports
+    {
+        get
+        {
+            var tag = Filters?.SelectedTag;
+            var showUntested = Filters?.ShowUntested ?? false;
+            var showIncompatible = Filters?.ShowIncompatible ?? false;
+            var nameFilter = Filters?.NameFilter;
+
+            return moduleService.GetReports(showUntested, showIncompatible, tag, nameFilter);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        // Init Flowbite every time, not just first load as elements added to the layout dynamically don't function without Flowbite
+        await js.InvokeVoidAsync("window.initializeFlowbite");
     }
 }
