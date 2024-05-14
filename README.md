@@ -11,7 +11,7 @@ The application is Kentico version agnostic and has no dependencies on version-s
 
 ## Quick Start
 
-Download the [latest release](https://github.com/Kentico/KInspector/releases/latest) and extract the contents to a local directory. Run `KenticoInspector.WebApplication.exe` and open your browser to either https://localhost:5001 or http://localhost:5000.
+Download the [latest release](https://github.com/kentico-ericd/kinspector-blazor/releases/latest) and extract the contents to a local directory. Run `KenticoInspector.WebApplication.exe` and open your browser to either https://localhost:5001 or http://localhost:5000.
 
 You can optionally register the application in IIS. This allows you to have the tool always available, for example, on a development server. Point your IIS directory to the folder where you extracted everything to and make sure the application pool's .NET CLR version is set to `No managed code`. Open the site in your browser.
 
