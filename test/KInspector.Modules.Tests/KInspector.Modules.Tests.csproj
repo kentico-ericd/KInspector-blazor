@@ -8,14 +8,14 @@
   <ItemGroup>
     <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.14.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="NUnit" Version="4.1.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KInspector.Actions\KInspector.Actions.csproj" />
-    <ProjectReference Include="..\KInspector.Reports\KInspector.Reports.csproj" />
+    <ProjectReference Include="..\..\src\KInspector.Actions\KInspector.Actions.csproj" />
+    <ProjectReference Include="..\..\src\KInspector.Reports\KInspector.Reports.csproj" />
     <ProjectReference Include="..\KInspector.Tests.Common\KInspector.Tests.Common.csproj" />
   </ItemGroup>
 

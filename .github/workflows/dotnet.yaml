@@ -18,21 +18,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET
+    - name: Setu`p .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Build Blazor app
       run: |
         cd ./src/KInspector.Blazor
         npm i
         npm run css
-    - name: Build solution
-      run: dotnet build --no-restore
+        dotnet build
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: |
+        cd ./test
+        dotnet test --verbosity normal
     - name: Publish Blazor app
       run: |
         cd ./src/KInspector.Blazor
