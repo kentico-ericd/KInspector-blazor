@@ -23,46 +23,46 @@
     <None Update="ResetCmsUserLogin\Scripts\ResetAndEnableUser.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SiteStatusSummary\Metadata\en-US.yaml">
+    <None Update="StopRunningSites\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SiteStatusSummary\Scripts\GetSiteSummary.sql">
+    <None Update="StopRunningSites\Scripts\GetSiteSummary.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SiteStatusSummary\Scripts\StopSite.sql">
+    <None Update="StopRunningSites\Scripts\StopSite.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SmtpServerSummary\Metadata\en-US.yaml">
+    <None Update="DisableSmtpServers\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SmtpServerSummary\Scripts\DisableSiteSmtpServer.sql">
+    <None Update="DisableSmtpServers\Scripts\DisableSiteSmtpServer.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SmtpServerSummary\Scripts\DisableSmtpServer.sql">
+    <None Update="DisableSmtpServers\Scripts\DisableSmtpServer.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SmtpServerSummary\Scripts\GetSmtpFromSettingsKeys.sql">
+    <None Update="DisableSmtpServers\Scripts\GetSmtpFromSettingsKeys.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SmtpServerSummary\Scripts\GetSmtpFromSmtpServers.sql">
+    <None Update="DisableSmtpServers\Scripts\GetSmtpFromSmtpServers.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="StagingServerSummary\Metadata\en-US.yaml">
+    <None Update="DisableStagingServers\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="StagingServerSummary\Scripts\DisableServer.sql">
+    <None Update="DisableStagingServers\Scripts\DisableServer.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="StagingServerSummary\Scripts\GetStagingServerSummary.sql">
+    <None Update="DisableStagingServers\Scripts\GetStagingServerSummary.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebFarmServerSummary\Metadata\en-US.yaml">
+    <None Update="DisableWebFarmServers\Metadata\en-US.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebFarmServerSummary\Scripts\DisableServer.sql">
+    <None Update="DisableWebFarmServers\Scripts\DisableServer.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="WebFarmServerSummary\Scripts\GetWebFarmServerSummary.sql">
+    <None Update="DisableWebFarmServers\Scripts\GetWebFarmServerSummary.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
