@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
 using KInspector.Core.Models;
 
@@ -7,7 +6,7 @@ namespace KInspector.Core.Helpers
 {
     public static class DatabaseHelper
     {
-        public static IDbConnection GetSqlConnection(DatabaseSettings databaseSettings)
+        public static SqlConnection GetSqlConnection(DatabaseSettings databaseSettings)
         {
             if (!string.IsNullOrEmpty(databaseSettings.AdministrationConnectionString))
             {
