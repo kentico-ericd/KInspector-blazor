@@ -24,10 +24,10 @@ The application should automatically detect the connection string from the `web.
 
 Reports provide detailed information about the Kentico instance and potential issues, _without_ modifying any data. After you click the "Run" button to run the report, the status bar will change to a color indicating the status:
 
-- <span style="color:#48bb78">Success</span>: There are no issues in the results
-- <span style="color:#4299e1">Information</span>: The results contain information for your review
-- <span style="color:#ed8936">Warning</span>: The results contain issues that can be reviewed, but don't necessarily need resolving
-- <span style="color:#f56565">Error</span>: The results contain issues that should be resolved, either manually or by running an [action](#actions)
+- :green_book: Success: There are no issues in the results
+- :blue_book: Information: The results contain information for your review
+- :orange_book: Warning: The results contain issues that can be reviewed, but don't necessarily need resolving
+- :closed_book: Error: The results contain issues that should be resolved, either manually or by running an [action](#actions)
 
 You can click the __Results__ tab to view the detailed information provided by the report.
 
@@ -37,6 +37,6 @@ You can click the __Results__ tab to view the detailed information provided by t
 
 Clicking the "Run" button without providing options will display a list of the data that can be modified by the action. After reviewing the data on the __Results__ tab, switch to the __Options__ tab and add the action parameters. When you click "Run" again, the data will be modified and the status bar will change to a color indicating the status:
 
-- <span style="color:#48bb78">Success</span>: There data was modified successfully
-- <span style="color:#4299e1">Information</span>: Options were not set and data can be reviewed on the Results tab
-- <span style="color:#f56565">Error</span>: One or more of the options are invalid, or an exception occurred
+- :green_book: Success: There data was modified successfully
+- :blue_book: Information: Options were not set and data can be reviewed on the Results tab
+- :closed_book: Error: One or more of the options are invalid, or an exception occurred
