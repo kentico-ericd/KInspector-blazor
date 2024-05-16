@@ -31,12 +31,12 @@ namespace KInspector.Reports.ClassTableValidation
             ModuleTags.Health,
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
             var instance = configService.GetCurrentInstance();
             var instanceDetails = instanceService.GetInstanceDetails(instance);
-            var tablesWithMissingClass = GetResultsForTables(instanceDetails);
-            var classesWithMissingTable = GetResultsForClasses();
+            var tablesWithMissingClass = await GetResultsForTables(instanceDetails);
+            var classesWithMissingTable = await GetResultsForClasses();
 
             return CompileResults(tablesWithMissingClass, classesWithMissingTable);
         }
@@ -79,15 +79,11 @@ namespace KInspector.Reports.ClassTableValidation
             return results;
         }
 
-        private IEnumerable<ClassWithNoTable> GetResultsForClasses()
-        {
-            var classesWithMissingTable = databaseService.ExecuteSqlFromFile<ClassWithNoTable>(Scripts.ClassesWithNoTable);
-            return classesWithMissingTable;
-        }
+        private Task<IEnumerable<ClassWithNoTable>> GetResultsForClasses() => databaseService.ExecuteSqlFromFile<ClassWithNoTable>(Scripts.ClassesWithNoTable);
 
-        private IEnumerable<TableWithNoClass> GetResultsForTables(InstanceDetails instanceDetails)
+        private async Task<IEnumerable<TableWithNoClass>> GetResultsForTables(InstanceDetails instanceDetails)
         {
-            var tablesWithMissingClass = databaseService.ExecuteSqlFromFile<TableWithNoClass>(Scripts.TablesWithNoClass);
+            var tablesWithMissingClass = await databaseService.ExecuteSqlFromFile<TableWithNoClass>(Scripts.TablesWithNoClass);
 
             var tableWhitelist = GetTableWhitelist(instanceDetails.AdministrationDatabaseVersion);
             if (tableWhitelist.Count > 0)

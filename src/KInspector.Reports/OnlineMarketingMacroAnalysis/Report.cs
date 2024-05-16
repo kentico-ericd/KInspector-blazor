@@ -23,11 +23,11 @@ namespace KInspector.Reports.OnlineMarketingMacroAnalysis
             ModuleTags.OnlineMarketing
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var contactGroups = databaseService.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions);
-            var automationTriggers = databaseService.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions);
-            var scoreRules = databaseService.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions);
+            var contactGroups = await databaseService.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions);
+            var automationTriggers = await databaseService.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions);
+            var scoreRules = await databaseService.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions);
             if (!contactGroups.Any() && !automationTriggers.Any() && !scoreRules.Any())
             {
                 return new ModuleResults

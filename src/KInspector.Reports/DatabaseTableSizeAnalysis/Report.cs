@@ -22,9 +22,9 @@ namespace KInspector.Reports.DatabaseTableSizeAnalysis
             ModuleTags.Health
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var top25LargestTables = databaseService.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables);
+            var top25LargestTables = await databaseService.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables);
             var results = new ModuleResults
             {
                 Status = ResultsStatus.Information,

@@ -40,17 +40,17 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             ModuleTags.SEO,
         };
 
-        public override ModuleResults GetResults()
+        public override Task<ModuleResults> GetResults()
         {
             var adminUrl = configService.GetCurrentInstance()?.AdministrationUrl;
             if (adminUrl is null)
             {
-                return new ModuleResults
+                return Task.FromResult(new ModuleResults
                 {
                     Status = ResultsStatus.Warning,
                     Summary = Metadata.Terms.RobotsTxtNotFound,
                     Type = ResultsType.NoResults
-                };
+                });
             }
 
             var instanceUri = new Uri(adminUrl);
@@ -59,13 +59,13 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             return GetUriResults(testUri);
         }
 
-        private ModuleResults GetUriResults(Uri testUri)
+        private async Task<ModuleResults> GetUriResults(Uri testUri)
         {
             try
             {
                 // Ignore invalid certificates
                 ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((a, b, c, d) => { return true; });
-                HttpResponseMessage response = _httpClient.GetAsync(testUri).ConfigureAwait(false).GetAwaiter().GetResult();
+                HttpResponseMessage response = await _httpClient.GetAsync(testUri);
                 var found = response.StatusCode == HttpStatusCode.OK;
 
                 return new ModuleResults

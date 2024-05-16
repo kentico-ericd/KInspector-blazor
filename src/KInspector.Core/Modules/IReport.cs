@@ -4,6 +4,6 @@ namespace KInspector.Core.Modules
 {
     public interface IReport : IModule
     {
-        ModuleResults GetResults();
+        Task<ModuleResults> GetResults();
     }
 }

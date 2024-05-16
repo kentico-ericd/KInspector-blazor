@@ -23,15 +23,16 @@ namespace KInspector.Actions.DisableWebFarmServers
             this.databaseService = databaseService;
         }
 
-        public override ModuleResults Execute(Options? options)
+        public async override Task<ModuleResults> Execute(Options? options)
         {
-            if (!ServerIsValid(options?.ServerId))
+            var isValid = await ServerIsValid(options?.ServerId);
+            if (!isValid)
             {
-                return GetInvalidOptionsResult();
+                return await GetInvalidOptionsResult();
             }
 
-            databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableServer, new { ServerID = options?.ServerId });
-            var result = ExecuteListing();
+            await databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableServer, new { ServerID = options?.ServerId });
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.ServerDisabled.With(new
             {
@@ -41,15 +42,15 @@ namespace KInspector.Actions.DisableWebFarmServers
             return result;
         }
 
-        public override ModuleResults ExecutePartial(Options? options)
+        public override Task<ModuleResults> ExecutePartial(Options? options)
         {
             // All options are required for this action
             throw new NotImplementedException();
         }
 
-        public override ModuleResults ExecuteListing()
+        public async override Task<ModuleResults> ExecuteListing()
         {
-            var servers = databaseService.ExecuteSqlFromFile<WebFarmServer>(Scripts.GetWebFarmServerSummary);
+            var servers = await databaseService.ExecuteSqlFromFile<WebFarmServer>(Scripts.GetWebFarmServerSummary);
             var result = new ModuleResults
             {
                 Type = ResultsType.TableList,
@@ -65,18 +66,18 @@ namespace KInspector.Actions.DisableWebFarmServers
             return result;
         }
 
-        public override ModuleResults GetInvalidOptionsResult()
+        public async override Task<ModuleResults> GetInvalidOptionsResult()
         {
-            var result = ExecuteListing();
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Error;
             result.Summary = Metadata.Terms.InvalidOptions;
 
             return result;
         }
 
-        private bool ServerIsValid(int? serverId)
+        private async Task<bool> ServerIsValid(int? serverId)
         {
-            var servers = databaseService.ExecuteSqlFromFile<WebFarmServer>(Scripts.GetWebFarmServerSummary);
+            var servers = await databaseService.ExecuteSqlFromFile<WebFarmServer>(Scripts.GetWebFarmServerSummary);
 
             return serverId > 0 && servers.Any(s => s.ID == serverId);
         }

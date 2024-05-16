@@ -42,16 +42,16 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
             this.configService = configService;
         }
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
             var cmsSettingsKeysNames = new SettingsKeyAnalyzers(null)
                 .Analyzers
                 .Select(analyzer => analyzer.Parameters[0].Name);
 
-            var cmsSettingsKeys = databaseService.ExecuteSqlFromFile<CmsSettingsKey>(
+            var cmsSettingsKeys = await databaseService.ExecuteSqlFromFile<CmsSettingsKey>(
                 Scripts.GetSecurityCmsSettings,
                 new { cmsSettingsKeysNames }
-                );
+            );
 
             var cmsSettingsKeyResults = GetCmsSettingsKeyResults(cmsSettingsKeys);
 
@@ -59,10 +59,10 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
                 .SelectMany(cmsSettingsKeyResult => cmsSettingsKeyResult.GetCategoryIdsOnPath())
                 .Distinct();
 
-            var cmsSettingsCategories = databaseService.ExecuteSqlFromFile<CmsSettingsCategory>(
+            var cmsSettingsCategories = await databaseService.ExecuteSqlFromFile<CmsSettingsCategory>(
                 Scripts.GetCmsSettingsCategories,
                 new { cmsSettingsCategoryIdsOnPaths }
-                );
+            );
 
             var currentInstance = configService.GetCurrentInstance();
             var sites = instanceService
@@ -82,7 +82,7 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
                     cmsSettingsCategories,
                     sites ?? Enumerable.Empty<Site>(),
                     resxValues
-                    ));
+                ));
 
             var webConfigXml = cmsFileService.GetXmlDocument(instancePath, DefaultKenticoPaths.WebConfigFile);
             var webConfigSettingsResults = GetWebConfigSettingsResults(webConfigXml);
@@ -214,13 +214,13 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
                 errorModuleResults.TableResults,
                 cmsSettingsKeyResults,
                 Metadata.Terms.TableTitles?.AdminSecuritySettings
-                );
+            );
 
             var webConfigSettingsResultsCount = IfAnyAddTableResult(
                 errorModuleResults.TableResults,
                 webConfigSettingsResults,
                 Metadata.Terms.TableTitles?.WebConfigSecuritySettings
-                );
+            );
 
             errorModuleResults.Summary = Metadata.Terms.Summaries?.Warning?.With(new
             {
@@ -247,10 +247,9 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
 
         private static XDocument ToXDocument(XmlDocument document, LoadOptions options = LoadOptions.None)
         {
-            using (var reader = new XmlNodeReader(document))
-            {
-                return XDocument.Load(reader, options);
-            }
+            using var reader = new XmlNodeReader(document);
+
+            return XDocument.Load(reader, options);
         }
     }
 }

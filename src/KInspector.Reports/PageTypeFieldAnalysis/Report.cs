@@ -25,9 +25,9 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             ModuleTags.Health
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var pagetypeFields = databaseService.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields);
+            var pagetypeFields = await databaseService.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields);
             var fieldsWithMismatchedTypes = CheckForMismatchedTypes(pagetypeFields);
 
             return CompileResults(fieldsWithMismatchedTypes);

@@ -31,29 +31,20 @@ namespace KInspector.Infrastructure.Services
             this.moduleMetadataService = moduleMetadataService;
         }
 
-        public ModuleResults ExecuteAction(IAction action, string optionsJson)
+        public async Task ExecuteAction(IAction action, string optionsJson, Action<ModuleResults> callback)
         {
-            var instance = configService.GetCurrentInstance();
-            if (instance is null)
-            {
-                throw new InvalidOperationException($"There is no connected instance.'");
-            }
-
+            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
             databaseService.Configure(instance.DatabaseSettings);
 
-            return action.Execute(optionsJson);
+            var results = await action.Execute(optionsJson);
+            callback(results);
         }
 
         public IAction? GetAction(string codename) => actionRepository.GetAction(codename);
 
         public IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
         {
-            var instance = configService.GetCurrentInstance();
-            if (instance is null)
-            {
-                throw new InvalidOperationException("An instance must be connected.");
-            }
-
+            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException("An instance must be connected.");
             var instanceDetails = instanceService.GetInstanceDetails(instance);
             var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
             var actions = actionRepository.GetActions();
@@ -91,39 +82,30 @@ namespace KInspector.Infrastructure.Services
 
         public IReport? GetReport(string codename) => reportRepository.GetReport(codename);
 
-        public ModuleResults GetReportResults(IReport report)
+        public async Task GetReportResults(IReport report, Action<ModuleResults> callback)
         {
-            var instance = configService.GetCurrentInstance();
-            if (instance is null)
-            {
-                throw new InvalidOperationException($"There is no connected instance.'");
-            }
-
+            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
             databaseService.Configure(instance.DatabaseSettings);
 
             try
             {
-                return report.GetResults();
+                var results = await report.GetResults();
+                callback(results);
             }
             catch (Exception ex)
             {
-                return new ModuleResults
+                callback(new ModuleResults
                 {
                     Status = ResultsStatus.Error,
                     Summary = ex.Message,
                     Type = ResultsType.NoResults
-                };
+                });
             }
         }
 
         public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
         {
-            var instance = configService.GetCurrentInstance();
-            if (instance is null)
-            {
-                throw new InvalidOperationException("An instance must be connected.");
-            }
-
+            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException("An instance must be connected.");
             var instanceDetails = instanceService.GetInstanceDetails(instance);
             var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
             var reports = reportRepository.GetReports();

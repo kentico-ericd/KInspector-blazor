@@ -23,50 +23,50 @@ namespace KInspector.Actions.DisableSmtpServers
             this.databaseService = databaseService;
         }
 
-        public override ModuleResults Execute(Options? options)
+        public override Task<ModuleResults> Execute(Options? options)
         {
             // Only partial options are allowed for this action
             throw new NotImplementedException();
         }
 
-        public override ModuleResults ExecutePartial(Options? options)
+        public async override Task<ModuleResults> ExecutePartial(Options? options)
         {
             if (options?.ServerId is not null &&
                 options?.ServerId > 0 &&
                 options?.SiteId is null)
             {
-                var serversFromSmtp = databaseService.ExecuteSqlFromFile<SmtpFromSmtpServers>(Scripts.GetSmtpFromSmtpServers);
+                var serversFromSmtp = await databaseService.ExecuteSqlFromFile<SmtpFromSmtpServers>(Scripts.GetSmtpFromSmtpServers);
                 if (!serversFromSmtp.Any(s => s.ID == options?.ServerId) ||
                     (!serversFromSmtp.FirstOrDefault(s => s.ID == options?.ServerId)?.Enabled ?? false))
                 {
-                    return GetInvalidOptionsResult();
+                    return await GetInvalidOptionsResult();
                 }
 
-                return DisableServer(options?.ServerId);
+                return await DisableServer(options?.ServerId);
             }
 
             if (options?.SiteId is not null &&
                 options?.SiteId >= 0 &&
                 options?.ServerId is null)
             {
-                var serversFromSettings = databaseService.ExecuteSqlFromFile<SmtpFromSettings>(Scripts.GetSmtpFromSettingsKeys);
+                var serversFromSettings = await databaseService.ExecuteSqlFromFile<SmtpFromSettings>(Scripts.GetSmtpFromSettingsKeys);
                 if (!serversFromSettings.Any(s => s.SiteID == options?.SiteId) ||
                     serversFromSettings.FirstOrDefault(s => s.SiteID == options?.SiteId)?.Server is null ||
                     (serversFromSettings.FirstOrDefault(s => s.SiteID == options?.SiteId)?.Server?.EndsWith(".disabled") ?? false))
                 {
-                    return GetInvalidOptionsResult();
+                    return await GetInvalidOptionsResult();
                 }
 
-                return DisableSiteSetting(options?.SiteId);
+                return await DisableSiteSetting(options?.SiteId);
             }
 
-            return GetInvalidOptionsResult();
+            return await GetInvalidOptionsResult();
         }
 
-        public override ModuleResults ExecuteListing()
+        public async override Task<ModuleResults> ExecuteListing()
         {
-            var serversFromSettings = databaseService.ExecuteSqlFromFile<SmtpFromSettings>(Scripts.GetSmtpFromSettingsKeys);
-            var serversFromSmtp = databaseService.ExecuteSqlFromFile<SmtpFromSmtpServers>(Scripts.GetSmtpFromSmtpServers);
+            var serversFromSettings = await databaseService.ExecuteSqlFromFile<SmtpFromSettings>(Scripts.GetSmtpFromSettingsKeys);
+            var serversFromSmtp = await databaseService.ExecuteSqlFromFile<SmtpFromSmtpServers>(Scripts.GetSmtpFromSmtpServers);
             var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
@@ -87,19 +87,19 @@ namespace KInspector.Actions.DisableSmtpServers
             return results;
         }
 
-        public override ModuleResults GetInvalidOptionsResult()
+        public async override Task<ModuleResults> GetInvalidOptionsResult()
         {
-            var result = ExecuteListing();
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Error;
             result.Summary = Metadata.Terms.InvalidOptions;
 
             return result;
         }
 
-        private ModuleResults DisableServer(int? serverId)
+        private async Task<ModuleResults> DisableServer(int? serverId)
         {
-            databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableSmtpServer, new { ServerID = serverId });
-            var result = ExecuteListing();
+            await databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableSmtpServer, new { ServerID = serverId });
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.ServerDisabled?.With(new
             {
@@ -109,10 +109,10 @@ namespace KInspector.Actions.DisableSmtpServers
             return result;
         }
 
-        private ModuleResults DisableSiteSetting(int? siteId)
+        private async Task<ModuleResults> DisableSiteSetting(int? siteId)
         {
-            databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableSiteSmtpServer, new { SiteID = siteId });
-            var result = ExecuteListing();
+            await databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableSiteSmtpServer, new { SiteID = siteId });
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.SiteSettingDisabled?.With(new
             {

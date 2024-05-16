@@ -24,9 +24,9 @@ namespace KInspector.Reports.PageTypeAssignmentAnalysis
             ModuleTags.Consistency
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var unassignedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetPageTypesNotAssignedToSite);
+            var unassignedPageTypes = await databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetPageTypesNotAssignedToSite);
 
             return CompileResults(unassignedPageTypes);
         }

@@ -37,5 +37,5 @@ else
 
     private bool ShowNoResults => Results!.Type == ResultsType.NoResults
         || (Results!.Type == ResultsType.TableList && !Results!.TableResults.Any(t => t.Rows.Any()))
-        || (Results!.Type == ResultsType.StringList && !Results.StringResults.Any());
+        || (Results!.Type == ResultsType.StringList && !Results!.StringResults.Any());
 }

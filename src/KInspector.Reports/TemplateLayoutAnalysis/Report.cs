@@ -24,9 +24,9 @@ namespace KInspector.Reports.TemplateLayoutAnalysis
             ModuleTags.PortalEngine
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var identicalLayouts = databaseService.ExecuteSqlFromFile<IdenticalPageLayouts>(Scripts.GetIdenticalLayouts);
+            var identicalLayouts = await databaseService.ExecuteSqlFromFile<IdenticalPageLayouts>(Scripts.GetIdenticalLayouts);
 
             return CompileResults(identicalLayouts);
         }

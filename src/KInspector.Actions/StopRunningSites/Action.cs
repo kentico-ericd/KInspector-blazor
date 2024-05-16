@@ -23,15 +23,16 @@ namespace KInspector.Actions.StopRunningSites
             this.databaseService = databaseService;
         }
 
-        public override ModuleResults Execute(Options? options)
+        public async override Task<ModuleResults> Execute(Options? options)
         {
-            if (!SiteIsValid(options?.SiteId))
+            var isValid = await SiteIsValid(options?.SiteId);
+            if (!isValid)
             {
-                return GetInvalidOptionsResult();
+                return await GetInvalidOptionsResult();
             }
 
-            databaseService.ExecuteSqlFromFileGeneric(Scripts.StopSite, new { SiteID = options?.SiteId });
-            var result = ExecuteListing();
+            await databaseService.ExecuteSqlFromFileGeneric(Scripts.StopSite, new { SiteID = options?.SiteId });
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.SiteStopped?.With(new
             {
@@ -41,15 +42,15 @@ namespace KInspector.Actions.StopRunningSites
             return result;
         }
 
-        public override ModuleResults ExecutePartial(Options? options)
+        public override Task<ModuleResults> ExecutePartial(Options? options)
         {
             // All options are required for this action
             throw new NotImplementedException();
         }
 
-        public override ModuleResults ExecuteListing()
+        public async override Task<ModuleResults> ExecuteListing()
         {
-            var sites = databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
+            var sites = await databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
             var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
@@ -65,18 +66,18 @@ namespace KInspector.Actions.StopRunningSites
             return results;
         }
 
-        public override ModuleResults GetInvalidOptionsResult()
+        public async override Task<ModuleResults> GetInvalidOptionsResult()
         {
-            var result = ExecuteListing();
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Error;
             result.Summary = Metadata.Terms.InvalidOptions;
 
             return result;
         }
 
-        private bool SiteIsValid(int? siteId)
+        private async Task<bool> SiteIsValid(int? siteId)
         {
-            var sites = databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
+            var sites = await databaseService.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary);
 
             return siteId > 0 && sites.Any(s => s.ID == siteId);
         }

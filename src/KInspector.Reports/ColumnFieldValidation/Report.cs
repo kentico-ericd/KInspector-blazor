@@ -31,17 +31,15 @@ namespace KInspector.Reports.ColumnFieldValidation
             ModuleTags.Health
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var cmsClasses = databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClasses);
+            var cmsClasses = await databaseService.ExecuteSqlFromFile<CmsClass>(Scripts.GetCmsClasses);
 
-            var classTableNames = cmsClasses
-                .Select(cmsClass => cmsClass.ClassTableName);
-
-            var tableColumns = databaseService.ExecuteSqlFromFile<TableColumn>(
+            var classTableNames = cmsClasses.Select(cmsClass => cmsClass.ClassTableName);
+            var tableColumns = await databaseService.ExecuteSqlFromFile<TableColumn>(
                 Scripts.GetTableColumns,
                 new { classTableNames }
-                );
+            );
 
             var cmsClassesWithAddedFields = GetCmsClassesWithAddedFields(cmsClasses, tableColumns);
             var tablesWithAddedColumns = GetTablesWithAddedColumns(tableColumns, cmsClasses);

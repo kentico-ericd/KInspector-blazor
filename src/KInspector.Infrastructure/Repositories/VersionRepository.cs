@@ -67,11 +67,10 @@ namespace KInspector.Infrastructure.Services
         public Version? GetKenticoDatabaseVersion(DatabaseSettings databaseSettings)
         {
             databaseService.Configure(databaseSettings);
-            var settingsKeys = databaseService.ExecuteSqlFromFile<string>(getCmsSettingsPath)
-                .ToList();
-
-            var version = settingsKeys[0];
-            var hotfix = settingsKeys[1];
+            var settingsKeys = databaseService.ExecuteSqlFromFile<string>(getCmsSettingsPath).ConfigureAwait(false).GetAwaiter().GetResult();
+            var settingsList = settingsKeys.ToList();
+            var version = settingsList[0];
+            var hotfix = settingsList[1];
 
             if (version is null || hotfix is null) {
                 return null;

@@ -23,9 +23,9 @@ namespace KInspector.Reports.UnusedPageTypeSummary
             ModuleTags.Information
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var unusedPageTypes = databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetUnusedPageTypes);
+            var unusedPageTypes = await databaseService.ExecuteSqlFromFile<PageType>(Scripts.GetUnusedPageTypes);
             var countOfUnusedPageTypes = unusedPageTypes.Count();
 
             var results = new ModuleResults

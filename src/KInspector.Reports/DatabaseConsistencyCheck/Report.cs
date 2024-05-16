@@ -24,10 +24,10 @@ namespace KInspector.Reports.DatabaseConsistencyCheck
             ModuleTags.Health
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
 #pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown
-            var checkDbResults = databaseService.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults);
+            var checkDbResults = await databaseService.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults);
 #pragma warning restore 0618
 
             return CompileResults(checkDbResults);

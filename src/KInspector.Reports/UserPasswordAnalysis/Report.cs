@@ -32,12 +32,12 @@ namespace KInspector.Reports.UserPasswordAnalysis
             "public"
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var users = databaseService.ExecuteSqlFromFile<CmsUser>(
+            var users = await databaseService.ExecuteSqlFromFile<CmsUser>(
                 Scripts.GetEnabledAndNotExternalUsers,
                 new { ExcludedUserNames }
-                );
+            );
 
             var usersWithEmptyPasswords = GetUsersWithEmptyPasswords(users);
             var usersWithPlaintextPasswords = GetUsersWithPlaintextPasswords(users);

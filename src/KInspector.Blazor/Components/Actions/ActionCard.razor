@@ -1,10 +1,13 @@
-﻿@using KInspector.Core.Constants
+﻿@using KInspector.Blazor.Services
+@using KInspector.Core.Constants
 @using KInspector.Core.Models
 @using KInspector.Core.Modules
 @using KInspector.Core.Services.Interfaces
 @using Markdig
 @using Newtonsoft.Json
+@implements IDisposable
 @inject IModuleService moduleService
+@inject StateContainer stateContainer
 @inject IModuleMetadataService moduleMetadataService
 
 <div class="w-full module-card bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -64,9 +67,24 @@
 
     private MarkupString LongDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.LongDescription ?? string.Empty));
 
-    private void RunAction()
+    protected override void OnInitialized()
     {
+        stateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        stateContainer.OnChange -= StateHasChanged;
+    }
+
+    private Task RunAction()
+    {
+        stateContainer.AddModule(Action!.Codename);
         var options = Form!.Options;
-        Results = moduleService.ExecuteAction(Action!, JsonConvert.SerializeObject(options));
+        return moduleService.ExecuteAction(Action!, JsonConvert.SerializeObject(options), results =>
+        {
+            Results = results;
+            stateContainer.RemoveModule(Action!.Codename);
+        });
     }
 }

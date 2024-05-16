@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
+using KInspector.Blazor.Services;
 using KInspector.Core;
 using KInspector.Infrastructure;
 using KInspector.Reports;
@@ -17,6 +18,8 @@ builder.Host
         containerBuilder.RegisterModule<ReportsModule>();
         containerBuilder.RegisterModule<ActionsModule>();
     });
+
+builder.Services.AddScoped<StateContainer>();
 
 builder.Services.AddRazorPages().AddJsonOptions(o =>
 {

@@ -23,16 +23,17 @@ namespace KInspector.Actions.ResetCmsUserLogin
             this.databaseService = databaseService;
         }
 
-        public override ModuleResults Execute(Options? options)
+        public async override Task<ModuleResults> Execute(Options? options)
         {
-            if (!UserIsValid(options?.UserId))
+            var isValid = await UserIsValid(options?.UserId);
+            if (!isValid)
             {
-                return GetInvalidOptionsResult();
+                return await GetInvalidOptionsResult();
             }
 
             // Reset provided user
-            databaseService.ExecuteSqlFromFileGeneric(Scripts.ResetAndEnableUser, new { UserID = options?.UserId });
-            var result = ExecuteListing();
+            await databaseService.ExecuteSqlFromFileGeneric(Scripts.ResetAndEnableUser, new { UserID = options?.UserId });
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.UserReset?.With(new {
                 userId = options?.UserId
@@ -41,15 +42,15 @@ namespace KInspector.Actions.ResetCmsUserLogin
             return result;
         }
 
-        public override ModuleResults ExecutePartial(Options? options)
+        public override Task<ModuleResults> ExecutePartial(Options? options)
         {
             // All options are required for this action
             throw new NotImplementedException();
         }
 
-        public override ModuleResults ExecuteListing()
+        public async override Task<ModuleResults> ExecuteListing()
         {
-            var administratorUsers = databaseService.ExecuteSqlFromFile<CmsUser>(Scripts.GetAdministrators);
+            var administratorUsers = await databaseService.ExecuteSqlFromFile<CmsUser>(Scripts.GetAdministrators);
             var results = new ModuleResults
             {
                 Type = ResultsType.TableList,
@@ -65,18 +66,18 @@ namespace KInspector.Actions.ResetCmsUserLogin
             return results;
         }
 
-        public override ModuleResults GetInvalidOptionsResult()
+        public async override Task<ModuleResults> GetInvalidOptionsResult()
         {
-            var result = ExecuteListing();
+            var result = await ExecuteListing();
             result.Status = ResultsStatus.Error;
             result.Summary = Metadata.Terms.InvalidOptions;
 
             return result;
         }
 
-        private bool UserIsValid(int? userId)
+        private async Task<bool> UserIsValid(int? userId)
         {
-            var users = databaseService.ExecuteSqlFromFile<CmsUser>(Scripts.GetAdministrators);
+            var users = await databaseService.ExecuteSqlFromFile<CmsUser>(Scripts.GetAdministrators);
 
             return userId > 0 && users.Any(u => u.UserID == userId);
         }

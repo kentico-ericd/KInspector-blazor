@@ -18,7 +18,7 @@ namespace KInspector.Core
         protected AbstractAction(IModuleMetadataService moduleMetadataService)
             : base(moduleMetadataService) { }
 
-        public ModuleResults Execute(string optionsJson)
+        public Task<ModuleResults> Execute(string optionsJson)
         {
             try
             {
@@ -49,22 +49,22 @@ namespace KInspector.Core
         /// <summary>
         /// Executed when all options are populated.
         /// </summary>
-        public abstract ModuleResults Execute(TOptions? options);
+        public abstract Task<ModuleResults> Execute(TOptions? options);
 
         /// <summary>
         /// Executed when at least one option has a value and one doesn't.
         /// This could be a valid scenario where an option is hidden and not needed when another option
         /// is set to a specific value.
         /// </summary>
-        public abstract ModuleResults ExecutePartial(TOptions? options);
+        public abstract Task<ModuleResults> ExecutePartial(TOptions? options);
 
         /// <summary>
         /// Executed when no options are provided. Should display a list of data that can be modified by
         /// the action.
         /// </summary>
-        public abstract ModuleResults ExecuteListing();
+        public abstract Task<ModuleResults> ExecuteListing();
 
-        public abstract ModuleResults GetInvalidOptionsResult();
+        public abstract Task<ModuleResults> GetInvalidOptionsResult();
 
         /// <summary>
         /// Returns <c>true</c> if at least one option has a value and one doesn't.

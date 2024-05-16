@@ -21,7 +21,7 @@ namespace KInspector.Reports.SampleReport
             ModuleTags.Consistency
         };
 
-        public override ModuleResults GetResults()
+        public override Task<ModuleResults> GetResults()
         {
             var random = new Random();
             var issueCount = random.Next(0, 3);
@@ -38,7 +38,7 @@ namespace KInspector.Reports.SampleReport
                 results.StringResults.Add(Metadata.Terms.DetailedResult?.With(new { name, problem }));
             }
 
-            return results;
+            return Task.FromResult(results);
         }
 
         private string GetRandomString(int size)

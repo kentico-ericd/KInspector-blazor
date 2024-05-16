@@ -17,99 +17,101 @@ namespace KInspector.Infrastructure.Services
             _connection = DatabaseHelper.GetSqlConnection(databaseSettings);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath)
+        public Task<IEnumerable<T>> ExecuteSqlFromFile<T>(string relativeFilePath)
         {
             return ExecuteSqlFromFile<T>(relativeFilePath, null, null);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, dynamic parameters)
+        public Task<IEnumerable<T>> ExecuteSqlFromFile<T>(string relativeFilePath, dynamic parameters)
         {
             return ExecuteSqlFromFile<T>(relativeFilePath, null, parameters);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string> literalReplacements)
+        public Task<IEnumerable<T>> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string> literalReplacements)
         {
             return ExecuteSqlFromFile<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<T> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
+        public Task<IEnumerable<T>> ExecuteSqlFromFile<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
             if (parameters is null)
             {
-                return _connection.Query<T>(query);
+                return _connection.QueryAsync<T>(query);
             }
             else
             {
-                return _connection.Query<T>(query, (object)parameters);
+                return _connection.QueryAsync<T>(query, (object)parameters);
             }
         }
 
-        public DataTable ExecuteSqlFromFileAsDataTable(string relativeFilePath)
+        public async Task<DataTable> ExecuteSqlFromFileAsDataTable(string relativeFilePath)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath);
             var result = new DataTable();
-            result.Load(_connection.ExecuteReader(query));
+            var data = await _connection.ExecuteReaderAsync(query);
+            result.Load(data);
+            
             return result;
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath)
+        public Task<IEnumerable<IDictionary<string, object>>> ExecuteSqlFromFileGeneric(string relativeFilePath)
         {
             return ExecuteSqlFromFileGeneric(relativeFilePath, null, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, dynamic parameters)
+        public Task<IEnumerable<IDictionary<string, object>>> ExecuteSqlFromFileGeneric(string relativeFilePath, dynamic parameters)
         {
             return ExecuteSqlFromFileGeneric(relativeFilePath, null, parameters);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string> literalReplacements)
+        public Task<IEnumerable<IDictionary<string, object>>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string> literalReplacements)
         {
             return ExecuteSqlFromFileGeneric(relativeFilePath, literalReplacements, null);
         }
 
-        public IEnumerable<IDictionary<string, object>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
+        public async Task<IEnumerable<IDictionary<string, object>>> ExecuteSqlFromFileGeneric(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
             IEnumerable<dynamic> results;
             if (parameters is null)
             {
-                results = _connection.Query(query);
+                results = await _connection.QueryAsync(query);
             }
             else
             {
-                results = _connection.Query(query, (object)parameters);
+                results = await _connection.QueryAsync(query, (object)parameters);
             }
 
 
             return results.Select(x => (IDictionary<string, object>)x);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath)
+        public Task<T> ExecuteSqlFromFileScalar<T>(string relativeFilePath)
         {
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, null, null);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, dynamic parameters)
+        public Task<T> ExecuteSqlFromFileScalar<T>(string relativeFilePath, dynamic parameters)
         {
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, null, parameters);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string> literalReplacements)
+        public Task<T> ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string> literalReplacements)
         {
             return ExecuteSqlFromFileScalar<T>(relativeFilePath, literalReplacements, null);
         }
 
-        public T ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
+        public Task<T> ExecuteSqlFromFileScalar<T>(string relativeFilePath, IDictionary<string, string>? literalReplacements, dynamic? parameters)
         {
             var query = FileHelper.GetSqlQueryText(relativeFilePath, literalReplacements);
             if (parameters is null)
             {
-                return _connection.QueryFirst<T>(query);
+                return _connection.QueryFirstAsync<T>(query);
             }
             else
             {
-                return _connection.QueryFirst<T>(query, (object)parameters);
+                return _connection.QueryFirstAsync<T>(query, (object)parameters);
             }
         }
     }

@@ -26,18 +26,17 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             ModuleTags.Consistency
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var treeNodeWithBadParentSiteResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithABadParentSite, Scripts.GetTreeNodeIdsWithBadParentSiteId);
-            var treeNodeWithBadParentNodeResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithABadParentNode, Scripts.GetTreeNodeIdsWithBadParentNodeId);
-            var treeNodeWithLevelInconsistencyAliasatPathTestResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithLevelInconsistencyAliasPath, Scripts.GetTreeNodeIdsWithLevelMismatchByAliasPathTest);
-            var treeNodeWithLevelInconsistencyParentChildLevelTestResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithLevelInconsistencyParent, Scripts.GetTreeNodeIdsWithLevelMismatchByNodeLevelTest);
-            var treeNodeWithMissingDocumentResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithNoDocumentNode, Scripts.GetTreeNodeIdsWithMissingDocument);
-            var treeNodeWithDuplicateAliasPathResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithDuplicatedAliasPath, Scripts.GetTreeNodeIdsWithDuplicatedAliasPath);
-            var treeNodeWithPageTypeNotAssignedToSiteResults = GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithPageTypeNotAssignedToSite, Scripts.GetTreeNodeIdsWithPageTypeNotAssignedToSite);
-            var documentNodesWithMissingTreeNodeResults = GetDocumentNodeTestResult(Metadata.Terms.DocumentNodesWithNoTreeNode, Scripts.GetDocumentIdsWithMissingTreeNode);
-
-            var workflowInconsistenciesResults = GetWorkflowInconsistencyResult();
+            var treeNodeWithBadParentSiteResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithABadParentSite, Scripts.GetTreeNodeIdsWithBadParentSiteId);
+            var treeNodeWithBadParentNodeResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithABadParentNode, Scripts.GetTreeNodeIdsWithBadParentNodeId);
+            var treeNodeWithLevelInconsistencyAliasatPathTestResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithLevelInconsistencyAliasPath, Scripts.GetTreeNodeIdsWithLevelMismatchByAliasPathTest);
+            var treeNodeWithLevelInconsistencyParentChildLevelTestResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithLevelInconsistencyParent, Scripts.GetTreeNodeIdsWithLevelMismatchByNodeLevelTest);
+            var treeNodeWithMissingDocumentResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithNoDocumentNode, Scripts.GetTreeNodeIdsWithMissingDocument);
+            var treeNodeWithDuplicateAliasPathResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithDuplicatedAliasPath, Scripts.GetTreeNodeIdsWithDuplicatedAliasPath);
+            var treeNodeWithPageTypeNotAssignedToSiteResults = await GetTreeNodeTestResult(Metadata.Terms.TreeNodesWithPageTypeNotAssignedToSite, Scripts.GetTreeNodeIdsWithPageTypeNotAssignedToSite);
+            var documentNodesWithMissingTreeNodeResults = await GetDocumentNodeTestResult(Metadata.Terms.DocumentNodesWithNoTreeNode, Scripts.GetDocumentIdsWithMissingTreeNode);
+            var workflowInconsistenciesResults = await GetWorkflowInconsistencyResult();
 
             return CompileResults(
                 treeNodeWithBadParentSiteResults,
@@ -49,10 +48,10 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
                 treeNodeWithPageTypeNotAssignedToSiteResults,
                 documentNodesWithMissingTreeNodeResults,
                 workflowInconsistenciesResults
-                );
+            );
         }
 
-        private IEnumerable<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems, IEnumerable<IDictionary<string, object>> coupledData, IEnumerable<CmsClassField> cmsClassFields)
+        private List<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems, IEnumerable<IDictionary<string, object>> coupledData, IEnumerable<CmsClassField> cmsClassFields)
         {
             var issues = new List<VersionHistoryMismatchResult>();
             var idColumnName = cmsClassFields.FirstOrDefault(x => x.IsIdColumn)?.Column ?? string.Empty;
@@ -83,10 +82,11 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
 
         private ModuleResults CompileResults(params ModuleResults[] allModuleResults)
         {
-            var combinedResults = new ModuleResults();
-
-            combinedResults.Type = ResultsType.TableList;
-            combinedResults.Status = ResultsStatus.Good;
+            var combinedResults = new ModuleResults
+            {
+                Type = ResultsType.TableList,
+                Status = ResultsStatus.Good
+            };
 
             var summaryBuilder = new StringBuilder();
             foreach (var ModuleResults in allModuleResults)
@@ -118,27 +118,26 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             return combinedResults;
         }
 
-        private IEnumerable<CmsClassItem> GetCmsClassItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems)
+        private Task<IEnumerable<CmsClassItem>> GetCmsClassItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems)
         {
             var cmsClassIds = versionHistoryItems.Select(vhi => vhi.VersionClassID);
+
             return databaseService.ExecuteSqlFromFile<CmsClassItem>(Scripts.GetCmsClassItems, new { IDs = cmsClassIds.ToArray() });
         }
 
-        private IEnumerable<IDictionary<string, object>> GetCoupledData(CmsClassItem cmsClassItem, IEnumerable<int> Ids)
+        private Task<IEnumerable<IDictionary<string, object>>> GetCoupledData(CmsClassItem cmsClassItem, IEnumerable<int> Ids)
         {
             var replacements = new CoupledDataScriptReplacements(cmsClassItem.ClassTableName, cmsClassItem.ClassIDColumn);
+
             return databaseService.ExecuteSqlFromFileGeneric(Scripts.GetCmsDocumentCoupledDataItems, replacements.Dictionary, new { IDs = Ids.ToArray() });
         }
 
-        private ModuleResults GetDocumentNodeTestResult(string name, string script)
-        {
-            return GetTestResult<CmsDocumentNode>(name, script, Scripts.GetDocumentNodeDetails);
-        }
+        private Task<ModuleResults> GetDocumentNodeTestResult(string name, string script) => GetTestResult<CmsDocumentNode>(name, script, Scripts.GetDocumentNodeDetails);
 
-        private ModuleResults GetTestResult<T>(string name, string script, string getDetailsScript) where T : class
+        private async Task<ModuleResults> GetTestResult<T>(string name, string script, string getDetailsScript) where T : class
         {
-            var nodeIds = databaseService.ExecuteSqlFromFile<int>(script);
-            var details = databaseService.ExecuteSqlFromFile<T>(getDetailsScript, new { IDs = nodeIds.ToArray() });
+            var nodeIds = await databaseService.ExecuteSqlFromFile<int>(script);
+            var details = await databaseService.ExecuteSqlFromFile<T>(getDetailsScript, new { IDs = nodeIds.ToArray() });
             var results = new ModuleResults
             {
                 Status = details.Any() ? ResultsStatus.Error : ResultsStatus.Good,
@@ -154,21 +153,19 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             return results;
         }
 
-        private ModuleResults GetTreeNodeTestResult(string name, string script)
+        private Task<ModuleResults> GetTreeNodeTestResult(string name, string script) => GetTestResult<CmsTreeNode>(name, script, Scripts.GetTreeNodeDetails);
+
+        private async Task<IEnumerable<CmsVersionHistoryItem>> GetVersionHistoryItems()
         {
-            return GetTestResult<CmsTreeNode>(name, script, Scripts.GetTreeNodeDetails);
+            var latestVersionHistoryIds = await databaseService.ExecuteSqlFromFile<int>(Scripts.GetLatestVersionHistoryIdForAllDocuments);
+
+            return await databaseService.ExecuteSqlFromFile<CmsVersionHistoryItem>(Scripts.GetVersionHistoryDetails, new { IDs = latestVersionHistoryIds.ToArray() });
         }
 
-        private IEnumerable<CmsVersionHistoryItem> GetVersionHistoryItems()
+        private async Task<ModuleResults> GetWorkflowInconsistencyResult()
         {
-            var latestVersionHistoryIds = databaseService.ExecuteSqlFromFile<int>(Scripts.GetLatestVersionHistoryIdForAllDocuments);
-            return databaseService.ExecuteSqlFromFile<CmsVersionHistoryItem>(Scripts.GetVersionHistoryDetails, new { IDs = latestVersionHistoryIds.ToArray() });
-        }
-
-        private ModuleResults GetWorkflowInconsistencyResult()
-        {
-            var versionHistoryItems = GetVersionHistoryItems();
-            var cmsClassItems = GetCmsClassItems(versionHistoryItems);
+            var versionHistoryItems = await GetVersionHistoryItems();
+            var cmsClassItems = await GetCmsClassItems(versionHistoryItems);
             var comparisonResults = new List<VersionHistoryMismatchResult>();
             foreach (var cmsClass in cmsClassItems)
             {
@@ -179,7 +176,7 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
                     continue;
                 }
 
-                var coupledData = GetCoupledData(cmsClass, coupledDataIds);
+                var coupledData = await GetCoupledData(cmsClass, coupledDataIds);
                 var classComparisionResults = CompareVersionHistoryItemsWithPublishedItems(versionHistoryItems, coupledData, cmsClass.ClassFields);
                 comparisonResults.AddRange(classComparisionResults);
             }

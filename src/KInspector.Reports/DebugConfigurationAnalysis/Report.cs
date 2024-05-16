@@ -32,23 +32,13 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
            ModuleTags.Health
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var instance = _configService.GetCurrentInstance();
-            if (instance is null)
-            {
-                throw new InvalidOperationException("Current instance not found.");
-            }
-
-            var databaseSettingsValues = _databaseService.ExecuteSqlFromFile<SettingsKey>(Scripts.GetDebugSettingsValues);
+            var instance = _configService.GetCurrentInstance() ?? throw new InvalidOperationException("Current instance not found.");
+            var databaseSettingsValues = await _databaseService.ExecuteSqlFromFile<SettingsKey>(Scripts.GetDebugSettingsValues);
             ResolveSettingsDisplayNames(instance, databaseSettingsValues);
 
-            var webConfig = _cmsFileService.GetXmlDocument(instance.AdministrationPath, DefaultKenticoPaths.WebConfigFile);
-            if (webConfig is null)
-            {
-                throw new InvalidOperationException("Unable to load instance web.config.");
-            }
-
+            var webConfig = _cmsFileService.GetXmlDocument(instance.AdministrationPath, DefaultKenticoPaths.WebConfigFile) ?? throw new InvalidOperationException("Unable to load instance web.config.");
             var isCompilationDebugEnabled = GetBooleanValueofSectionAttribute(webConfig, "/configuration/system.web/compilation", "debug");
             var isTraceEnabled = GetBooleanValueofSectionAttribute(webConfig, "/configuration/system.web/trace", "enabled");
 

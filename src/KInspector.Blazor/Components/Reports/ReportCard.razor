@@ -1,9 +1,12 @@
-﻿@using KInspector.Core.Constants
+﻿@using KInspector.Blazor.Services
+@using KInspector.Core.Constants
 @using KInspector.Core.Models
 @using KInspector.Core.Modules
 @using KInspector.Core.Services.Interfaces
 @using Markdig
 @using Newtonsoft.Json
+@implements IDisposable
+@inject StateContainer stateContainer
 @inject IModuleService moduleService
 @inject IModuleMetadataService moduleMetadataService
 
@@ -51,8 +54,23 @@
 
     private MarkupString LongDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.LongDescription ?? string.Empty));
 
-    private void RunReport()
+    protected override void OnInitialized()
     {
-        Results = moduleService.GetReportResults(Report!);
+        stateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        stateContainer.OnChange -= StateHasChanged;
+    }
+
+    private Task RunReport()
+    {
+        stateContainer.AddModule(Report!.Codename);
+        return moduleService.GetReportResults(Report!, results =>
+        {
+            Results = results;
+            stateContainer.RemoveModule(Report!.Codename);
+        });
     }
 }

@@ -28,17 +28,17 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             ModuleTags.WebParts,
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var affectedTemplates = _databaseService.ExecuteSqlFromFile<PageTemplate>(Scripts.GetAffectedTemplates);
+            var affectedTemplates = await _databaseService.ExecuteSqlFromFile<PageTemplate>(Scripts.GetAffectedTemplates);
             var affectedTemplateIds = affectedTemplates.Select(x => x.PageTemplateID).ToArray();
-            var affectedDocuments = _databaseService.ExecuteSqlFromFile<Document>(Scripts.GetDocumentsByPageTemplateIds, new { IDs = affectedTemplateIds });
+            var affectedDocuments = await _databaseService.ExecuteSqlFromFile<Document>(Scripts.GetDocumentsByPageTemplateIds, new { IDs = affectedTemplateIds });
             var templateAnalysisResults = GetTemplateAnalysisResults(affectedTemplates, affectedDocuments);
 
             return CompileResults(templateAnalysisResults);
         }
 
-        private IEnumerable<TemplateSummary> GetTemplateAnalysisResults(IEnumerable<PageTemplate> affectedTemplates, IEnumerable<Document> affectedDocuments)
+        private List<TemplateSummary> GetTemplateAnalysisResults(IEnumerable<PageTemplate> affectedTemplates, IEnumerable<Document> affectedDocuments)
         {
             var results = new List<TemplateSummary>();
             foreach (var template in affectedTemplates)

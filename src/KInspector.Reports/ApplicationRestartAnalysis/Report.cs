@@ -28,9 +28,9 @@ namespace KInspector.Reports.ApplicationRestartAnalysis
             this.databaseService = databaseService;
         }
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var cmsEventLogs = databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode);
+            var cmsEventLogs = await databaseService.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode);
 
             return CompileResults(cmsEventLogs);
         }

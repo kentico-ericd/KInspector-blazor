@@ -43,13 +43,13 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             ModuleTags.Security
         };
 
-        public override ModuleResults GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var transformationDtos = databaseService.ExecuteSqlFromFile<TransformationDto>(Scripts.GetTransformations);
+            var transformationDtos = await databaseService.ExecuteSqlFromFile<TransformationDto>(Scripts.GetTransformations);
             var transformationsWithIssues = GetTransformationsWithIssues(transformationDtos);
-            var pageDtos = databaseService.ExecuteSqlFromFile<PageDto>(Scripts.GetPages);
+            var pageDtos = await databaseService.ExecuteSqlFromFile<PageDto>(Scripts.GetPages);
             var documentPageTemplateIds = pageDtos.Select(pageDto => pageDto.DocumentPageTemplateID);
-            var pageTemplateDtos = databaseService.ExecuteSqlFromFile<PageTemplateDto>(Scripts.GetPageTemplates, new { DocumentPageTemplateIDs = documentPageTemplateIds });
+            var pageTemplateDtos = await databaseService.ExecuteSqlFromFile<PageTemplateDto>(Scripts.GetPageTemplates, new { DocumentPageTemplateIDs = documentPageTemplateIds });
             var sites = instanceService
                 .GetInstanceDetails(configService.GetCurrentInstance())
                 .Sites ?? Enumerable.Empty<Site>();
