@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
 
 using KInspector.Core.Models;
-using KInspector.Core.Repositories.Interfaces;
 using KInspector.Core.Services.Interfaces;
 
 namespace KInspector.Infrastructure.Services
 {
-    public class VersionRepository : IVersionRepository
+    public class VersionService : IVersionService
     {
         private readonly IDatabaseService databaseService;
 
@@ -17,7 +16,7 @@ namespace KInspector.Infrastructure.Services
         private const string _relativeHotfixFileFolderPath = "App_Data\\Install";
         private const string _hotfixFile = "Hotfix.txt";
 
-        public VersionRepository(IDatabaseService databaseService)
+        public VersionService(IDatabaseService databaseService)
         {
             this.databaseService = databaseService;
         }

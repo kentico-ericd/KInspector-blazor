@@ -2,6 +2,9 @@
 
 namespace KInspector.Core.Models
 {
+    /// <summary>
+    /// A string containing tokens which can be replaced with provided values.
+    /// </summary>
     public class Term
     {
         private string Markdown { get; set; }

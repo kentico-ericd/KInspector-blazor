@@ -1,5 +1,7 @@
-﻿using KInspector.Core.Models;
-using KInspector.Core.Repositories.Interfaces;
+﻿using Dapper;
+
+using KInspector.Core.Helpers;
+using KInspector.Core.Models;
 using KInspector.Core.Services.Interfaces;
 
 namespace KInspector.Infrastructure.Services
@@ -7,57 +9,64 @@ namespace KInspector.Infrastructure.Services
     public class InstanceService : IInstanceService
     {
         private readonly IConfigService _configService;
-        private readonly ISiteRepository _siteRepository;
-        private readonly IVersionRepository _versionRepository;
+        private readonly IVersionService _versionService;
         private readonly IDatabaseService _databaseService;
 
         public InstanceService(
             IConfigService configService,
-            IVersionRepository versionRepository,
-            ISiteRepository siteRepository,
+            IVersionService versionService,
             IDatabaseService databaseService)
         {
             _configService = configService;
-            _versionRepository = versionRepository;
-            _siteRepository = siteRepository;
+            _versionService = versionService;
             _databaseService = databaseService;
         }
 
         public InstanceDetails GetInstanceDetails(Guid instanceGuid)
         {
             var instance = _configService.GetInstance(instanceGuid);
-            if (instance is null)
-            {
-                throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'");
-            }
 
-            return GetInstanceDetails(instance);
+            return instance is null
+                ? throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'")
+                : GetInstanceDetails(instance);
         }
 
         public InstanceDetails GetInstanceDetails(Instance? instance)
         {
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            var guid = instance.Guid ?? Guid.Empty;
-            if (guid == Guid.Empty)
-            {
-                throw new InvalidOperationException("Instance missing GUID.");
-            }
-
+            ArgumentNullException.ThrowIfNull(instance);
             var instanceDetails = new InstanceDetails
             {
-                Guid = guid,
-                AdministrationVersion = _versionRepository.GetKenticoAdministrationVersion(instance),
-                AdministrationDatabaseVersion = _versionRepository.GetKenticoDatabaseVersion(instance.DatabaseSettings),
-                Sites = _siteRepository.GetSites(instance.DatabaseSettings)
+                AdministrationVersion = _versionService.GetKenticoAdministrationVersion(instance),
+                AdministrationDatabaseVersion = _versionService.GetKenticoDatabaseVersion(instance.DatabaseSettings),
+                Sites = GetSites(instance.DatabaseSettings)
             };
 
             _databaseService.Configure(instance.DatabaseSettings);
 
             return instanceDetails;
+        }
+
+        private static IList<Site> GetSites(DatabaseSettings databaseSettings)
+        {
+            try
+            {
+                var query = @"
+                    SELECT
+                        SiteId as Id,
+                        SiteName as Name,
+                        SiteGUID as Guid,
+                        SiteDomainName as DomainName,
+                        SitePresentationURL as PresentationUrl
+                    FROM CMS_Site";
+                var connection = DatabaseHelper.GetSqlConnection(databaseSettings);
+                var sites = connection.Query<Site>(query).ToList();
+
+                return sites;
+            }
+            catch
+            {
+                return Array.Empty<Site>();
+            }
         }
     }
 }

@@ -7,17 +7,6 @@ namespace KInspector.Core.Helpers
 {
     public class CmsFileService : ICmsFileService
     {
-        public string? GetFaviconPath(string instanceRoot, string relativeFaviconPath = DefaultKenticoPaths.Favicon)
-        {
-            string fullPath = instanceRoot + relativeFaviconPath;
-            if (File.Exists(fullPath))
-            {
-                return fullPath;
-            }
-
-            return null;
-        }
-
         public string? GetCMSConnectionString(string? instanceRoot, string relativeWebConfigFilePath = DefaultKenticoPaths.WebConfigFile)
         {
             var webConfig = GetXmlDocument(instanceRoot, relativeWebConfigFilePath);

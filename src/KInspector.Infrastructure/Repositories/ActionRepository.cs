@@ -12,20 +12,9 @@ namespace KInspector.Infrastructure.Repositories
             this.actions = actions;
         }
 
-        public IAction? GetAction(string codename)
-        {
-            var allReports = LoadActions();
-            return allReports.FirstOrDefault(x => x.Codename.ToLower() == codename.ToLower());
-        }
+        public IAction? GetAction(string codename) =>
+            actions.FirstOrDefault(x => x.Codename.Equals(codename, StringComparison.InvariantCultureIgnoreCase));
 
-        public IEnumerable<IAction> GetActions()
-        {
-            return LoadActions();
-        }
-
-        private IEnumerable<IAction> LoadActions()
-        {
-            return actions;
-        }
+        public IEnumerable<IAction> GetActions() => actions;
     }
 }

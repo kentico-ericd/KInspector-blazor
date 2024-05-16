@@ -11,6 +11,7 @@ namespace KInspector.Core.Helpers
         public static string? GetExecutingDirectory()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
+
             return Path.GetDirectoryName(assemblyPath);
         }
     }
