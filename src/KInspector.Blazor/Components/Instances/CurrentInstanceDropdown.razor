@@ -87,11 +87,14 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        var conn = DatabaseHelper.GetSqlConnection(Instance!.DatabaseSettings);
-        await conn.OpenAsync();
-        serverVersion = conn.ServerVersion;
-        sqlWorkstation = conn.WorkstationId;
-        await conn.DisposeAsync();
+        if (Instance is not null)
+        {
+            var conn = DatabaseHelper.GetSqlConnection(Instance!.DatabaseSettings);
+            await conn.OpenAsync();
+            serverVersion = conn.ServerVersion;
+            sqlWorkstation = conn.WorkstationId;
+            await conn.DisposeAsync();
+        }
     }
 
     private void DisconnectInstance()

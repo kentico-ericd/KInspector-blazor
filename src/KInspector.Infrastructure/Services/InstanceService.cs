@@ -56,7 +56,8 @@ namespace KInspector.Infrastructure.Services
                         SiteName as Name,
                         SiteGUID as Guid,
                         SiteDomainName as DomainName,
-                        SitePresentationURL as PresentationUrl
+                        SitePresentationURL as PresentationUrl,
+                        SiteStatus as Status
                     FROM CMS_Site";
                 var connection = DatabaseHelper.GetSqlConnection(databaseSettings);
                 var sites = connection.Query<Site>(query).ToList();

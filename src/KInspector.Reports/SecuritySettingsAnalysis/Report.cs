@@ -67,7 +67,7 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
             var currentInstance = configService.GetCurrentInstance();
             var sites = instanceService
                 .GetInstanceDetails(currentInstance)?
-                .Sites?
+                .Sites
                 .Append(new Site()
                 {
                     Id = 0,

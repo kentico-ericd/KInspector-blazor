@@ -29,5 +29,10 @@
         /// The site presentation URL.
         /// </summary>
         public string? PresentationUrl { get; set; }
+
+        /// <summary>
+        /// The site status.
+        /// </summary>
+        public string? Status { get; set; }
     }
 }

@@ -52,7 +52,7 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             var pageTemplateDtos = await databaseService.ExecuteSqlFromFile<PageTemplateDto>(Scripts.GetPageTemplates, new { DocumentPageTemplateIDs = documentPageTemplateIds });
             var sites = instanceService
                 .GetInstanceDetails(configService.GetCurrentInstance())
-                .Sites ?? Enumerable.Empty<Site>();
+                .Sites;
 
             var pageTemplates = pageTemplateDtos
                 .Select(pageTemplateDto => new PageTemplate(sites, pageDtos, pageTemplateDto))

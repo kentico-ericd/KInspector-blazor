@@ -18,6 +18,6 @@
         /// <summary>
         /// The sites contained in the instance's CMS_Site table.
         /// </summary>
-        public IEnumerable<Site>? Sites { get; set; }
+        public IEnumerable<Site> Sites { get; set; } = Enumerable.Empty<Site>();
     }
 }
