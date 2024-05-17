@@ -41,7 +41,14 @@
         @details.AdministrationDatabaseVersion
     </td>
     <td class="px-6 py-4">
-        <a href="#" @onclick="() => ShowSites = !ShowSites" class="underline">@(details.Sites.Count())</a>
+        @if (details.Sites.Any())
+        {
+            <a href="#" @onclick="() => ShowSites = !ShowSites" class="underline">@(details.Sites.Count())</a>
+        }
+        else
+        {
+            <span>0</span>
+        }
     </td>
     <td class="px-6 py-4 text-right">
         <button type="button"
