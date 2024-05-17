@@ -7,7 +7,7 @@ namespace KInspector.Tests.Common.Helpers
 {
     public static class MockConfigServiceHelper
     {
-        public static Mock<IConfigService> SetupMockConfigService(Instance instance)
+        public static Mock<IConfigService> SetupMockConfigService(Instance? instance)
         {
             var mockConfigService = new Mock<IConfigService>(MockBehavior.Strict);
             mockConfigService.Setup(p => p.GetCurrentInstance()).Returns(instance);

@@ -27,7 +27,7 @@ namespace KInspector.Tests.Common
             TokenExpressionResolver.RegisterTokenExpressions(typeof(TokenExpressionResolver).Assembly);
 
             _mockInstance = MockInstances.Get(majorVersion);
-            _mockInstanceDetails = MockInstanceDetails.Get(majorVersion, _mockInstance);
+            _mockInstanceDetails = MockInstanceDetails.Get(majorVersion);
             _mockInstanceService = MockInstanceServiceHelper.SetupInstanceService(_mockInstance, _mockInstanceDetails);
             _mockDatabaseService = MockDatabaseServiceHelper.SetupMockDatabaseService(_mockInstance);
             _mockConfigService = MockConfigServiceHelper.SetupMockConfigService(_mockInstance);

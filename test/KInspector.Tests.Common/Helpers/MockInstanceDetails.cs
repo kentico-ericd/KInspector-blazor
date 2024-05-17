@@ -54,36 +54,17 @@ namespace KInspector.Tests.Common.Helpers
             }
         };
 
-        public static InstanceDetails Get(int majorVersion, Instance instance)
+        public static InstanceDetails Get(int majorVersion)
         {
-            InstanceDetails? instanceDetails = null;
-            switch (majorVersion)
+            InstanceDetails? instanceDetails = majorVersion switch
             {
-                case 9:
-                    instanceDetails = Kentico9;
-                    break;
-                case 10:
-                    instanceDetails = Kentico10;
-                    break;
-                case 11:
-                    instanceDetails = Kentico11;
-                    break;
-                case 12:
-                    instanceDetails = Kentico12;
-                    break;
-                case 13:
-                    instanceDetails = Kentico13;
-                    break;
-            }
-
-            if (instanceDetails == null)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                instanceDetails.Guid = instance.Guid ?? Guid.Empty;
-            }
+                9 => Kentico9,
+                10 => Kentico10,
+                11 => Kentico11,
+                12 => Kentico12,
+                13 => Kentico13,
+                _ => throw new NotImplementedException(),
+            };
 
             return instanceDetails;
         }

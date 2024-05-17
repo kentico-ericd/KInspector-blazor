@@ -17,6 +17,19 @@ namespace KInspector.Infrastructure.Services
             _connection = DatabaseHelper.GetSqlConnection(databaseSettings);
         }
 
+        public Task ExecuteNonQuery(string relativeFilePath, dynamic parameters)
+        {
+            var query = FileHelper.GetSqlQueryText(relativeFilePath);
+            if (parameters is null)
+            {
+                return _connection.ExecuteAsync(query);
+            }
+            else
+            {
+                return _connection.ExecuteAsync(query, (object)parameters);
+            }
+        }
+
         public Task<IEnumerable<T>> ExecuteSqlFromFile<T>(string relativeFilePath)
         {
             return ExecuteSqlFromFile<T>(relativeFilePath, null, null);

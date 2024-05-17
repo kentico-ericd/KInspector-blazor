@@ -22,55 +22,55 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnErrorStatus_When_DebugEnabledInWebConfig()
+        public async Task Should_ReturnErrorStatus_When_DebugEnabledInWebConfig()
         {
             // Arrange
             var customWebConfigXml = @"<configuration><system.web><compilation debug=""true"" /></system.web></configuration>";
             ArrangeServices(customWebconfigXml: customWebConfigXml);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error, "When debug is enabled in the web.config, the report status should be 'error'");
         }
 
         [Test]
-        public void Should_ReturnErrorStatus_When_TraceEnabledInWebConfig()
+        public async Task Should_ReturnErrorStatus_When_TraceEnabledInWebConfig()
         {
             // Arrange
             var customWebConfigXml = @"<configuration><system.web><compilation debug=""falue"" /><trace enabled=""true"" /></system.web></configuration>";
             ArrangeServices(customWebconfigXml: customWebConfigXml);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error, "When trace is enabled in the web.config, the report status should be 'error'");
         }
 
         [Test]
-        public void Should_ReturnInformationStatus_When_ResultsAreClean()
+        public async Task Should_ReturnInformationStatus_When_ResultsAreClean()
         {
             // Arrange
             ArrangeServices();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Information, "When the results are clean, the report status should be 'information'");
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_When_AnyDatabaseSettingIsTrueAndNotTheDefaultValue()
+        public async Task Should_ReturnWarningStatus_When_AnyDatabaseSettingIsTrueAndNotTheDefaultValue()
         {
             // Arrange
             var settingsKey = new SettingsKey("CMSDebugEverything", "Enable all debugs", true, false);
             ArrangeServices(customDatabaseSettingsValues: new SettingsKey[] { settingsKey });
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Warning, "When any database setting is set to true and that isn't the default value, the report status should be 'warning'");
@@ -115,7 +115,7 @@ namespace KInspector.Tests.Common.Reports
             IEnumerable<SettingsKey> databaseSettingsKeyValuesResults = GetDatabaseSettingsKeyValuesResults(customDatabaseSettingsValues);
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<SettingsKey>(Scripts.GetDebugSettingsValues))
-                .Returns(databaseSettingsKeyValuesResults);
+                .Returns(Task.FromResult(databaseSettingsKeyValuesResults));
         }
 
         private void ArrangeResourceStringsMethods()

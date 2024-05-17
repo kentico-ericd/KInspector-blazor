@@ -98,7 +98,7 @@ namespace KInspector.Actions.DisableSmtpServers
 
         private async Task<ModuleResults> DisableServer(int? serverId)
         {
-            await databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableSmtpServer, new { ServerID = serverId });
+            await databaseService.ExecuteNonQuery(Scripts.DisableSmtpServer, new { ServerID = serverId });
             var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.ServerDisabled?.With(new
@@ -111,7 +111,7 @@ namespace KInspector.Actions.DisableSmtpServers
 
         private async Task<ModuleResults> DisableSiteSetting(int? siteId)
         {
-            await databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableSiteSmtpServer, new { SiteID = siteId });
+            await databaseService.ExecuteNonQuery(Scripts.DisableSiteSmtpServer, new { SiteID = siteId });
             var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.SiteSettingDisabled?.With(new

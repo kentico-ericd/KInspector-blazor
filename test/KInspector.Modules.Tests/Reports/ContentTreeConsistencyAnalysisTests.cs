@@ -23,117 +23,117 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreDocumentsWithMissingTreeNode()
+        public async Task Should_ReturnErrorResult_When_ThereAreDocumentsWithMissingTreeNode()
         {
             // Arrange
             SetupAllDatabaseQueries(documentsWithMissingTreeNode: GetBadDocumentNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithBadParentNode()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithBadParentNode()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithBadParentNodeId: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithBadParentSite()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithBadParentSite()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithBadParentSiteId: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithDuplicatedAliasPath()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithDuplicatedAliasPath()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithDuplicatedAliasPath: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithLevelMismatchByAliasPathTest()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithLevelMismatchByAliasPathTest()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithLevelMismatchByAliasPathTest: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithLevelMismatchByNodeLevelTest()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithLevelMismatchByNodeLevelTest()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithLevelMismatchByNodeLevelTest: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithMissingDocument()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithMissingDocument()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithMissingDocument: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreTreeNodesWithPageTypeNotAssignedToSite()
+        public async Task Should_ReturnErrorResult_When_ThereAreTreeNodesWithPageTypeNotAssignedToSite()
         {
             // Arrange
             SetupAllDatabaseQueries(treeNodesWithPageTypeNotAssignedToSite: GetBadTreeNodes());
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_ThereAreVersionHistoryErrors()
+        public async Task Should_ReturnErrorResult_When_ThereAreVersionHistoryErrors()
         {
             // Arrange
             SetupAllDatabaseQueries(isVersionHistoryDataSetClean: false);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
             var workflowInconsistencyTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.WorkflowInconsistencies) ?? false);
 
             // Assert
@@ -144,13 +144,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodResult_When_DatabaseIsClean()
+        public async Task Should_ReturnGoodResult_When_DatabaseIsClean()
         {
             // Arrange
             SetupAllDatabaseQueries();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Good);

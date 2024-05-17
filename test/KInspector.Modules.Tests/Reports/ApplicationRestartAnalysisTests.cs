@@ -38,30 +38,30 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [TestCase(Category = "No events", TestName = "Database without events produces a good result")]
-        public void Should_ReturnGoodResult_When_DatabaseWithoutEvents()
+        public async Task Should_ReturnGoodResult_When_DatabaseWithoutEvents()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode))
-                .Returns(CmsEventsWithoutStartAndEndCodes);
+                .Returns(Task.FromResult(CmsEventsWithoutStartAndEndCodes));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [TestCase(Category = "One restart event", TestName = "Database with events produces an information result and lists two events")]
-        public void Should_ReturnResult_When_DatabaseWithRestartEvents()
+        public async Task Should_ReturnResult_When_DatabaseWithRestartEvents()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsEventLog>(Scripts.GetCmsEventLogsWithStartOrEndCode))
-                .Returns(CmsEventsWithStartAndEndCodes);
+                .Returns(Task.FromResult(CmsEventsWithStartAndEndCodes));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());

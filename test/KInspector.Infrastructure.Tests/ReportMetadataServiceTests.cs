@@ -27,18 +27,8 @@ namespace KInspector.Infrastructure.Tests
         {
             TokenExpressionResolver.RegisterTokenExpressions(typeof(Term).Assembly);
 
-            var mockInstance = MockInstances.Get(majorVersion);
-            if (mockInstance is null)
-            {
-                throw new InvalidOperationException($"No instance found with major version {majorVersion}.");
-            }
-
-            var mockInstanceDetails = MockInstanceDetails.Get(majorVersion, mockInstance);
-            if (mockInstanceDetails is null)
-            {
-                throw new InvalidOperationException($"No instance details found with major version {majorVersion}.");
-            }
-
+            var mockInstance = MockInstances.Get(majorVersion) ?? throw new InvalidOperationException($"No instance found with major version {majorVersion}.");
+            var mockInstanceDetails = MockInstanceDetails.Get(majorVersion) ?? throw new InvalidOperationException($"No instance details found with major version {majorVersion}.");
             var mockInstanceService = MockInstanceServiceHelper.SetupInstanceService(mockInstance, mockInstanceDetails);
             var mockConfigService = MockConfigServiceHelper.SetupMockConfigService(mockInstance);
 
@@ -73,8 +63,7 @@ namespace KInspector.Infrastructure.Tests
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
 
             // Act
-            ModuleMetadata<TestTerms> getReportMetadata(string path) => moduleMedatadataService
-                    .GetModuleMetadata<TestTerms>(path);
+            ModuleMetadata<TestTerms> getReportMetadata(string path) => moduleMedatadataService.GetModuleMetadata<TestTerms>(path);
 
             // Assert
             Assert.That(() => getReportMetadata(yamlPath), Throws.Exception);

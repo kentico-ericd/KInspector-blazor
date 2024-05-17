@@ -114,13 +114,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [TestCase(Category = "Class and table match", TestName = "Matching class and table produce a good result")]
-        public void Should_ReturnGoodResult_When_ClassAndTableMatch()
+        public async Task Should_ReturnGoodResult_When_ClassAndTableMatch()
         {
             // Arrange
             ArrangeDatabaseService(ValidCmsClasses, ValidTableColumns);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -128,13 +128,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [TestCase(Category = "Class has added field", TestName = "Class with added field produces an error result")]
-        public void Should_ReturnErrorResult_When_ClassHasAddedField()
+        public async Task Should_ReturnErrorResult_When_ClassHasAddedField()
         {
             // Arrange
             ArrangeDatabaseService(InvalidCmsClasses, ValidTableColumns);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());
@@ -143,13 +143,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [TestCase(Category = "Table has added column", TestName = "Table with added column produces an error result")]
-        public void Should_ReturnErrorResult_When_TableHasAddedColumn()
+        public async Task Should_ReturnErrorResult_When_TableHasAddedColumn()
         {
             // Arrange
             ArrangeDatabaseService(ValidCmsClasses, InvalidTableColumns);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());

@@ -31,7 +31,7 @@ namespace KInspector.Actions.DisableStagingServers
                 return await GetInvalidOptionsResult();
             }
 
-            await databaseService.ExecuteSqlFromFileGeneric(Scripts.DisableServer, new { ServerID = options?.ServerId });
+            await databaseService.ExecuteNonQuery(Scripts.DisableServer, new { ServerID = options?.ServerId });
             var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.ServerDisabled?.With(new

@@ -20,16 +20,16 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnListOfIdenticalLayouts_WhenSomeAreFound()
+        public async Task Should_ReturnListOfIdenticalLayouts_WhenSomeAreFound()
         {
             // Arrange
             var identicalPageLayouts = GetListOfLayouts();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<IdenticalPageLayouts>(Scripts.GetIdenticalLayouts))
-                .Returns(identicalPageLayouts);
+                .Returns(Task.FromResult(identicalPageLayouts));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());
@@ -38,16 +38,16 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnEmptyListOfIdenticalLayouts_WhenNoneFound()
+        public async Task Should_ReturnEmptyListOfIdenticalLayouts_WhenNoneFound()
         {
             // Arrange
-            var identicalPageLayouts = new List<IdenticalPageLayouts>();
+            var identicalPageLayouts = Enumerable.Empty<IdenticalPageLayouts>();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<IdenticalPageLayouts>(Scripts.GetIdenticalLayouts))
-                .Returns(identicalPageLayouts);
+                .Returns(Task.FromResult(identicalPageLayouts));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(!results.TableResults.Any());

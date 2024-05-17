@@ -23,7 +23,7 @@ namespace KInspector.Tests.Common.Helpers
                         )
                     )
                 )
-                .Returns(returnValue);
+                .Returns(Task.FromResult(returnValue));
         }
 
         public static void SetupExecuteSqlFromFileGenericWithListParameter<T>(
@@ -44,7 +44,7 @@ namespace KInspector.Tests.Common.Helpers
                         )
                     )
                 )
-                .Returns(returnValue);
+                .Returns(Task.FromResult(returnValue));
         }
 
         public static void SetupExecuteSqlFromFile<T>(
@@ -54,7 +54,7 @@ namespace KInspector.Tests.Common.Helpers
         {
             mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<T>(script))
-                .Returns(returnValue);
+                .Returns(Task.FromResult(returnValue));
         }
 
         public static Mock<IDatabaseService> SetupMockDatabaseService(Instance instance)

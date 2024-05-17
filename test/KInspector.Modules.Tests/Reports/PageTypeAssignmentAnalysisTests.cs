@@ -20,14 +20,14 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnListOfUnassignedPageTypes_When_SomeAreFound()
+        public async Task Should_ReturnListOfUnassignedPageTypes_When_SomeAreFound()
         {
             // Arrange
             var unassignedPageTypes = GetListOfUnassignedPageTypes();
             ArrangeDatabaseCalls(unassignedPageTypes);
             
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());
@@ -36,13 +36,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnEmptyListOfIdenticalLayouts_When_NoneFound()
+        public async Task Should_ReturnEmptyListOfIdenticalLayouts_When_NoneFound()
         {
             // Arrange
             ArrangeDatabaseCalls();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(!results.TableResults.Any());
@@ -54,7 +54,7 @@ namespace KInspector.Tests.Common.Reports
             unassignedPageTypes ??= new List<PageType>(); 
             _mockDatabaseService
                .Setup(p => p.ExecuteSqlFromFile<PageType>(Scripts.GetPageTypesNotAssignedToSite))
-               .Returns(unassignedPageTypes);
+               .Returns(Task.FromResult(unassignedPageTypes));
         }
 
         private IEnumerable<PageType> GetListOfUnassignedPageTypes()

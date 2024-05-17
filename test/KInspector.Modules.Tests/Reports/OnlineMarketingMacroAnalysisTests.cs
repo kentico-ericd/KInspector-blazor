@@ -20,21 +20,21 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodResult_WhenNoIssuesFound()
+        public async Task Should_ReturnGoodResult_WhenNoIssuesFound()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions))
-                .Returns(new ContactGroupResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<ContactGroupResult>()));
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions))
-                .Returns(new AutomationTriggerResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<AutomationTriggerResult>()));
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions))
-                .Returns(new ScoreRuleResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<ScoreRuleResult>()));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Good);
@@ -42,23 +42,23 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnUnoptimizedContactGroups_WhenSomeAreFound()
+        public async Task Should_ReturnUnoptimizedContactGroups_WhenSomeAreFound()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions))
-                .Returns(new AutomationTriggerResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<AutomationTriggerResult>()));
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions))
-                .Returns(new ScoreRuleResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<ScoreRuleResult>()));
 
             var unoptimizedContactGroups = GetListOfContactGroups();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions))
-                .Returns(unoptimizedContactGroups);
+                .Returns(Task.FromResult(unoptimizedContactGroups));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
             var contactGroupTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.ContactGroupTable) ?? false);
 
             // Assert
@@ -68,23 +68,23 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnUnoptimizedAutomationTriggers_WhenSomeAreFound()
+        public async Task Should_ReturnUnoptimizedAutomationTriggers_WhenSomeAreFound()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions))
-                .Returns(new ContactGroupResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<ContactGroupResult>()));
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions))
-                .Returns(new ScoreRuleResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<ScoreRuleResult>()));
 
             var unoptimizedAutomationTriggers = GetListOfAutomationTriggers();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions))
-                .Returns(unoptimizedAutomationTriggers);
+                .Returns(Task.FromResult(unoptimizedAutomationTriggers));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
             var automationTriggerTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.AutomationTriggerTable) ?? false);
 
             // Assert
@@ -94,23 +94,23 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnUnoptimizedScoreRules_WhenSomeAreFound()
+        public async Task Should_ReturnUnoptimizedScoreRules_WhenSomeAreFound()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ContactGroupResult>(Scripts.GetManualContactGroupMacroConditions))
-                .Returns(new ContactGroupResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<ContactGroupResult>()));
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<AutomationTriggerResult>(Scripts.GetManualTimeBasedTriggerMacroConditions))
-                .Returns(new AutomationTriggerResult[0]);
+                .Returns(Task.FromResult(Enumerable.Empty<AutomationTriggerResult>()));
 
             var unoptimizedScoreRules = GetListOfScoreRules();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ScoreRuleResult>(Scripts.GetManualScoreRuleMacroConditions))
-                .Returns(unoptimizedScoreRules);
+                .Returns(Task.FromResult(unoptimizedScoreRules));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
             var scoreRuleTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.ScoreRuleTable) ?? false);
 
             // Assert

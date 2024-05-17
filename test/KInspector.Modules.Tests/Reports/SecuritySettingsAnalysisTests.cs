@@ -168,14 +168,14 @@ namespace KInspector.Tests.Common.Reports
             Category = "Settings keys and web.config with recommended values",
             TestName = "Settings keys and web.config with recommended values produce a good result"
             )]
-        public void Should_ReturnGoodResult_When_SettingsKeysAndWebConfigWithRecommendedValues()
+        public async Task Should_ReturnGoodResult_When_SettingsKeysAndWebConfigWithRecommendedValues()
         {
             // Arrange
             ArrangeDatabaseService(CmsSettingsKeysWithRecommendedValues, CmsSettingsCategoriesWithRecommendedValues);
             ArrangeCmsFileService(WebConfigWithRecommendedValues);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -186,14 +186,14 @@ namespace KInspector.Tests.Common.Reports
             Category = "Settings keys without recommended values and web.config with recommended values",
             TestName = "Settings keys without recommended values and web.config with recommended values produce a warning result"
             )]
-        public void Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithRecommendedValues()
+        public async Task Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithRecommendedValues()
         {
             // Arrange
             ArrangeDatabaseService(CmsSettingsKeysWithoutRecommendedValues, CmsSettingsCategoriesWithoutRecommendedValues);
             ArrangeCmsFileService(WebConfigWithRecommendedValues);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
             var settingsTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.AdminSecuritySettings) ?? false);
 
             // Assert
@@ -207,14 +207,14 @@ namespace KInspector.Tests.Common.Reports
             Category = "Settings keys with recommended values and web.config without recommended values",
             TestName = "Settings keys with recommended values and web.config without recommended values produce a warning result"
             )]
-        public void Should_ReturnWarningResult_When_SettingsKeysWithRecommendedValuesAndWebConfigWithoutRecommendedValues()
+        public async Task Should_ReturnWarningResult_When_SettingsKeysWithRecommendedValuesAndWebConfigWithoutRecommendedValues()
         {
             // Arrange
             ArrangeDatabaseService(CmsSettingsKeysWithRecommendedValues, CmsSettingsCategoriesWithRecommendedValues);
             ArrangeCmsFileService(WebConfigWithoutRecommendedValues);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
             var webConfigTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.WebConfigSecuritySettings) ?? false);
 
             // Assert
@@ -228,14 +228,14 @@ namespace KInspector.Tests.Common.Reports
             Category = "Settings keys without recommended values and web.config without recommended values",
             TestName = "Settings keys without recommended values and web.config without recommended values produce a warning result"
             )]
-        public void Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithoutRecommendedValues()
+        public async Task Should_ReturnWarningResult_When_SettingsKeysWithoutRecommendedValuesAndWebConfigWithoutRecommendedValues()
         {
             // Arrange
             ArrangeDatabaseService(CmsSettingsKeysWithoutRecommendedValues, CmsSettingsCategoriesWithoutRecommendedValues);
             ArrangeCmsFileService(WebConfigWithoutRecommendedValues);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
             var webConfigTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.WebConfigSecuritySettings) ?? false);
             var settingsTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.AdminSecuritySettings) ?? false);
 

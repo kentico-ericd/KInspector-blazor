@@ -22,24 +22,24 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_When_ResultsEmpty()
+        public async Task Should_ReturnGoodStatus_When_ResultsEmpty()
         {
             // Arrange
             var emptyResult = new DataTable();
 #pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults))
-                .Returns(emptyResult);
+                .Returns(Task.FromResult(emptyResult));
 #pragma warning restore 0618
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             //Assert
             Assert.That(results.Status == ResultsStatus.Good);
         }
 
         [Test]
-        public void Should_ReturnErrorStatus_When_ResultsNotEmpty()
+        public async Task Should_ReturnErrorStatus_When_ResultsNotEmpty()
         {
             // Arrange
             var result = new DataTable();
@@ -49,11 +49,11 @@ namespace KInspector.Tests.Common.Reports
 # pragma warning disable 0618 // This is a special exemption as the results of CheckDB are unknown
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileAsDataTable(Scripts.GetCheckDbResults))
-                .Returns(result);
+                .Returns(Task.FromResult(result));
 # pragma warning restore 0618
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             //Assert
             Assert.That(results.Status == ResultsStatus.Error);

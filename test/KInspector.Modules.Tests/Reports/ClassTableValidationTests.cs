@@ -20,21 +20,21 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnCleanResult_When_DatabaseIsClean()
+        public async Task Should_ReturnCleanResult_When_DatabaseIsClean()
         {
             // Arrange
             var tableResults = GetCleanTableResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<TableWithNoClass>(Scripts.TablesWithNoClass))
-                .Returns(tableResults);
+                .Returns(Task.FromResult(tableResults));
 
             var classResults = GetCleanClassResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ClassWithNoTable>(Scripts.ClassesWithNoTable))
-                .Returns(classResults);
+                .Returns(Task.FromResult(classResults));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(!results.TableResults.Any());
@@ -42,15 +42,15 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_DatabaseHasClassWithNoTable()
+        public async Task Should_ReturnErrorResult_When_DatabaseHasClassWithNoTable()
         {
             // Arrange
             var tableResults = GetCleanTableResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<TableWithNoClass>(Scripts.TablesWithNoClass))
-                .Returns(tableResults);
+                .Returns(Task.FromResult(tableResults));
 
-            var classResults = GetCleanClassResults();
+            var classResults = GetCleanClassResults().ToList();
             classResults.Add(new ClassWithNoTable
             {
                 ClassDisplayName = "Has no table",
@@ -60,10 +60,10 @@ namespace KInspector.Tests.Common.Reports
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ClassWithNoTable>(Scripts.ClassesWithNoTable))
-                .Returns(classResults);
+                .Returns(Task.FromResult(classResults.AsEnumerable()));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
             var tableResultsTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.DatabaseTablesWithMissingKenticoClasses) ?? false);
             var classResultsTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.KenticoClassesWithMissingDatabaseTables) ?? false);
 
@@ -76,10 +76,10 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnErrorResult_When_DatabaseHasTableWithNoClass()
+        public async Task Should_ReturnErrorResult_When_DatabaseHasTableWithNoClass()
         {
             // Arrange
-            var tableResults = GetCleanTableResults(false);
+            var tableResults = GetCleanTableResults(false).ToList();
             tableResults.Add(new TableWithNoClass
             {
                 TableName = "HasNoClass"
@@ -87,15 +87,15 @@ namespace KInspector.Tests.Common.Reports
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<TableWithNoClass>(Scripts.TablesWithNoClass))
-                .Returns(tableResults);
+                .Returns(Task.FromResult(tableResults.AsEnumerable()));
 
             var classResults = GetCleanClassResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<ClassWithNoTable>(Scripts.ClassesWithNoTable))
-                .Returns(classResults);
+                .Returns(Task.FromResult(classResults));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
             var tableResultsTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.DatabaseTablesWithMissingKenticoClasses) ?? false);
             var classResultsTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(_mockReport.Metadata.Terms.KenticoClassesWithMissingDatabaseTables) ?? false);
 
@@ -107,12 +107,9 @@ namespace KInspector.Tests.Common.Reports
             Assert.That(results.Status == ResultsStatus.Error);
         }
 
-        private List<ClassWithNoTable> GetCleanClassResults()
-        {
-            return new List<ClassWithNoTable>();
-        }
+        private IEnumerable<ClassWithNoTable> GetCleanClassResults() => Enumerable.Empty<ClassWithNoTable>();
 
-        private List<TableWithNoClass> GetCleanTableResults(bool includeWhitelistedTables = true)
+        private IEnumerable<TableWithNoClass> GetCleanTableResults(bool includeWhitelistedTables = true)
         {
             var tableResults = new List<TableWithNoClass>();
             if (includeWhitelistedTables && _mockInstanceDetails?.AdministrationDatabaseVersion?.Major >= 10)

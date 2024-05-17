@@ -31,7 +31,7 @@ namespace KInspector.Actions.StopRunningSites
                 return await GetInvalidOptionsResult();
             }
 
-            await databaseService.ExecuteSqlFromFileGeneric(Scripts.StopSite, new { SiteID = options?.SiteId });
+            await databaseService.ExecuteNonQuery(Scripts.StopSite, new { SiteID = options?.SiteId });
             var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.SiteStopped?.With(new

@@ -20,16 +20,16 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnInformationStatusAndAllUnusedPageTypes()
+        public async Task Should_ReturnInformationStatusAndAllUnusedPageTypes()
         {
             // Arrange
             var unusedPageTypes = GetUnusedPageTypes();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<PageType>(Scripts.GetUnusedPageTypes))
-                .Returns(unusedPageTypes);
+                .Returns(Task.FromResult(unusedPageTypes));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());

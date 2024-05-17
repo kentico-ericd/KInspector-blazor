@@ -20,16 +20,16 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnInformationStatus()
+        public async Task Should_ReturnInformationStatus()
         {
             // Arrange
             IEnumerable<DatabaseTableSizeResult> dbResults = GetCleanResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<DatabaseTableSizeResult>(Scripts.GetTop25LargestTables))
-                .Returns(dbResults);
+                .Returns(Task.FromResult(dbResults));
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());

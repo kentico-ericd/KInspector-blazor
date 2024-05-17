@@ -26,72 +26,72 @@ namespace KInspector.Tests.Common.Actions
         }
 
         [Test]
-        public void Should_NotModifyData_When_OptionsNull()
+        public async Task Should_NotModifyData_When_OptionsNull()
         {
             // Arrange
             var options = new Options { SiteId = null };
             var tableResults = GetCleanTableResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary))
-                .Returns(tableResults);
+                .Returns(Task.FromResult(tableResults));
 
             // Act
             var optionJson = JsonConvert.SerializeObject(options);
-            var results = _mockAction.Execute(optionJson);
+            var results = await _mockAction.Execute(optionJson);
 
             // Assert
             Assert.That(results.TableResults.Any());
             Assert.That(results.TableResults.FirstOrDefault()?.Rows.Count() == 2);
             Assert.That(results.Status == ResultsStatus.Information);
-            _mockDatabaseService.Verify(m => m.ExecuteSqlFromFileGeneric(Scripts.StopSite, It.IsAny<object>()), Times.Never());
+            _mockDatabaseService.Verify(m => m.ExecuteNonQuery(Scripts.StopSite, It.IsAny<object>()), Times.Never());
         }
 
         [TestCase(0)]
         [TestCase(3)]
-        public void Should_NotModifyData_When_InvalidOptions(int siteId)
+        public async Task Should_NotModifyData_When_InvalidOptions(int siteId)
         {
             // Arrange
             var options = new Options { SiteId = siteId };
             var tableResults = GetCleanTableResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary))
-                .Returns(tableResults);
+                .Returns(Task.FromResult(tableResults));
 
             // Act
             var optionJson = JsonConvert.SerializeObject(options);
-            var results = _mockAction.Execute(optionJson);
+            var results = await _mockAction.Execute(optionJson);
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Error);
-            _mockDatabaseService.Verify(m => m.ExecuteSqlFromFileGeneric(Scripts.StopSite, It.IsAny<object>()), Times.Never());
+            _mockDatabaseService.Verify(m => m.ExecuteNonQuery(Scripts.StopSite, It.IsAny<object>()), Times.Never());
         }
 
         [Test]
-        public void Should_ModifyData_When_ValidOptions()
+        public async Task Should_ModifyData_When_ValidOptions()
         {
             // Arrange
             var options = new Options { SiteId = 1 };
             var tableResults = GetCleanTableResults();
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsSite>(Scripts.GetSiteSummary))
-                .Returns(tableResults);
+                .Returns(Task.FromResult(tableResults));
 
             _mockDatabaseService
-                .Setup(p => p.ExecuteSqlFromFileGeneric(Scripts.StopSite, It.IsAny<object>()))
-                .Returns(It.IsAny<IEnumerable<Dictionary<string, object>>>());
+                .Setup(p => p.ExecuteNonQuery(Scripts.StopSite, It.IsAny<object>()))
+                .Returns(Task.CompletedTask);
 
             // Act
             var optionJson = JsonConvert.SerializeObject(options);
-            var results = _mockAction.Execute(optionJson);
+            var results = await _mockAction.Execute(optionJson);
 
             // Assert
             Assert.That(results.TableResults.Any());
             Assert.That(results.TableResults.FirstOrDefault()?.Rows.Count() == 2);
             Assert.That(results.Status == ResultsStatus.Good);
-            _mockDatabaseService.Verify(m => m.ExecuteSqlFromFileGeneric(Scripts.StopSite, It.IsAny<object>()), Times.Once());
+            _mockDatabaseService.Verify(m => m.ExecuteNonQuery(Scripts.StopSite, It.IsAny<object>()), Times.Once());
         }
 
-        private List<CmsSite> GetCleanTableResults()
+        private IEnumerable<CmsSite> GetCleanTableResults()
         {
             return new List<CmsSite>
             {

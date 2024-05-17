@@ -22,26 +22,26 @@ namespace KInspector.Tests.Common.Reports
     [TestFixture(12)]
     public class RobotsTxtConfigurationSummaryTest : AbstractModuleTest<Report, Terms>
     {
-        private Report _mockReport;
+        private Report? _mockReport;
 
         public RobotsTxtConfigurationSummaryTest(int majorVersion) : base(majorVersion)
         {
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_WhenRobotsTxtFound()
+        public async Task Should_ReturnGoodStatus_WhenRobotsTxtFound()
         {
             // Arrange
             _mockReport = ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
             var mockInstance = _mockConfigService.Object.GetCurrentInstance();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Good);
 
-            var baseUri = new Uri(mockInstance.AdministrationUrl);
+            var baseUri = new Uri(mockInstance?.AdministrationUrl ?? string.Empty);
             var expectedUri = new Uri(baseUri, Constants.RobotsTxtRelativePath);
 
             AssertUrlCalled(mockHttpMessageHandler, expectedUri);
@@ -61,10 +61,9 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodStatus_WhenSiteIsInSubDirectoryAndRobotsTxtFound()
+        public async Task Should_ReturnGoodStatus_WhenSiteIsInSubDirectoryAndRobotsTxtFound()
         {
             // Arrange
-
             _mockReport = ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode.OK, out Mock<HttpMessageHandler> mockHttpMessageHandler);
             var mockInstance = _mockConfigService.Object.GetCurrentInstance();
 
@@ -72,7 +71,7 @@ namespace KInspector.Tests.Common.Reports
             mockInstance.AdministrationUrl += "/subdirectory";
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Good);
@@ -83,13 +82,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_WhenRobotsTxtNotFound()
+        public async Task Should_ReturnWarningStatus_WhenRobotsTxtNotFound()
         {
             // Arrange
             _mockReport = ConfigureReportAndHandlerWithHttpClientReturning(HttpStatusCode.NotFound, out Mock<HttpMessageHandler> mockHttpMessageHandler);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Warning);

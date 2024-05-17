@@ -15,6 +15,13 @@ namespace KInspector.Core.Services.Interfaces
         void Configure(DatabaseSettings databaseSettings);
 
         /// <summary>
+        /// Executes SQL contained in a KInspector script file.
+        /// </summary>
+        /// <param name="relativeFilePath">The relative path of the .sql file to execute.</param>
+        /// <param name="parameters">Values which will be provided as parameters in the SQL query.</param>
+        Task ExecuteNonQuery(string relativeFilePath, dynamic parameters);
+
+        /// <summary>
         /// Executes SQL contained in a KInspector script file and returns the results.
         /// </summary>
         /// <param name="relativeFilePath">The relative path of the .sql file to execute.</param>

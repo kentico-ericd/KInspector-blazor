@@ -32,7 +32,7 @@ namespace KInspector.Actions.ResetCmsUserLogin
             }
 
             // Reset provided user
-            await databaseService.ExecuteSqlFromFileGeneric(Scripts.ResetAndEnableUser, new { UserID = options?.UserId });
+            await databaseService.ExecuteNonQuery(Scripts.ResetAndEnableUser, new { UserID = options?.UserId });
             var result = await ExecuteListing();
             result.Status = ResultsStatus.Good;
             result.Summary = Metadata.Terms.UserReset?.With(new {

@@ -14,9 +14,9 @@ namespace KInspector.Tests.Common.Reports
     {
         private readonly Report mockReport;
 
-        private List<CmsPageTypeField> CmsPageTypeFieldsWithoutIssues => new();
+        private IEnumerable<CmsPageTypeField> CmsPageTypeFieldsWithoutIssues => Enumerable.Empty<CmsPageTypeField>();
 
-        private List<CmsPageTypeField> CmsPageTypeFieldsWithIdenticalNamesAndDifferentDataTypes => new()
+        private IEnumerable<CmsPageTypeField> CmsPageTypeFieldsWithIdenticalNamesAndDifferentDataTypes => new List<CmsPageTypeField>()
         {
             new()
             {
@@ -38,30 +38,30 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [TestCase(Category = "Matching fields have save data types", TestName = "Page type fields with matching names and data types produce a good result")]
-        public void Should_ReturnGoodResult_When_FieldsHaveNoIssues()
+        public async Task Should_ReturnGoodResult_When_FieldsHaveNoIssues()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields))
-                .Returns(CmsPageTypeFieldsWithoutIssues);
+                .Returns(Task.FromResult(CmsPageTypeFieldsWithoutIssues));
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
         }
 
         [TestCase(Category = "Matching fields have different data types", TestName = "Page type fields with matching names and different data types produce an information result")]
-        public void Should_ReturnInformationResult_When_FieldsWithMatchingNamesHaveDifferentDataTypes()
+        public async Task Should_ReturnInformationResult_When_FieldsWithMatchingNamesHaveDifferentDataTypes()
         {
             // Arrange
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFile<CmsPageTypeField>(Scripts.GetCmsPageTypeFields))
-                .Returns(CmsPageTypeFieldsWithIdenticalNamesAndDifferentDataTypes);
+                .Returns(Task.FromResult(CmsPageTypeFieldsWithIdenticalNamesAndDifferentDataTypes));
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.TableResults.Any());

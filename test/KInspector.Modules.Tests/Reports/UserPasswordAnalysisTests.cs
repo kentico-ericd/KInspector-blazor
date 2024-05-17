@@ -52,13 +52,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodStatusAndGoodSummary_When_UserPasswordsHaveNoIssues()
+        public async Task Should_ReturnGoodStatusAndGoodSummary_When_UserPasswordsHaveNoIssues()
         {
             // Arrange
             ArrangeDatabaseService(CmsUserWithoutIssues);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -66,13 +66,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnErrorStatusAndErrorSummary_When_UserPasswordsHaveTwoIssues()
+        public async Task Should_ReturnErrorStatusAndErrorSummary_When_UserPasswordsHaveTwoIssues()
         {
             // Arrange
             ArrangeDatabaseService(CmsUserWithTwoIssues);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
             var firstResultRowCount = results.TableResults[0].Rows.Count();
             var secondResultRowCount = results.TableResults[1].Rows.Count();
 
@@ -85,13 +85,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnErrorStatusAndErrorSummary_When_UserPasswordsHaveOneIssue()
+        public async Task Should_ReturnErrorStatusAndErrorSummary_When_UserPasswordsHaveOneIssue()
         {
             // Arrange
             ArrangeDatabaseService(CmsUserWithOneIssue);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
             var firstResultRowCount = results.TableResults.FirstOrDefault()?.Rows.Count();
 
             // Assert

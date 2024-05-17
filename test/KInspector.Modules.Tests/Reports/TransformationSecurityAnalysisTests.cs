@@ -94,13 +94,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodStatusAndGoodSummary_WhenTransformationsHaveNoIssues()
+        public async Task Should_ReturnGoodStatusAndGoodSummary_WhenTransformationsHaveNoIssues()
         {
             // Arrange
             ArrangeDatabaseService(CleanTransformationDtoTable);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status, Is.EqualTo(ResultsStatus.Good));
@@ -108,9 +108,9 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnWarningStatus_WhenTransformationsHaveSingleXssQueryHelperIssue() => TestSingleIssue(@"Reports\TestData\CMS_Transformation\TransformationCode\WithXssQueryHelperIssueASCX.txt", (r, d) => d.XssQueryHelper != string.Empty && r.Uses == 2);
+        public Task Should_ReturnWarningStatus_WhenTransformationsHaveSingleXssQueryHelperIssue() => TestSingleIssue(@"Reports\TestData\CMS_Transformation\TransformationCode\WithXssQueryHelperIssueASCX.txt", (r, d) => d.XssQueryHelper != string.Empty && r.Uses == 2);
 
-        public void TestSingleIssue(string transformationCodeFilePath, Func<TransformationResult, dynamic, bool> transformationResultEvaluator)
+        public async Task TestSingleIssue(string transformationCodeFilePath, Func<TransformationResult, dynamic, bool> transformationResultEvaluator)
         {
             var transformationDtoTableWithIssue = new List<TransformationDto>
             {
@@ -127,7 +127,7 @@ namespace KInspector.Tests.Common.Reports
             ArrangeDatabaseService(transformationDtoTableWithIssue);
 
             // Act
-            var results = mockReport.GetResults();
+            var results = await mockReport.GetResults();
             var issueTypesTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.IssueTypes) ?? false);
             var transformationIssueTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.TransformationsWithIssues) ?? false);
             var transformationUsageTable = results.TableResults.FirstOrDefault(t => t.Name?.Equals(mockReport.Metadata.Terms.TableTitles?.TransformationUsage) ?? false);

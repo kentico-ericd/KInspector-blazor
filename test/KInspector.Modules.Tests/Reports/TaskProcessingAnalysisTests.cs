@@ -20,26 +20,26 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnGoodResult_When_ThereAreNoUnprocessedTasks()
+        public async Task Should_ReturnGoodResult_When_ThereAreNoUnprocessedTasks()
         {
             // Arrange
             SetupAllDatabaseQueries();
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             Assert.That(results.Status == ResultsStatus.Good);
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedIntegrationBusTasks()
+        public async Task Should_ReturnWarningResult_When_ThereAreUnprocessedIntegrationBusTasks()
         {
             // Arrange
             SetupAllDatabaseQueries(unprocessedIntegrationBusTasks: 1);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.StringResults, TaskType.IntegrationBusTask);
@@ -47,13 +47,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedScheduledTasks()
+        public async Task Should_ReturnWarningResult_When_ThereAreUnprocessedScheduledTasks()
         {
             // Arrange
             SetupAllDatabaseQueries(unprocessedScheduledTasks: 1);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.StringResults, TaskType.ScheduledTask);
@@ -61,13 +61,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedSearchTasks()
+        public async Task Should_ReturnWarningResult_When_ThereAreUnprocessedSearchTasks()
         {
             // Arrange
             SetupAllDatabaseQueries(unprocessedSearchTasks: 1);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.StringResults, TaskType.SearchTask);
@@ -75,13 +75,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedStagingTasks()
+        public async Task Should_ReturnWarningResult_When_ThereAreUnprocessedStagingTasks()
         {
             // Arrange
             SetupAllDatabaseQueries(unprocessedStagingTasks: 1);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.StringResults, TaskType.StagingTask);
@@ -89,13 +89,13 @@ namespace KInspector.Tests.Common.Reports
         }
 
         [Test]
-        public void Should_ReturnWarningResult_When_ThereAreUnprocessedWebFarmTasks()
+        public async Task Should_ReturnWarningResult_When_ThereAreUnprocessedWebFarmTasks()
         {
             // Arrange
             SetupAllDatabaseQueries(unprocessedWebFarmTasks: 1);
 
             // Act
-            var results = _mockReport.GetResults();
+            var results = await _mockReport.GetResults();
 
             // Assert
             AssertThatResultsDataIncludesTaskTypeDetails(results.StringResults, TaskType.WebFarmTask);
@@ -119,23 +119,23 @@ namespace KInspector.Tests.Common.Reports
         {
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedIntegrationBusTasks))
-                .Returns(unprocessedIntegrationBusTasks);
+                .Returns(Task.FromResult(unprocessedIntegrationBusTasks));
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedScheduledTasks))
-                .Returns(unprocessedScheduledTasks);
+                .Returns(Task.FromResult(unprocessedScheduledTasks));
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedSearchTasks))
-                .Returns(unprocessedSearchTasks);
+                .Returns(Task.FromResult(unprocessedSearchTasks));
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedStagingTasks))
-                .Returns(unprocessedStagingTasks);
+                .Returns(Task.FromResult(unprocessedStagingTasks));
 
             _mockDatabaseService
                 .Setup(p => p.ExecuteSqlFromFileScalar<int>(Scripts.GetCountOfUnprocessedWebFarmTasks))
-                .Returns(unprocessedWebFarmTasks);
+                .Returns(Task.FromResult(unprocessedWebFarmTasks));
         }
     }
 }
