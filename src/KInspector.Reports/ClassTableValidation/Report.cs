@@ -33,8 +33,8 @@ namespace KInspector.Reports.ClassTableValidation
 
         public async override Task<ModuleResults> GetResults()
         {
-            var instance = configService.GetCurrentInstance();
-            var instanceDetails = instanceService.GetInstanceDetails(instance);
+            var instance = await configService.GetCurrentInstance();
+            var instanceDetails = await instanceService.GetInstanceDetails(instance);
             var tablesWithMissingClass = await GetResultsForTables(instanceDetails);
             var classesWithMissingTable = await GetResultsForClasses();
 

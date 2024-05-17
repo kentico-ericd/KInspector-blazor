@@ -22,23 +22,23 @@ namespace KInspector.Infrastructure.Services
             _databaseService = databaseService;
         }
 
-        public InstanceDetails GetInstanceDetails(Guid instanceGuid)
+        public async Task<InstanceDetails> GetInstanceDetails(Guid instanceGuid)
         {
-            var instance = _configService.GetInstance(instanceGuid);
+            var instance = await _configService.GetInstance(instanceGuid);
 
             return instance is null
                 ? throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'")
-                : GetInstanceDetails(instance);
+                : await GetInstanceDetails(instance);
         }
 
-        public InstanceDetails GetInstanceDetails(Instance? instance)
+        public async Task<InstanceDetails> GetInstanceDetails(Instance? instance)
         {
             ArgumentNullException.ThrowIfNull(instance);
             var instanceDetails = new InstanceDetails
             {
-                AdministrationVersion = _versionService.GetKenticoAdministrationVersion(instance),
-                AdministrationDatabaseVersion = _versionService.GetKenticoDatabaseVersion(instance.DatabaseSettings),
-                Sites = GetSites(instance.DatabaseSettings)
+                AdministrationVersion = await _versionService.GetKenticoAdministrationVersion(instance),
+                AdministrationDatabaseVersion = await _versionService.GetKenticoDatabaseVersion(instance.DatabaseSettings),
+                Sites = await GetSites(instance.DatabaseSettings)
             };
 
             _databaseService.Configure(instance.DatabaseSettings);
@@ -46,7 +46,7 @@ namespace KInspector.Infrastructure.Services
             return instanceDetails;
         }
 
-        private static IList<Site> GetSites(DatabaseSettings databaseSettings)
+        private async static Task<IList<Site>> GetSites(DatabaseSettings databaseSettings)
         {
             try
             {
@@ -59,9 +59,9 @@ namespace KInspector.Infrastructure.Services
                         SitePresentationURL as PresentationUrl
                     FROM CMS_Site";
                 var connection = DatabaseHelper.GetSqlConnection(databaseSettings);
-                var sites = connection.Query<Site>(query).ToList();
+                var sites = await connection.QueryAsync<Site>(query);
 
-                return sites;
+                return sites.ToList();
             }
             catch
             {

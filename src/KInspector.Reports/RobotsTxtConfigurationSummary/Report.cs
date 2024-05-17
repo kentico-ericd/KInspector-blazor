@@ -40,23 +40,24 @@ namespace KInspector.Reports.RobotsTxtConfigurationSummary
             ModuleTags.SEO,
         };
 
-        public override Task<ModuleResults> GetResults()
+        public async override Task<ModuleResults> GetResults()
         {
-            var adminUrl = configService.GetCurrentInstance()?.AdministrationUrl;
+            var currentInstance = await configService.GetCurrentInstance();
+            var adminUrl = currentInstance?.AdministrationUrl;
             if (adminUrl is null)
             {
-                return Task.FromResult(new ModuleResults
+                return new ModuleResults
                 {
                     Status = ResultsStatus.Warning,
                     Summary = Metadata.Terms.RobotsTxtNotFound,
                     Type = ResultsType.NoResults
-                });
+                };
             }
 
             var instanceUri = new Uri(adminUrl);
             var testUri = new Uri(instanceUri, Constants.RobotsTxtRelativePath);
 
-            return GetUriResults(testUri);
+            return await GetUriResults(testUri);
         }
 
         private async Task<ModuleResults> GetUriResults(Uri testUri)

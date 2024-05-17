@@ -4,14 +4,9 @@
 @inject IConfigService configService
 @inject NavigationManager navigationManager
 
-@{
-    var currentInstance = configService.GetCurrentInstance();
-    var details = instanceService.GetInstanceDetails(Instance);
-}
-
 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
     <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-        @if (Instance!.Guid.Equals(currentInstance?.Guid))
+        @if (isConnectedInstance)
         {
             <button type="button"
                 @onclick="DisconnectInstance"
@@ -35,13 +30,13 @@
         </div>
     </th>
     <td class="px-6 py-4">
-        @details.AdministrationVersion
+        @adminFileVersion
     </td>
     <td class="px-6 py-4">
-        @details.AdministrationDatabaseVersion
+        @adminDbVersion
     </td>
     <td class="px-6 py-4">
-        @(details.Sites?.Count() ?? 0)
+        @siteCount
     </td>
     <td class="px-6 py-4 text-right">
         <button type="button"
@@ -56,8 +51,26 @@
 </tr>
 
 @code {
+    private int siteCount;
+    private bool isConnectedInstance;
+    private Version adminFileVersion = new();
+    private Version adminDbVersion = new();
+
     [Parameter, EditorRequired]
     public Instance? Instance { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var currentInstance = await configService.GetCurrentInstance();
+        isConnectedInstance = Instance!.Guid.Equals(currentInstance?.Guid);
+
+        var details = await instanceService.GetInstanceDetails(Instance);
+        adminFileVersion = details.AdministrationVersion ?? new();
+        adminDbVersion = details.AdministrationDatabaseVersion ?? new();
+        siteCount = details.Sites.Count();
+
+        await base.OnInitializedAsync();
+    }
 
     private void SetCurrentInstance()
     {

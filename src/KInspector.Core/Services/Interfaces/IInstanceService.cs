@@ -10,11 +10,11 @@ namespace KInspector.Core.Services.Interfaces
         /// <summary>
         /// Gets details about the instance.
         /// </summary>
-        InstanceDetails GetInstanceDetails(Guid instanceGuid);
+        Task<InstanceDetails> GetInstanceDetails(Guid instanceGuid);
 
         /// <summary>
         /// Gets details about the instance.
         /// </summary>
-        InstanceDetails GetInstanceDetails(Instance? instance);
+        Task<InstanceDetails> GetInstanceDetails(Instance? instance);
     }
 }

@@ -20,11 +20,11 @@ namespace KInspector.Core.Services.Interfaces
         /// <summary>
         /// Gets the provided module's metadata.
         /// </summary>
-        ModuleMetadata<T> GetModuleMetadata<T>(string moduleCodename) where T : new();
+        Task<ModuleMetadata<T>> GetModuleMetadata<T>(string moduleCodename) where T : new();
 
         /// <summary>
         /// Gets the provided module's details.
         /// </summary>
-        ModuleDetails GetModuleDetails(string moduleCodename);
+        Task<ModuleDetails> GetModuleDetails(string moduleCodename);
     }
 }

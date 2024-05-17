@@ -64,10 +64,9 @@ namespace KInspector.Reports.SecuritySettingsAnalysis
                 new { cmsSettingsCategoryIdsOnPaths }
             );
 
-            var currentInstance = configService.GetCurrentInstance();
-            var sites = instanceService
-                .GetInstanceDetails(currentInstance)?
-                .Sites?
+            var currentInstance = await configService.GetCurrentInstance();
+            var instanceDetails = await instanceService.GetInstanceDetails(currentInstance);
+            var sites = instanceDetails.Sites
                 .Append(new Site()
                 {
                     Id = 0,

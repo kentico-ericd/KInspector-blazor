@@ -33,7 +33,7 @@ namespace KInspector.Infrastructure.Services
 
         public async Task ExecuteAction(IAction action, string optionsJson, Action<ModuleResults> callback)
         {
-            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
+            var instance = await configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
             databaseService.Configure(instance.DatabaseSettings);
 
             var results = await action.Execute(optionsJson);
@@ -42,39 +42,41 @@ namespace KInspector.Infrastructure.Services
 
         public IAction? GetAction(string codename) => actionRepository.GetAction(codename);
 
-        public IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
+        public async Task<IEnumerable<IAction>> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
         {
-            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException("An instance must be connected.");
-            var instanceDetails = instanceService.GetInstanceDetails(instance);
+            var instance = await configService.GetCurrentInstance() ?? throw new InvalidOperationException("An instance must be connected.");
+            var instanceDetails = await instanceService.GetInstanceDetails(instance);
             var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
             var actions = actionRepository.GetActions();
-            var filtered = actions.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion));
+            var filtered = actions.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)).ToList();
             if (getUntested)
             {
                 filtered = filtered.Union(actions.Where(r =>
                     !r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion) &&
                     !r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)
-                ));
+                )).ToList();
             }
 
             if (getIncompatible)
             {
-                filtered = filtered.Union(actions.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+                filtered = filtered.Union(actions.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion))).ToList();
             }
 
             if (!string.IsNullOrEmpty(tag))
             {
-                filtered = filtered.Where(r => r.Tags.Contains(tag));
+                filtered = filtered.Where(r => r.Tags.Contains(tag)).ToList();
             }
 
             if (!string.IsNullOrEmpty(name))
             {
-                filtered = filtered.Where(r =>
+                foreach (var action in filtered)
                 {
-                    var details = moduleMetadataService.GetModuleDetails(r.Codename);
-
-                    return details.Name?.Contains(name, StringComparison.InvariantCultureIgnoreCase) ?? true;
-                });
+                    var details = await moduleMetadataService.GetModuleDetails(action.Codename);
+                    if (!details.Name?.Contains(name, StringComparison.InvariantCultureIgnoreCase) ?? true)
+                    {
+                        filtered.Remove(action);
+                    }
+                }
             }
 
             return filtered.OrderBy(r => r.Codename);
@@ -84,7 +86,7 @@ namespace KInspector.Infrastructure.Services
 
         public async Task GetReportResults(IReport report, Action<ModuleResults> callback)
         {
-            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
+            var instance = await configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
             databaseService.Configure(instance.DatabaseSettings);
 
             try
@@ -103,39 +105,41 @@ namespace KInspector.Infrastructure.Services
             }
         }
 
-        public IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
+        public async Task<IEnumerable<IReport>> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null)
         {
-            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException("An instance must be connected.");
-            var instanceDetails = instanceService.GetInstanceDetails(instance);
+            var instance = await configService.GetCurrentInstance() ?? throw new InvalidOperationException("An instance must be connected.");
+            var instanceDetails = await instanceService.GetInstanceDetails(instance);
             var dbMajorVersion = instanceDetails?.AdministrationDatabaseVersion?.Major ?? 0;
             var reports = reportRepository.GetReports();
-            var filtered = reports.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion));
+            var filtered = reports.Where(r => r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)).ToList();
             if (getUntested)
             {
                 filtered = filtered.Union(reports.Where(r =>
                     !r.CompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion) &&
                     !r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)
-                ));
+                )).ToList();
             }
 
             if (getIncompatible)
             {
-                filtered = filtered.Union(reports.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion)));
+                filtered = filtered.Union(reports.Where(r => r.IncompatibleVersions.Select(v => v.Major).Contains(dbMajorVersion))).ToList();
             }
 
             if (!string.IsNullOrEmpty(tag))
             {
-                filtered = filtered.Where(r => r.Tags.Contains(tag));
+                filtered = filtered.Where(r => r.Tags.Contains(tag)).ToList();
             }
 
             if (!string.IsNullOrEmpty(name))
             {
-                filtered = filtered.Where(r =>
+                foreach (var report in filtered)
                 {
-                    var details = moduleMetadataService.GetModuleDetails(r.Codename);
-
-                    return details.Name?.Contains(name, StringComparison.InvariantCultureIgnoreCase) ?? true;
-                });
+                    var details = await moduleMetadataService.GetModuleDetails(report.Codename);
+                    if (!details.Name?.Contains(name, StringComparison.InvariantCultureIgnoreCase) ?? true)
+                    {
+                        filtered.Remove(report);
+                    }
+                }
             }
 
             return filtered.OrderBy(r => r.Codename);

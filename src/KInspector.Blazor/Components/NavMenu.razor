@@ -65,8 +65,8 @@
             </li>
             <li>
                 <a href="/reports"
-                   class="@DisabledLinkCss flex items-center p-2 text-base font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg class="w-6 h-6 @DisabledLinkCss" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                   class="@disabledLinkCss flex items-center p-2 text-base font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-6 h-6 @disabledLinkCss" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5" />
                     </svg>
                     <span class="ml-3">Reports</span>
@@ -74,8 +74,8 @@
             </li>
             <li>
                 <a href="/actions"
-                   class="@DisabledLinkCss flex items-center p-2 text-base font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg class="w-6 h-6 @DisabledLinkCss" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                   class="@disabledLinkCss flex items-center p-2 text-base font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="w-6 h-6 @disabledLinkCss" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                     </svg>
                     <span class="ml-3">Actions</span>
@@ -83,7 +83,7 @@
             </li>
             <li class="grow"></li>
             <li class="text-center">
-                <CurrentInstanceDropdown Instance="CurrentInstance" />
+                <CurrentInstanceDropdown />
             </li>
             <li>
                 <div class="hidden justify-center p-4 space-x-4 w-full lg:flex bg-white dark:bg-gray-800 z-20">
@@ -104,22 +104,15 @@
 </aside>
 
 @code {
-    private Instance? currentInstance;
+    private string disabledLinkCss = string.Empty;
 
     private Version? Version => typeof(Program).Assembly.GetName().Version;
 
-    private Instance? CurrentInstance
+    protected async override Task OnInitializedAsync()
     {
-        get
-        {
-            if (currentInstance is null)
-            {
-                currentInstance = configService.GetCurrentInstance();
-            }
+        var currentInstance = await configService.GetCurrentInstance();
+        disabledLinkCss = currentInstance is null ? "pointer-events-none text-gray-400 dark:text-gray-400" : "text-gray-900 dark:text-white";
 
-            return currentInstance;
-        }
+        await base.OnInitializedAsync();
     }
-
-    private string DisabledLinkCss => CurrentInstance is null ? "pointer-events-none text-gray-400 dark:text-gray-400" : "text-gray-900 dark:text-white";
 }

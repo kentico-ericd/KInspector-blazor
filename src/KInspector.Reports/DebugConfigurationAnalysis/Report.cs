@@ -34,7 +34,7 @@ namespace KInspector.Reports.DebugConfigurationAnalysis
 
         public async override Task<ModuleResults> GetResults()
         {
-            var instance = _configService.GetCurrentInstance() ?? throw new InvalidOperationException("Current instance not found.");
+            var instance = await _configService.GetCurrentInstance() ?? throw new InvalidOperationException("Current instance not found.");
             var databaseSettingsValues = await _databaseService.ExecuteSqlFromFile<SettingsKey>(Scripts.GetDebugSettingsValues);
             ResolveSettingsDisplayNames(instance, databaseSettingsValues);
 

@@ -7,10 +7,6 @@
 
 <PageTitle>Instances</PageTitle>
 
-@{
-    var instances = configService.GetConfig().Instances;
-}
-
 <h1 class="mb-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">Instances</h1>
 
 <button type="button"
@@ -56,6 +52,16 @@
 <NewInstanceModal />
 
 @code {
+    private IEnumerable<Instance> instances = Enumerable.Empty<Instance>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        var config = await configService.GetConfig();
+        instances = config.Instances;
+
+        await base.OnInitializedAsync();
+    }
+
     protected override async Task OnAfterRenderAsync(bool isFirstRender)
     {
         if (isFirstRender)

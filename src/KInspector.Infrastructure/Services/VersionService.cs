@@ -21,12 +21,12 @@ namespace KInspector.Infrastructure.Services
             this.databaseService = databaseService;
         }
 
-        public Version? GetKenticoAdministrationVersion(Instance instance)
+        public Task<Version?> GetKenticoAdministrationVersion(Instance instance)
         {
-            return instance.AdministrationPath is null ? null : GetKenticoAdministrationVersion(instance.AdministrationPath);
+            return GetKenticoAdministrationVersion(instance.AdministrationPath);
         }
 
-        public Version? GetKenticoAdministrationVersion(string rootPath)
+        public async Task<Version?> GetKenticoAdministrationVersion(string? rootPath)
         {
             if (!Directory.Exists(rootPath))
             {
@@ -54,7 +54,7 @@ namespace KInspector.Infrastructure.Services
 
                 if (File.Exists(hotfixFile))
                 {
-                    hotfix = File.ReadAllText(hotfixFile);
+                    hotfix = await File.ReadAllTextAsync(hotfixFile);
                 }
             }
 
@@ -63,10 +63,10 @@ namespace KInspector.Infrastructure.Services
             return new Version(version);
         }
 
-        public Version? GetKenticoDatabaseVersion(DatabaseSettings databaseSettings)
+        public async Task<Version?> GetKenticoDatabaseVersion(DatabaseSettings databaseSettings)
         {
             databaseService.Configure(databaseSettings);
-            var settingsKeys = databaseService.ExecuteSqlFromFile<string>(getCmsSettingsPath).ConfigureAwait(false).GetAwaiter().GetResult();
+            var settingsKeys = await databaseService.ExecuteSqlFromFile<string>(getCmsSettingsPath);
             var settingsList = settingsKeys.ToList();
             var version = settingsList[0];
             var hotfix = settingsList[1];

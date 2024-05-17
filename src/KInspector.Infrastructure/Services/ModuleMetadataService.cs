@@ -23,10 +23,10 @@ namespace KInspector.Core.Helpers
             this.instanceService = instanceService;
         }
 
-        public ModuleDetails GetModuleDetails(string moduleCodename)
+        public async Task<ModuleDetails> GetModuleDetails(string moduleCodename)
         {
             var metadataDirectory = GetMetadataDirectory(moduleCodename);
-            var currentMetadata = DeserializeMetadataFromYamlFile<dynamic>(
+            var currentMetadata = await DeserializeMetadataFromYamlFile<dynamic>(
                 metadataDirectory,
                 CurrentCultureName,
                 false
@@ -42,7 +42,7 @@ namespace KInspector.Core.Helpers
             var mergedDetails = new ModuleDetails();
             if (!currentCultureIsDefaultCulture)
             {
-                var defaultMetadata = DeserializeMetadataFromYamlFile<dynamic>(
+                var defaultMetadata = await DeserializeMetadataFromYamlFile<dynamic>(
                     metadataDirectory,
                     DefaultCultureName,
                     true
@@ -54,8 +54,8 @@ namespace KInspector.Core.Helpers
             }
 
             var details = currentCultureIsDefaultCulture ? currentDetails : mergedDetails;
-            var currentInstance = configService.GetCurrentInstance();
-            var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
+            var currentInstance = await configService.GetCurrentInstance();
+            var instanceDetails = await instanceService.GetInstanceDetails(currentInstance);
             var commonData = new
             {
                 instanceUrl = currentInstance?.AdministrationUrl,
@@ -75,11 +75,11 @@ namespace KInspector.Core.Helpers
             return details;
         }
 
-        public ModuleMetadata<T> GetModuleMetadata<T>(string moduleCodename)
+        public async Task<ModuleMetadata<T>> GetModuleMetadata<T>(string moduleCodename)
             where T : new()
         {
             var metadataDirectory = GetMetadataDirectory(moduleCodename);
-            var currentMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
+            var currentMetadata = await DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
                 metadataDirectory,
                 CurrentCultureName,
                 false
@@ -89,7 +89,7 @@ namespace KInspector.Core.Helpers
             var mergedMetadata = new ModuleMetadata<T>();
             if (!currentCultureIsDefaultCulture)
             {
-                var defaultMetadata = DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
+                var defaultMetadata = await DeserializeMetadataFromYamlFile<ModuleMetadata<T>>(
                     metadataDirectory,
                     DefaultCultureName,
                     true
@@ -99,8 +99,8 @@ namespace KInspector.Core.Helpers
             }
 
             var moduleMetadata = currentCultureIsDefaultCulture ? currentMetadata : mergedMetadata;
-            var currentInstance = configService.GetCurrentInstance();
-            var instanceDetails = instanceService.GetInstanceDetails(currentInstance);
+            var currentInstance = await configService.GetCurrentInstance();
+            var instanceDetails = await instanceService.GetInstanceDetails(currentInstance);
             var commonData = new
             {
                 instanceUrl = currentInstance?.AdministrationUrl,
@@ -122,7 +122,7 @@ namespace KInspector.Core.Helpers
 
         private static string GetMetadataDirectory(string moduleCodename) => $"{DirectoryHelper.GetExecutingDirectory()}\\{moduleCodename}\\Metadata\\";
 
-        private static T DeserializeMetadataFromYamlFile<T>(
+        private async static Task<T> DeserializeMetadataFromYamlFile<T>(
             string metadataDirectory,
             string cultureName,
             bool ignoreUnmatchedProperties)
@@ -134,7 +134,7 @@ namespace KInspector.Core.Helpers
 
             if (!String.IsNullOrEmpty(moduleMetadataPath))
             {
-                var fileText = File.ReadAllText(moduleMetadataPath);
+                var fileText = await File.ReadAllTextAsync(moduleMetadataPath);
 
                 return DeserializeYaml<T>(fileText, ignoreUnmatchedProperties);
             }

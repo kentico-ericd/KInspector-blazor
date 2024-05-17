@@ -11,7 +11,7 @@
 @inject IModuleMetadataService moduleMetadataService
 
 <div class="w-full module-card bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-    <ModuleHeader Module="@Report" Name="@ModuleDetails.Name" Handler="RunReport" />
+    <ModuleHeader Module="@Report" Name="@reportName" Handler="RunReport" />
     <ResultStatus Result="Results" />
     <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px" data-tabs-toggle="#module-content-@Report!.Codename" role="tablist">
@@ -34,7 +34,7 @@
     <div id="module-content-@Report!.Codename">
         <div class="hidden w-1/2 module-description text-gray-700 dark:text-white p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="@(Report!.Codename)-description"
             role="tabpanel" aria-labelledby="@(Report!.Codename)-description-tab">
-            @LongDescription
+            @longDescription
         </div>
         <div class="hidden module-results text-gray-700 dark:text-white p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800" id="@(Report!.Codename)-results"
             role="tabpanel" aria-labelledby="@(Report!.Codename)-results-tab">
@@ -45,18 +45,22 @@
 
 
 @code {
+    private string reportName = "Loading...";
+    private MarkupString longDescription = new MarkupString("Loading...");
+
     [Parameter, EditorRequired]
     public IReport? Report { get; set; }
 
     public ModuleResults Results { get; set; } = new();
 
-    private ModuleDetails ModuleDetails => moduleMetadataService.GetModuleDetails(Report!.Codename);
-
-    private MarkupString LongDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.LongDescription ?? string.Empty));
-
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
         stateContainer.OnChange += StateHasChanged;
+        var details = await moduleMetadataService.GetModuleDetails(Report!.Codename);
+        reportName = details.Name ?? string.Empty;
+        longDescription = new MarkupString(Markdown.ToHtml(details.LongDescription ?? string.Empty));
+
+        await base.OnInitializedAsync();
     }
 
     public void Dispose()

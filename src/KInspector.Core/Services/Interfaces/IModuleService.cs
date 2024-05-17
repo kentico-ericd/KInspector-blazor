@@ -29,7 +29,7 @@ namespace KInspector.Core.Services.Interfaces
         /// are included.</param>
         /// <param name="tag">If provided, only reports with this tag are included.</param>
         /// <param name="name">If provided, only reports where <see cref="ModuleDetails.Name"/> contains the string are included.</param>
-        IEnumerable<IReport> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null);
+        Task<IEnumerable<IReport>> GetReports(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null);
 
         /// <summary>
         /// Gets a list of filtered actions.
@@ -40,7 +40,7 @@ namespace KInspector.Core.Services.Interfaces
         /// are included.</param>
         /// <param name="tag">If provided, only actions with this tag are included.</param>
         /// <param name="name">If provided, only actions where <see cref="ModuleDetails.Name"/> contains the string are included.</param>
-        IEnumerable<IAction> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null);
+        Task<IEnumerable<IAction>> GetActions(bool getUntested = false, bool getIncompatible = false, string? tag = null, string? name = null);
 
         /// <summary>
         /// Gets the action with the provided codename, or <c>null</c> if it doesn't exist.

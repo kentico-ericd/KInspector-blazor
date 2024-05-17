@@ -8,14 +8,15 @@
 <ModuleFilters Tags="UsedTags" FiltersChanged="StateHasChanged" @ref="Filters" />
 
 <div class="space-y-8">
-    @foreach (var action in Actions)
+    @foreach (var action in actions)
     {
         <ActionCard Action="@action" />
     }
 </div>
 
 @code {
-    ModuleFilters? Filters;
+    private ModuleFilters? Filters;
+    private IEnumerable<IAction> actions = Enumerable.Empty<IAction>();
 
     private IEnumerable<string> UsedTags
     {
@@ -32,17 +33,16 @@
         }
     }
 
-    private IEnumerable<IAction> Actions
+    protected async override Task OnInitializedAsync()
     {
-        get
-        {
-            var tag = Filters?.SelectedTag;
-            var showUntested = Filters?.ShowUntested ?? false;
-            var showIncompatible = Filters?.ShowIncompatible ?? false;
-            var nameFilter = Filters?.NameFilter;
+        var tag = Filters?.SelectedTag;
+        var showUntested = Filters?.ShowUntested ?? false;
+        var showIncompatible = Filters?.ShowIncompatible ?? false;
+        var nameFilter = Filters?.NameFilter;
 
-            return moduleService.GetActions(showUntested, showIncompatible, tag, nameFilter);
-        }
+        actions = await moduleService.GetActions(showUntested, showIncompatible, tag, nameFilter);
+
+        await base.OnInitializedAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool isFirstRender)

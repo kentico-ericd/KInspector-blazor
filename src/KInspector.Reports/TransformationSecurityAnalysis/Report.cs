@@ -50,12 +50,12 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             var pageDtos = await databaseService.ExecuteSqlFromFile<PageDto>(Scripts.GetPages);
             var documentPageTemplateIds = pageDtos.Select(pageDto => pageDto.DocumentPageTemplateID);
             var pageTemplateDtos = await databaseService.ExecuteSqlFromFile<PageTemplateDto>(Scripts.GetPageTemplates, new { DocumentPageTemplateIDs = documentPageTemplateIds });
-            var sites = instanceService
-                .GetInstanceDetails(configService.GetCurrentInstance())
-                .Sites ?? Enumerable.Empty<Site>();
+
+            var currentInstance = await configService.GetCurrentInstance();
+            var instanceDetails = await instanceService.GetInstanceDetails(currentInstance);
 
             var pageTemplates = pageTemplateDtos
-                .Select(pageTemplateDto => new PageTemplate(sites, pageDtos, pageTemplateDto))
+                .Select(pageTemplateDto => new PageTemplate(instanceDetails.Sites, pageDtos, pageTemplateDto))
                 .ToList();
 
             var pageTemplatesUsingTransformationsWithIssues = GetPageTemplatesUsingTransformationsWithIssues(pageTemplates, transformationsWithIssues);
