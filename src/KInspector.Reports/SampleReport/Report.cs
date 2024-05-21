@@ -15,7 +15,7 @@ namespace KInspector.Reports.SampleReport
         }
 
         // Hide sample report in UI
-        public override IList<Version> CompatibleVersions => new Version[0];
+        public override IList<Version> CompatibleVersions => Array.Empty<Version>();
 
         public override IList<string> Tags => new List<string> {
             ModuleTags.Consistency
@@ -41,7 +41,7 @@ namespace KInspector.Reports.SampleReport
             return Task.FromResult(results);
         }
 
-        private string GetRandomString(int size)
+        private static string GetRandomString(int size)
         {
             var builder = new StringBuilder();
             var random = new Random();

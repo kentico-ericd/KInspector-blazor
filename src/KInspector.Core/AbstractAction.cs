@@ -8,8 +8,7 @@ using System.Reflection;
 
 namespace KInspector.Core
 {
-    public abstract class AbstractAction<TTerms,TOptions>
-        : AbstractModule<TTerms>, IAction
+    public abstract class AbstractAction<TTerms,TOptions> : AbstractModule<TTerms>, IAction
         where TTerms : new()
         where TOptions: new()
     {
@@ -69,7 +68,7 @@ namespace KInspector.Core
         /// <summary>
         /// Returns <c>true</c> if at least one option has a value and one doesn't.
         /// </summary>
-        private bool OptionsPartial(TOptions? options)
+        private static bool OptionsPartial(TOptions? options)
         {
             var hasNull = false;
             var hasValue = false;
@@ -92,7 +91,7 @@ namespace KInspector.Core
         /// <summary>
         /// Returns <c>true</c> if all options are null.
         /// </summary>
-        private bool OptionsNull(TOptions? options)
+        private static bool OptionsNull(TOptions? options)
         {
             PropertyInfo[] properties = typeof(TOptions).GetProperties();
             foreach (PropertyInfo property in properties)

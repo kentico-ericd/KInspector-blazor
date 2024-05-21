@@ -27,8 +27,7 @@ namespace KInspector.Infrastructure.Services
 
         public InspectorConfig GetConfig()
         {
-            var saveFileExists = File.Exists(_saveFileLocation);
-            if (saveFileExists)
+            if (File.Exists(_saveFileLocation))
             {
                 var saveFileContents = File.ReadAllText(_saveFileLocation);
                 var config = JsonConvert.DeserializeObject<InspectorConfig>(saveFileContents);

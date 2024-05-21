@@ -45,8 +45,7 @@ namespace KInspector.Reports.UserPasswordAnalysis
             return CompileResults(usersWithEmptyPasswords, usersWithPlaintextPasswords);
         }
 
-        private static IEnumerable<CmsUserResultWithPasswordFormat> GetUsersWithEmptyPasswords(
-            IEnumerable<CmsUser> users)
+        private static IEnumerable<CmsUserResultWithPasswordFormat> GetUsersWithEmptyPasswords(IEnumerable<CmsUser> users)
         {
             return users
                 .Where(user => string.IsNullOrEmpty(user.UserPassword))

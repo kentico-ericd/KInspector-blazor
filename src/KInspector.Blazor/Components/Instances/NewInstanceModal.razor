@@ -113,17 +113,17 @@
         configService.UpsertInstance(new()
         {
             Guid = Guid.NewGuid(),
-            AdministrationPath = Model?.AdminPath,
-            AdministrationUrl = Model?.AdminUrl,
-            Name = Model?.Name,
+            AdministrationPath = Model!.AdminPath,
+            AdministrationUrl = Model!.AdminUrl,
+            Name = Model!.Name,
             DatabaseSettings = new()
             {
-                Server = Model?.Server,
-                Database = Model?.Database,
-                IntegratedSecurity = Model?.IntegratedSecurity ?? false,
-                User = Model?.User,
-                Password = Model?.Password,
-                AdministrationConnectionString = Model?.CMSConnectionString
+                Server = Model!.Server,
+                Database = Model!.Database,
+                IntegratedSecurity = Model!.IntegratedSecurity,
+                User = Model!.User,
+                Password = Model!.Password,
+                AdministrationConnectionString = Model!.CMSConnectionString
             }
         });
 

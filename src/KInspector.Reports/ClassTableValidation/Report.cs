@@ -94,7 +94,7 @@ namespace KInspector.Reports.ClassTableValidation
             return tablesWithMissingClass;
         }
 
-        private List<string> GetTableWhitelist(Version? version)
+        private static List<string> GetTableWhitelist(Version? version)
         {
             var whitelist = new List<string>();
 

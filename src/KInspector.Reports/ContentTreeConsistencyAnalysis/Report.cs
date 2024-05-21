@@ -51,7 +51,10 @@ namespace KInspector.Reports.ContentTreeConsistencyAnalysis
             );
         }
 
-        private List<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(IEnumerable<CmsVersionHistoryItem> versionHistoryItems, IEnumerable<IDictionary<string, object>> coupledData, IEnumerable<CmsClassField> cmsClassFields)
+        private static List<VersionHistoryMismatchResult> CompareVersionHistoryItemsWithPublishedItems(
+            IEnumerable<CmsVersionHistoryItem> versionHistoryItems,
+            IEnumerable<IDictionary<string, object>> coupledData,
+            IEnumerable<CmsClassField> cmsClassFields)
         {
             var issues = new List<VersionHistoryMismatchResult>();
             var idColumnName = cmsClassFields.FirstOrDefault(x => x.IsIdColumn)?.Column ?? string.Empty;

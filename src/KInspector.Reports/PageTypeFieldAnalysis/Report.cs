@@ -62,17 +62,12 @@ namespace KInspector.Reports.PageTypeFieldAnalysis
             return results;
         }
 
-        private IEnumerable<CmsPageTypeField> CheckForMismatchedTypes(IEnumerable<CmsPageTypeField> pagetypeFields)
-        {
-            var fieldsWithMismatchedTypes =
-                pagetypeFields
-                    .Distinct()
-                    .GroupBy(x => x.FieldName)
-                    .Where(g => g.Count() > 1)
-                    .SelectMany(g => g)
-                    .OrderBy(i => i.FieldName);
-
-            return fieldsWithMismatchedTypes;
-        }
+        private static IEnumerable<CmsPageTypeField> CheckForMismatchedTypes(IEnumerable<CmsPageTypeField> pagetypeFields) =>
+            pagetypeFields
+                .Distinct()
+                .GroupBy(x => x.FieldName)
+                .Where(g => g.Count() > 1)
+                .SelectMany(g => g)
+                .OrderBy(i => i.FieldName);
     }
 }

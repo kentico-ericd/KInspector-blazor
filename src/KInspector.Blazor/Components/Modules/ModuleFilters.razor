@@ -50,10 +50,7 @@
         set
         {
             nameFilter = value;
-            if (FiltersChanged is not null)
-            {
-                FiltersChanged();
-            }
+            FiltersChanged?.Invoke();
         }
     }
 
@@ -67,10 +64,7 @@
         set
         {
             tag = value;
-            if (FiltersChanged is not null)
-            {
-                FiltersChanged();
-            }
+            FiltersChanged?.Invoke();
         }
     }
 
@@ -84,10 +78,7 @@
         set
         {
             showUntested = value;
-            if (FiltersChanged is not null)
-            {
-                FiltersChanged();
-            }
+            FiltersChanged?.Invoke();
         }
     }
 
@@ -101,10 +92,7 @@
         set
         {
             showIncompatible = value;
-            if (FiltersChanged is not null)
-            {
-                FiltersChanged();
-            }
+            FiltersChanged?.Invoke();
         }
     }
 }

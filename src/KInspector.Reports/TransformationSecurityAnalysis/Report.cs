@@ -95,7 +95,9 @@ namespace KInspector.Reports.TransformationSecurityAnalysis
             }
         }
 
-        private static IEnumerable<PageTemplate> GetPageTemplatesUsingTransformationsWithIssues(IEnumerable<PageTemplate> pageTemplates, IEnumerable<Transformation> transformationsWithIssues)
+        private static IEnumerable<PageTemplate> GetPageTemplatesUsingTransformationsWithIssues(
+            IEnumerable<PageTemplate> pageTemplates,
+            IEnumerable<Transformation> transformationsWithIssues)
         {
             foreach (var pageTemplate in pageTemplates)
             {

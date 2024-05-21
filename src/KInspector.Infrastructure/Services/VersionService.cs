@@ -23,7 +23,7 @@ namespace KInspector.Infrastructure.Services
 
         public Version? GetKenticoAdministrationVersion(Instance instance)
         {
-            return instance.AdministrationPath is null ? null : GetKenticoAdministrationVersion(instance.AdministrationPath);
+            return string.IsNullOrEmpty(instance.AdministrationPath) ? null : GetKenticoAdministrationVersion(instance.AdministrationPath);
         }
 
         public Version? GetKenticoAdministrationVersion(string rootPath)

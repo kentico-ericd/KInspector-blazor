@@ -10,25 +10,20 @@ namespace KInspector.Infrastructure.Services
     {
         private readonly IConfigService _configService;
         private readonly IVersionService _versionService;
-        private readonly IDatabaseService _databaseService;
 
         public InstanceService(
             IConfigService configService,
-            IVersionService versionService,
-            IDatabaseService databaseService)
+            IVersionService versionService)
         {
             _configService = configService;
             _versionService = versionService;
-            _databaseService = databaseService;
         }
 
         public InstanceDetails GetInstanceDetails(Guid instanceGuid)
         {
-            var instance = _configService.GetInstance(instanceGuid);
+            var instance = _configService.GetInstance(instanceGuid) ?? throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'");
 
-            return instance is null
-                ? throw new InvalidOperationException($"No instance with GUID '{instanceGuid}.'")
-                : GetInstanceDetails(instance);
+            return GetInstanceDetails(instance);
         }
 
         public InstanceDetails GetInstanceDetails(Instance? instance)
@@ -40,8 +35,6 @@ namespace KInspector.Infrastructure.Services
                 AdministrationDatabaseVersion = _versionService.GetKenticoDatabaseVersion(instance.DatabaseSettings),
                 Sites = GetSites(instance.DatabaseSettings)
             };
-
-            _databaseService.Configure(instance.DatabaseSettings);
 
             return instanceDetails;
         }
@@ -59,6 +52,7 @@ namespace KInspector.Infrastructure.Services
                         SitePresentationURL as PresentationUrl,
                         SiteStatus as Status
                     FROM CMS_Site";
+
                 var connection = DatabaseHelper.GetSqlConnection(databaseSettings);
                 var sites = connection.Query<Site>(query).ToList();
 

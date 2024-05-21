@@ -54,6 +54,7 @@
 
 @code {
     private int adminDbVersion = 0;
+    private ModuleDetails? moduleDetails;
 
     [Parameter, EditorRequired]
     public IModule? Module { get; set; }
@@ -61,7 +62,13 @@
     [Parameter, EditorRequired]
     public Func<Task>? Handler { get; set; }
 
-    private ModuleDetails ModuleDetails => moduleMetadataService.GetModuleDetails(Module!.Codename);
+    private ModuleDetails ModuleDetails
+    {
+        get
+        {
+            return moduleDetails ??= moduleMetadataService.GetModuleDetails(Module!.Codename);
+        }
+    }
 
     private MarkupString Name => new MarkupString(Markdown.ToHtml(ModuleDetails.Name ?? string.Empty));
 

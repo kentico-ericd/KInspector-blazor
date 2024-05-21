@@ -56,6 +56,8 @@
 
 
 @code {
+    private ModuleDetails? moduleDetails;
+
     [Parameter, EditorRequired]
     public IAction? Action { get; set; }
 
@@ -63,7 +65,13 @@
 
     private ActionOptionForm? Form { get; set; }
 
-    private ModuleDetails ModuleDetails => moduleMetadataService.GetModuleDetails(Action!.Codename);
+    private ModuleDetails ModuleDetails
+    {
+        get
+        {
+            return moduleDetails ??= moduleMetadataService.GetModuleDetails(Action!.Codename);
+        }
+    }
 
     private MarkupString LongDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.LongDescription ?? string.Empty));
 

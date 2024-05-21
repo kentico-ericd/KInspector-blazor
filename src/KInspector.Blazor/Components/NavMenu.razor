@@ -112,10 +112,7 @@
     {
         get
         {
-            if (currentInstance is null)
-            {
-                currentInstance = configService.GetCurrentInstance();
-            }
+            currentInstance ??= configService.GetCurrentInstance();
 
             return currentInstance;
         }

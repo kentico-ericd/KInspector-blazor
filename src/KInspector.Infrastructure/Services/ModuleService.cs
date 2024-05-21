@@ -33,7 +33,7 @@ namespace KInspector.Infrastructure.Services
 
         public async Task ExecuteAction(IAction action, string optionsJson, Action<ModuleResults> callback)
         {
-            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
+            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"An instance must be connected.'");
             databaseService.Configure(instance.DatabaseSettings);
 
             var results = await action.Execute(optionsJson);
@@ -84,7 +84,7 @@ namespace KInspector.Infrastructure.Services
 
         public async Task GetReportResults(IReport report, Action<ModuleResults> callback)
         {
-            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"There is no connected instance.'");
+            var instance = configService.GetCurrentInstance() ?? throw new InvalidOperationException($"An instance must be connected.'");
             databaseService.Configure(instance.DatabaseSettings);
 
             try

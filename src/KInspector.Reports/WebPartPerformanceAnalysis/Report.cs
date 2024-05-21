@@ -59,7 +59,7 @@ namespace KInspector.Reports.WebPartPerformanceAnalysis
             return results;
         }
 
-        private IEnumerable<WebPartSummary> ExtractWebPartsWithEmptyColumnsProperty(PageTemplate template, IEnumerable<Document> documents)
+        private static IEnumerable<WebPartSummary> ExtractWebPartsWithEmptyColumnsProperty(PageTemplate template, IEnumerable<Document> documents)
         {
             var emptyColumnsWebPartProperties = template.PageTemplateWebParts?
                 .Descendants("property")
