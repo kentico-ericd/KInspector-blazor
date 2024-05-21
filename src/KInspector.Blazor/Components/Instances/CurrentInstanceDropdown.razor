@@ -72,10 +72,7 @@ else
     {
         get
         {
-            if (instanceDetails is null)
-            {
-                instanceDetails = instanceService.GetInstanceDetails(Instance);
-            }
+            instanceDetails ??= instanceService.GetInstanceDetails(Instance);
 
             return instanceDetails;
         }

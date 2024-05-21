@@ -4,7 +4,7 @@
   longDescription: |
     Displays all sites registered in the instance and their configuration, and allows you to stop running sites.
 
-    Run the action without options to view the site summary. To stop a site, re-run the action with the site ID below.
+    Run the action without options to view the site summary. To stop a site, re-run the action with the site ID.
 terms:
   tableTitle: Sites
   invalidOptions: The site ID must be an integer greater than zero and present in the database.

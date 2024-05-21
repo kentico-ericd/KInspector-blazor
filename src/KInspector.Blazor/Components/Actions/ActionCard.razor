@@ -11,7 +11,7 @@
 @inject IModuleMetadataService moduleMetadataService
 
 <div class="w-full module-card bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-    <ModuleHeader Module="@Action" Name="@ModuleDetails.Name" Handler="RunAction" />
+    <ModuleHeader Module="@Action" Handler="RunAction" />
     <ResultStatus Result="Results" />
     <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px" data-tabs-toggle="#module-content-@Action!.Codename" role="tablist">
