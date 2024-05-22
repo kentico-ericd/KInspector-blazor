@@ -65,25 +65,13 @@
 
     private ActionOptionForm? Form { get; set; }
 
-    private ModuleDetails ModuleDetails
-    {
-        get
-        {
-            return moduleDetails ??= moduleMetadataService.GetModuleDetails(Action!.Codename);
-        }
-    }
+    private ModuleDetails ModuleDetails => moduleDetails ??= moduleMetadataService.GetModuleDetails(Action!.Codename);
 
     private MarkupString LongDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.LongDescription ?? string.Empty));
 
-    protected override void OnInitialized()
-    {
-        stateContainer.OnChange += StateHasChanged;
-    }
+    protected override void OnInitialized() => stateContainer.OnChange += StateHasChanged;
 
-    public void Dispose()
-    {
-        stateContainer.OnChange -= StateHasChanged;
-    }
+    public void Dispose() => stateContainer.OnChange -= StateHasChanged;
 
     private Task RunAction()
     {

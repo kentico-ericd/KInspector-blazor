@@ -129,23 +129,17 @@
 
     private int RowCount => Table!.Rows.Count();
 
-    private void SetPage(int page)
-    {
-        currentPage = page;
-    }
+    private void SetPage(int page) => currentPage = page;
 
-    private IEnumerable<dynamic> GetPagedObjects(int page = 0)
-    {
-        IEnumerable<dynamic> allRows = Table!.Rows;
-
-        return allRows
+    private IEnumerable<dynamic> GetPagedObjects(int page = 0) =>
+        Table!.Rows.AsEnumerable<dynamic>()
           .Skip(PAGE_SIZE * page)
           .Take(PAGE_SIZE);
-    }
 
     private IEnumerable<object> GetRowValues(dynamic row)
     {
         IEnumerable<PropertyInfo> properties = row.GetType().GetProperties();
+
         return properties.Select(prop => prop.GetValue(row));
     }
 }

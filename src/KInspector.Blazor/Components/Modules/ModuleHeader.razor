@@ -62,13 +62,7 @@
     [Parameter, EditorRequired]
     public Func<Task>? Handler { get; set; }
 
-    private ModuleDetails ModuleDetails
-    {
-        get
-        {
-            return moduleDetails ??= moduleMetadataService.GetModuleDetails(Module!.Codename);
-        }
-    }
+    private ModuleDetails ModuleDetails => moduleDetails ??= moduleMetadataService.GetModuleDetails(Module!.Codename);
 
     private MarkupString Name => new MarkupString(Markdown.ToHtml(ModuleDetails.Name ?? string.Empty));
 
@@ -96,13 +90,7 @@
         }
     }
 
-    protected override void OnInitialized()
-    {
-        stateContainer.OnChange += StateHasChanged;
-    }
+    protected override void OnInitialized() => stateContainer.OnChange += StateHasChanged;
 
-    public void Dispose()
-    {
-        stateContainer.OnChange -= StateHasChanged;
-    }
+    public void Dispose() => stateContainer.OnChange -= StateHasChanged;
 }

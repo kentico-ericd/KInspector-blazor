@@ -52,25 +52,13 @@
 
     public ModuleResults Results { get; set; } = new();
 
-    private ModuleDetails ModuleDetails
-    {
-        get
-        {
-            return moduleDetails ??= moduleMetadataService.GetModuleDetails(Report!.Codename);
-        }
-    }
+    private ModuleDetails ModuleDetails => moduleDetails ??= moduleMetadataService.GetModuleDetails(Report!.Codename);
 
     private MarkupString LongDescription => new MarkupString(Markdown.ToHtml(ModuleDetails.LongDescription ?? string.Empty));
 
-    protected override void OnInitialized()
-    {
-        stateContainer.OnChange += StateHasChanged;
-    }
+    protected override void OnInitialized() => stateContainer.OnChange += StateHasChanged;
 
-    public void Dispose()
-    {
-        stateContainer.OnChange -= StateHasChanged;
-    }
+    public void Dispose() => stateContainer.OnChange -= StateHasChanged;
 
     private Task RunReport()
     {

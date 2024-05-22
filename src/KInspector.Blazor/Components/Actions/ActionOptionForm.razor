@@ -19,18 +19,7 @@
     [Parameter, EditorRequired]
     public Type? OptionsType { get; set; }
 
-    public JObject Options
-    {
-        get
-        {
-            if (options is null)
-            {
-                options = new JObject();
-            }
-
-            return options;
-        }
-    }
+    public JObject Options => options ??= new();
 
     private void SetValue(string propName, object? value)
     {

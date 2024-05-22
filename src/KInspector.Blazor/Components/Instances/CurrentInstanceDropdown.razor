@@ -68,15 +68,7 @@ else
     [Parameter, EditorRequired]
     public Instance? Instance { get; set; }
 
-    private InstanceDetails InstanceDetails
-    {
-        get
-        {
-            instanceDetails ??= instanceService.GetInstanceDetails(Instance);
-
-            return instanceDetails;
-        }
-    }
+    private InstanceDetails InstanceDetails => instanceDetails ??= instanceService.GetInstanceDetails(Instance);
 
     private string DatabaseName => DatabaseHelper.GetSqlConnection(Instance!.DatabaseSettings).Database;
 

@@ -108,15 +108,7 @@
 
     private Version? Version => typeof(Program).Assembly.GetName().Version;
 
-    private Instance? CurrentInstance
-    {
-        get
-        {
-            currentInstance ??= configService.GetCurrentInstance();
-
-            return currentInstance;
-        }
-    }
+    private Instance? CurrentInstance => currentInstance ??= configService.GetCurrentInstance();
 
     private string DisabledLinkCss => CurrentInstance is null ? "pointer-events-none text-gray-400 dark:text-gray-400" : "text-gray-900 dark:text-white";
 }
